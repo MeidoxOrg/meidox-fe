@@ -32,16 +32,16 @@ export function TimePicker({
   const [open, setOpen] = useState(false)
 
   return (
-    <div className={`flex items-center gap-2 ${className}`}>
-      {/* Date picker with popover */}
+    <div className={`flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full ${className}`}>
+      {/* Date picker */}
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <div className="flex items-center gap-1 bg-white border-2 border-amber-800 rounded-md px-3 py-2 cursor-pointer">
+          <div className="flex items-center justify-between w-full sm:w-auto gap-1 bg-white border-2 border-amber-800 rounded-md px-3 py-2 cursor-pointer">
             <input
               type="text"
               value={date}
               readOnly
-              className="bg-transparent outline-none text-sm cursor-pointer"
+              className="bg-transparent outline-none text-sm w-full sm:w-auto cursor-pointer"
               placeholder="YYYY-MM-DD"
             />
             <Button variant="ghost" size="sm" className="p-1 h-auto bg-amber-800 text-white">
@@ -63,35 +63,36 @@ export function TimePicker({
         </PopoverContent>
       </Popover>
 
-      {/* Hour select */}
-      <Select value={hour} onValueChange={onHourChange}>
-        <SelectTrigger className="w-20 border-2 border-amber-800 bg-white">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent className="bg-amber-800 text-white">
-          {hours.map((h) => (
-            <SelectItem key={h} value={h} className="hover:bg-amber-700">
-              {h}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      {/* Time select */}
+      <div className="flex items-center gap-2 w-full sm:w-auto">
+        <Select value={hour} onValueChange={onHourChange}>
+          <SelectTrigger className="w-full sm:w-20 border-2 border-amber-800 bg-white">
+            <SelectValue placeholder="HH" />
+          </SelectTrigger>
+          <SelectContent className="bg-amber-800 text-white">
+            {hours.map((h) => (
+              <SelectItem key={h} value={h} className="hover:bg-amber-700">
+                {h}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-      <span className="text-lg font-bold">:</span>
+        <span className="text-lg font-bold">:</span>
 
-      {/* Minute select */}
-      <Select value={minute} onValueChange={onMinuteChange}>
-        <SelectTrigger className="w-20 border-2 border-amber-800 bg-white">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent className="bg-amber-800 text-white">
-          {minutes.map((m) => (
-            <SelectItem key={m} value={m} className="hover:bg-amber-700">
-              {m}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+        <Select value={minute} onValueChange={onMinuteChange}>
+          <SelectTrigger className="w-full sm:w-20 border-2 border-amber-800 bg-white">
+            <SelectValue placeholder="MM" />
+          </SelectTrigger>
+          <SelectContent className="bg-amber-800 text-white">
+            {minutes.map((m) => (
+              <SelectItem key={m} value={m} className="hover:bg-amber-700">
+                {m}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
     </div>
   )
 }

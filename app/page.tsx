@@ -124,7 +124,7 @@ export default function WorkStartPage() {
               </Select>
             </div>
 
-            {/* Machine number */}
+            {/* Machine number 1*/}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">🔧 機械番号</label>
               <Select

@@ -42,7 +42,7 @@ export default function WorkStartPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const gateway = process.env.NEXT_PUBLIC_API_GATEWAY_URL ?? "";
+  const gateway = "https://meidox-apigateway.solocode.click";
 
   const fetchData = async () => {
     setLoading(true);

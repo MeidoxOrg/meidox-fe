@@ -100,7 +100,13 @@ export default function WorkStartPage() {
               href={`${gateway.replace(/\/$/, "")}/account/login`}
               className="rounded border px-3 py-1 text-sm hover:bg-gray-100"
             >
-              Gateway Login
+              Login
+            </a>
+            <a
+              href={`${gateway.replace(/\/$/, "")}/account/logout`}
+              className="rounded border border-red-600 bg-red-600 px-3 py-1 text-sm text-white hover:bg-red-700"
+            >
+              Logout
             </a>
           </div>
         </header>

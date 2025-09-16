@@ -43,6 +43,11 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: {{ include "meidoxfe.fullname" . }}
+            - secretRef:
+                name: {{ include "meidoxfe.fullname" . }}
           {{- with .Values.resources }}
           resources:
             {{- toYaml . | nindent 12 }}

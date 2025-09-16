@@ -46,8 +46,6 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ include "meidoxfe.fullname" . }}
-            - secretRef:
-                name: {{ include "meidoxfe.fullname" . }}
           {{- with .Values.resources }}
           resources:
             {{- toYaml . | nindent 12 }}

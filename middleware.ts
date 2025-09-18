@@ -12,7 +12,7 @@ export function middleware(req: NextRequest) {
 
   const kcCookie = req.cookies.get("keycloak.cookie");
   if(!kcCookie){
-    return NextResponse.redirect(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/account/login`)
+    return NextResponse.redirect(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/account/login?redirectUri=${process.env.NEXT_PUBLIC_URL}/ai-speaking`)
   }
 
   return NextResponse.next();

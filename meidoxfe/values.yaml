@@ -87,6 +87,7 @@ autoscaling:
   # targetMemoryUtilizationPercentage: 80
 config:
   NEXT_PUBLIC_API_GATEWAY_URL: https://meidox-apigateway.solocode.click
+  NEXT_PUBLIC_URL: https://meidox.solocode.click
 # Additional volumes on the output Deployment definition.
 volumes: []
 # - name: foo

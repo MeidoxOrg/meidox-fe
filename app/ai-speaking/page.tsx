@@ -43,6 +43,7 @@ export default function WorkStartPage() {
   const [error, setError] = useState<string | null>(null);
 
   const gateway = "https://meidox-apigateway.solocode.click";
+  const baseUrl = "https://meidox.solocode.click";
 
   const fetchData = async () => {
     setLoading(true);
@@ -103,7 +104,13 @@ export default function WorkStartPage() {
               Login
             </a>
             <a
-              href={`${gateway.replace(/\/$/, "")}/account/logout`}
+              href={`${gateway.replace(
+                /\/$/,
+                ""
+              )}/account/logout?redirectUri=${baseUrl.replace(
+                /\/$/,
+                ""
+              )}/ai-speaking`}
               className="rounded border border-red-600 bg-red-600 px-3 py-1 text-sm text-white hover:bg-red-700"
             >
               Logout

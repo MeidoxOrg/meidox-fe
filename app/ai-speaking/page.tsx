@@ -98,7 +98,13 @@ export default function WorkStartPage() {
               Refresh
             </button>
             <a
-              href={`${gateway.replace(/\/$/, "")}/account/login`}
+              href={`${gateway.replace(
+                /\/$/,
+                ""
+              )}/account/login?redirectUri=${baseUrl.replace(
+                /\/$/,
+                ""
+              )}/ai-speaking`}
               className="rounded border px-3 py-1 text-sm hover:bg-gray-100"
             >
               Login

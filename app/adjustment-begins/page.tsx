@@ -17,7 +17,7 @@ export default function AdjustmentBegins() {
     })
 
     const handleStartSetup = () => {
-        router.push("/setup-progress")
+        router.push("/adjustment-in-progress")
     }
 
     return (

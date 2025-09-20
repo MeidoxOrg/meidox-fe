@@ -97,7 +97,7 @@ export default function ProductionStartProgress() {
 
     const [numpadTarget, setNumpadTarget] = useState<null | "items" | "weight">(null)
 
-    const handlePauseSetup = () => console.log("Setup paused")
+    const handlePauseSetup = () => router.push("/home")
     const handleCompleteSetup = () => router.push("/home")
 
     return (

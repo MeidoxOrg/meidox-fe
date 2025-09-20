@@ -76,7 +76,9 @@ export default function Dashboard() {
 
                     {/* Right small buttons */}
                     <div className="grid grid-cols-2 gap-3 w-full md:w-80">
-                        <Button className="h-20 text-sm font-bold rounded-lg bg-yellow-300 text-black">作業終了</Button>
+                        <Button className="h-20 text-sm font-bold rounded-lg bg-yellow-300 text-black"
+                            onClick={() => router.push("/operation-end")}
+                        >作業終了</Button>
                         <Button className="h-20 text-sm font-bold rounded-lg bg-amber-800 text-white">編集画面へ</Button>
                     </div>
                 </div>

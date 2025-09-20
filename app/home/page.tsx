@@ -11,7 +11,7 @@ export default function Dashboard() {
     const mainGridButtons = [
         { label: "段取り", color: "bg-blue-500 hover:bg-blue-600", route: "/setup-start" },
         { label: "調整", color: "bg-blue-500 hover:bg-blue-600", route: "/adjustment-begins" },
-        { label: "4S", color: "bg-blue-500 hover:bg-blue-600", route: "#" },
+        { label: "4S", color: "bg-blue-500 hover:bg-blue-600", route: "/4S" },
         { label: "給油", color: "bg-blue-500 hover:bg-blue-600", route: "#" },
         { label: "金型交換", color: "bg-blue-500 hover:bg-blue-600", route: "#" },
         { label: "生産準備\n暖機運転\n保全チェック", color: "bg-blue-500 hover:bg-blue-600", route: "#" },

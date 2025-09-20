@@ -37,7 +37,6 @@ export default function PlannedMaintenanceProgress() {
     return (
         <PageLayout
             title="計画保全中"
-            rightContent={<span className="bg-green-200 px-4 py-1 rounded-md">18:13:46</span>}
         >
             <div className="max-w-7xl mx-auto bg-sky-100 p-6 rounded-md">
                 {/* Responsive grid: 1 col mobile, 2 col tablet, 3 col desktop */}

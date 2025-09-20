@@ -19,7 +19,7 @@ export default function Dashboard() {
         { label: "その他停止", color: "bg-blue-500 hover:bg-blue-600", route: "/other-stop" },
         { label: "材料交換", color: "bg-blue-500 hover:bg-blue-600", route: "/material-change" },
         { label: "他機対応", color: "bg-blue-500 hover:bg-blue-600", route: "/other-machine-support" },
-        { label: "品質チェック", color: "bg-blue-500 hover:bg-blue-600", route: "#" },
+        { label: "品質チェック", color: "bg-blue-500 hover:bg-blue-600", route: "/quality-check" },
         { label: "", color: "invisible", route: "#" },
         { label: "異常処置", color: "bg-red-500 hover:bg-red-600", route: "#" },
         { label: "設備故障\n設備修理", color: "bg-red-500 hover:bg-red-600", route: "#" },

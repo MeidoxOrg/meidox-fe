@@ -31,7 +31,7 @@ export default function Dashboard() {
         { label: "休憩", route: "/reason-for-stopping/break-start" },
         { label: "かんばんなし", route: "/reason-for-stopping/no-kanban-start" },
         { label: "ミーティング", route: "/reason-for-stopping/meeting-start" },
-        { label: "材料・金型\n欠品", route: "#" },
+        { label: "材料・金型\n欠品", route: "/reason-for-stopping/material-mold-shortage" },
         { label: "計画保全", route: "#" },
         { label: "作業者なし", route: "#" },
         { label: "4S\n(昼休憩後)", route: "#" },

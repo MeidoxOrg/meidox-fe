@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { FormField } from "@/components/ui/form-field"
 import { PageLayout } from "@/components/layout/page-layout"
 
-export default function BreakStart() {
+export default function NoKanbanStart() {
     const router = useRouter()
     const [formData, setFormData] = useState({
         productCode: "",
@@ -16,12 +16,12 @@ export default function BreakStart() {
         materialData: "",
     })
 
-    const handleStartBreakStart = () => {
-        router.push("/reason-for-stopping/break-progress")
+    const handleStartNoKanbanStart = () => {
+        router.push("/reason-for-stopping/no-kanban-progress")
     }
 
     return (
-        <PageLayout title="休憩開始">
+        <PageLayout title="かんばんなし開始">
             <div className="max-w-7xl mx-auto bg-sky-100 p-6 rounded-md min-h-[calc(100vh-160px)] flex items-center justify-center">
                 <div className="w-full max-w-lg">
                     <div className="flex flex-col space-y-6">
@@ -57,10 +57,10 @@ export default function BreakStart() {
 
                         <div className="pt-4">
                             <Button
-                                onClick={handleStartBreakStart}
+                                onClick={handleStartNoKanbanStart}
                                 className="bg-green-400 hover:bg-green-500 text-black py-3 w-full text-lg font-bold rounded-md"
                             >
-                                休憩開始
+                                かんばんなし開始
                             </Button>
                         </div>
                     </div>

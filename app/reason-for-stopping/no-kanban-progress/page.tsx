@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea"
 
 
 
-export default function BreakProgress() {
+export default function NoKanbanProgress() {
     const router = useRouter()
     const [formData, setFormData] = useState({
         productCode: "",
@@ -32,11 +32,11 @@ export default function BreakProgress() {
     })
 
 
-    const handleBreakProgressCompleted = () => router.push("/home")
+    const handleNoKanbanProgressCompleted = () => router.push("/home")
 
     return (
         <PageLayout
-            title="休憩中"
+            title="かんばんなし中"
             rightContent={<span className="bg-green-200 px-4 py-1 rounded-md">18:13:46</span>}
         >
             <div className="max-w-7xl mx-auto bg-sky-100 p-6 rounded-md">
@@ -64,7 +64,7 @@ export default function BreakProgress() {
                     {/* Middle column */}
                     <div className="flex flex-col space-y-6">
                         <div>
-                            <label className="block font-medium mb-2">休憩開始時間</label>
+                            <label className="block font-medium mb-2">かんばんなし開始時間</label>
                             <TimePicker
                                 date={formData.startDate}
                                 hour={formData.startHour}
@@ -77,7 +77,7 @@ export default function BreakProgress() {
                         </div>
 
                         <div>
-                            <label className="block font-medium mb-2">休憩終了時間</label>
+                            <label className="block font-medium mb-2">かんばんなし終了時間</label>
                             <TimePicker
                                 date={formData.endDate}
                                 hour={formData.endHour}
@@ -106,9 +106,9 @@ export default function BreakProgress() {
                         <TimerDisplay timerId="unmanned-timer" autoStart={true} />
                         <Button
                             className="bg-amber-900 text-white p-4 rounded-lg text-center text-xl font-bold w-full"
-                            onClick={handleBreakProgressCompleted}
+                            onClick={handleNoKanbanProgressCompleted}
                         >
-                            休憩終了
+                            かんばんなし終了
                         </Button>
                     </div>
                 </div>

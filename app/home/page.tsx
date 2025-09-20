@@ -29,7 +29,7 @@ export default function Dashboard() {
 
     const rightSideButtons = [
         { label: "休憩", route: "/reason-for-stopping/break-start" },
-        { label: "かんばんなし", route: "#" },
+        { label: "かんばんなし", route: "/reason-for-stopping/no-kanban-start" },
         { label: "ミーティング", route: "#" },
         { label: "材料・金型\n欠品", route: "#" },
         { label: "計画保全", route: "#" },

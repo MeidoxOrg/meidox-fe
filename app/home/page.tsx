@@ -69,7 +69,7 @@ export default function Dashboard() {
                             <p className="text-sm">機械番号が間違っていた場合は作業終了してください。</p>
                         </div>
 
-                        <Button className="h-20 w-28 text-sm font-bold rounded-lg bg-yellow-300 text-black">
+                        <Button className="h-20 w-28 text-sm font-bold rounded-lg bg-yellow-300 text-black" onClick={() => router.push("/production-start")}>
                             生産開始
                         </Button>
                     </div>

@@ -28,7 +28,7 @@ export default function Dashboard() {
     ]
 
     const rightSideButtons = [
-        { label: "休憩", route: "#" },
+        { label: "休憩", route: "/reason-for-stopping/break-start" },
         { label: "かんばんなし", route: "#" },
         { label: "ミーティング", route: "#" },
         { label: "材料・金型\n欠品", route: "#" },

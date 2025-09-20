@@ -165,9 +165,35 @@ export default function OperationEnd() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {/* Left column: Time pickers */}
-                    <div className="flex flex-col space-y-6">
+                    {/* Left column: */}
+                    <div className="flex flex-col space-y-6 mt-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                            {/* Field group 1 */}
+                            <div>日付：</div>
+                            <div>品番：</div>
 
+                            {/* Field group 2 */}
+                            <div>日時：</div>
+                            <div>ロット№：</div>
+
+                            {/* Field group 3 */}
+                            <div>名前: </div>
+                            <div>良品数：</div>
+
+                            {/* Field group 4 */}
+                            <div>状態: </div>
+                            <div>缶№：</div>
+
+                            {/* Field cuối */}
+                            <div className="sm:col-span-2">所要時間：</div>
+                        </div>
+
+                        {/* Button 編集 */}
+                        <div className="flex justify-end">
+                            <button className="bg-[#3d3427] text-white px-6 py-2 rounded-md">
+                                編集
+                            </button>
+                        </div>
                     </div>
 
                     {/* Right column: Number inputs */}

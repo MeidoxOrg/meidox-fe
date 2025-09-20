@@ -13,7 +13,7 @@ export default function Dashboard() {
         { label: "調整", color: "bg-blue-500 hover:bg-blue-600", route: "/adjustment-begins" },
         { label: "4S", color: "bg-blue-500 hover:bg-blue-600", route: "/4S" },
         { label: "給油", color: "bg-blue-500 hover:bg-blue-600", route: "/refuel" },
-        { label: "金型交換", color: "bg-blue-500 hover:bg-blue-600", route: "#" },
+        { label: "金型交換", color: "bg-blue-500 hover:bg-blue-600", route: "/mold-change" },
         { label: "生産準備\n暖機運転\n保全チェック", color: "bg-blue-500 hover:bg-blue-600", route: "#" },
         { label: "選別", color: "bg-blue-500 hover:bg-blue-600", route: "#" },
         { label: "その他停止", color: "bg-blue-500 hover:bg-blue-600", route: "#" },

@@ -10,32 +10,32 @@ export default function Dashboard() {
 
     const mainGridButtons = [
         { label: "段取り", color: "bg-blue-500 hover:bg-blue-600", route: "/setup-start" },
-        { label: "調整", color: "bg-blue-500 hover:bg-blue-600", route: "#" },
-        { label: "4S", color: "bg-blue-500 hover:bg-blue-600", route: "#" },
-        { label: "給油", color: "bg-blue-500 hover:bg-blue-600", route: "#" },
-        { label: "金型交換", color: "bg-blue-500 hover:bg-blue-600", route: "#" },
-        { label: "生産準備\n暖機運転\n保全チェック", color: "bg-blue-500 hover:bg-blue-600", route: "#" },
-        { label: "選別", color: "bg-blue-500 hover:bg-blue-600", route: "#" },
-        { label: "その他停止", color: "bg-blue-500 hover:bg-blue-600", route: "#" },
-        { label: "材料交換", color: "bg-blue-500 hover:bg-blue-600", route: "#" },
-        { label: "他機対応", color: "bg-blue-500 hover:bg-blue-600", route: "#" },
-        { label: "品質チェック", color: "bg-blue-500 hover:bg-blue-600", route: "#" },
+        { label: "調整", color: "bg-blue-500 hover:bg-blue-600", route: "/adjustment-begins" },
+        { label: "4S", color: "bg-blue-500 hover:bg-blue-600", route: "/4S" },
+        { label: "給油", color: "bg-blue-500 hover:bg-blue-600", route: "/refuel" },
+        { label: "金型交換", color: "bg-blue-500 hover:bg-blue-600", route: "/mold-change" },
+        { label: "生産準備\n暖機運転\n保全チェック", color: "bg-blue-500 hover:bg-blue-600", route: "/production-prep-check" },
+        { label: "選別", color: "bg-blue-500 hover:bg-blue-600", route: "/sorting" },
+        { label: "その他停止", color: "bg-blue-500 hover:bg-blue-600", route: "/other-stop" },
+        { label: "材料交換", color: "bg-blue-500 hover:bg-blue-600", route: "/material-change" },
+        { label: "他機対応", color: "bg-blue-500 hover:bg-blue-600", route: "/other-machine-support" },
+        { label: "品質チェック", color: "bg-blue-500 hover:bg-blue-600", route: "/quality-check" },
         { label: "", color: "invisible", route: "#" },
-        { label: "異常処置", color: "bg-red-500 hover:bg-red-600", route: "#" },
-        { label: "設備故障\n設備修理", color: "bg-red-500 hover:bg-red-600", route: "#" },
+        { label: "異常処置", color: "bg-red-500 hover:bg-red-600", route: "/abnormal-handling" },
+        { label: "設備故障\n設備修理", color: "bg-red-500 hover:bg-red-600", route: "/equipment-repair" },
         { label: "無人運転\n(昼休憩)", color: "bg-green-600 hover:bg-green-700", route: "/unmanned-lunch" },
-        { label: "無人運転\n(残業)", color: "bg-green-600 hover:bg-green-700", route: "#" },
+        { label: "無人運転\n(残業)", color: "bg-green-600 hover:bg-green-700", route: "/unmanned-operation-overtime" },
     ]
 
     const rightSideButtons = [
-        { label: "休憩", route: "#" },
-        { label: "かんばんなし", route: "#" },
-        { label: "ミーティング", route: "#" },
-        { label: "材料・金型\n欠品", route: "#" },
-        { label: "計画保全", route: "#" },
-        { label: "作業者なし", route: "#" },
-        { label: "4S\n(昼休憩後)", route: "#" },
-        { label: "その他\n計画停止", route: "#" },
+        { label: "休憩", route: "/reason-for-stopping/break-start" },
+        { label: "かんばんなし", route: "/reason-for-stopping/no-kanban-start" },
+        { label: "ミーティング", route: "/reason-for-stopping/meeting-start" },
+        { label: "材料・金型\n欠品", route: "/reason-for-stopping/material-mold-shortage" },
+        { label: "計画保全", route: "/reason-for-stopping/planned-maintenance" },
+        { label: "作業者なし", route: "/reason-for-stopping/no-operator" },
+        { label: "4S\n(昼休憩後)", route: "/reason-for-stopping/four-s-after-lunch-start" },
+        { label: "その他\n計画停止", route: "/reason-for-stopping/other-planned-stop-start" },
     ]
 
     const topButtons = [
@@ -69,15 +69,18 @@ export default function Dashboard() {
                             <p className="text-sm">機械番号が間違っていた場合は作業終了してください。</p>
                         </div>
 
-                        <Button className="h-20 w-28 text-sm font-bold rounded-lg bg-yellow-300 text-black">
+                        <Button className="h-20 w-28 text-sm font-bold rounded-lg bg-yellow-300 text-black" onClick={() => router.push("/production-start")}>
                             生産開始
                         </Button>
                     </div>
 
                     {/* Right small buttons */}
                     <div className="grid grid-cols-2 gap-3 w-full md:w-80">
-                        <Button className="h-20 text-sm font-bold rounded-lg bg-yellow-300 text-black">作業終了</Button>
-                        <Button className="h-20 text-sm font-bold rounded-lg bg-amber-800 text-white">編集画面へ</Button>
+                        <Button className="h-20 text-sm font-bold rounded-lg bg-yellow-300 text-black"
+                            onClick={() => router.push("/operation-end")}>作業終了</Button>
+
+                        <Button className="h-20 text-sm font-bold rounded-lg bg-amber-800 text-white"
+                            onClick={() => router.push("/data-correction")}>編集画面へ</Button>
                     </div>
                 </div>
 

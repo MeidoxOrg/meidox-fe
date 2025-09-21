@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
-import { evofastApiUrl } from "@/utils/api-links";
+import { evofastApiUrl, identityServerUrl } from "@/utils/api-links";
 
 type AiQuestion = {
   id: string;
@@ -65,6 +65,19 @@ export default function WorkStartPage() {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await fetch(`${identityServerUrl}/Auth/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch (err) {
+      console.error("Error logging out from Identity server:", err);
+    } finally {
+      signOut({ callbackUrl: "/identity/login" });
+    }
+  };
+
   useEffect(() => {
     if (session) {
       fetchData();
@@ -84,7 +97,7 @@ export default function WorkStartPage() {
               Refresh
             </button>
             <button
-              onClick={() => signOut({ callbackUrl: "/identity/login" })}
+              onClick={() => handleLogout()}
               className="rounded bg-red-600 px-3 py-1 text-sm font-medium text-white hover:bg-red-700"
             >
               Logout

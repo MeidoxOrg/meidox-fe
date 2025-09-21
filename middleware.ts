@@ -1,19 +1,26 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { getToken } from "next-auth/jwt";
 
-const protectedPaths = ["/ai-speaking"];
+const protectedPaths = ["/identity/home"];
+const authPages = ["/identity/login", "/identity/register", "/identity/enable-2fa"];
 
-export function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  if (!protectedPaths.some(p => pathname.startsWith(p))) {
-    return NextResponse.next();
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+  if (authPages.some(p => pathname.startsWith(p)) && token) {
+    return NextResponse.redirect(new URL("/identity/home", req.url));
   }
 
-  const kcCookie = req.cookies.get("keycloak.cookie");
-  if(!kcCookie){
-    return NextResponse.redirect(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/account/login?redirectUri=${process.env.NEXT_PUBLIC_URL}/ai-speaking`)
+  if (protectedPaths.some(p => pathname.startsWith(p)) && !token) {
+    return NextResponse.redirect(new URL("/identity/login", req.url));
   }
 
   return NextResponse.next();
 }
+
+export const config = {
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+};

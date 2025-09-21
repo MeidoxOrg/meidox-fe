@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSession, signIn, signOut } from "next-auth/react";
+import { evofastApiUrl } from "@/utils/api-links";
 
 type AiQuestion = {
   id: string;
@@ -41,35 +43,18 @@ export default function WorkStartPage() {
   const [data, setData] = useState<AiTest[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const gateway = "https://meidox-apigateway.solocode.click";
-  const baseUrl = "https://meidox.solocode.click";
+  const { data: session, status } = useSession();
 
   const fetchData = async () => {
     setLoading(true);
     setError(null);
 
     try {
-      const url = `${gateway.replace(/\/$/, "")}/evofast/AiTests`;
-      const res = await fetch(url, {
-        credentials: "include",
-        // if your gateway is proxied through /api you can use /api/evofast/AiTests instead
+      const res = await fetch(`${evofastApiUrl}/AiTests`, {
+        headers: {
+          Authorization: `Bearer ${(session as any).idToken}`, // hoặc accessToken
+        },
       });
-
-      // fetch can return opaqueredirect for cross-origin 302; handle generically
-      if (res.type === "opaqueredirect" || res.status === 0) {
-        setError(
-          "Redirect detected (probably not authenticated). Please login (open /account/login on gateway)."
-        );
-        setLoading(false);
-        return;
-      }
-
-      if (!res.ok) {
-        setError(`Server returned ${res.status} ${res.statusText}`);
-        setLoading(false);
-        return;
-      }
 
       const json = (await res.json()) as ApiResponse;
       setData(json.aiTests?.data ?? null);
@@ -81,9 +66,10 @@ export default function WorkStartPage() {
   };
 
   useEffect(() => {
-    fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (session) {
+      fetchData();
+    }
+  }, [session]);
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -97,30 +83,12 @@ export default function WorkStartPage() {
             >
               Refresh
             </button>
-            <a
-              href={`${gateway.replace(
-                /\/$/,
-                ""
-              )}/account/login?redirectUri=${baseUrl.replace(
-                /\/$/,
-                ""
-              )}/ai-speaking`}
-              className="rounded border px-3 py-1 text-sm hover:bg-gray-100"
-            >
-              Login
-            </a>
-            <a
-              href={`${gateway.replace(
-                /\/$/,
-                ""
-              )}/account/logout?redirectUri=${baseUrl.replace(
-                /\/$/,
-                ""
-              )}/ai-speaking`}
-              className="rounded border border-red-600 bg-red-600 px-3 py-1 text-sm text-white hover:bg-red-700"
+            <button
+              onClick={() => signOut({ callbackUrl: "/identity/login" })}
+              className="rounded bg-red-600 px-3 py-1 text-sm font-medium text-white hover:bg-red-700"
             >
               Logout
-            </a>
+            </button>
           </div>
         </header>
 
@@ -244,14 +212,7 @@ export default function WorkStartPage() {
           </div>
         )}
 
-        <footer className="mt-8 text-sm text-gray-500">
-          <div>
-            Gateway: {gateway || "NOT SET (set NEXT_PUBLIC_API_GATEWAY_URL)"}
-          </div>
-          <div className="mt-1">
-            Tip: set env NEXT_PUBLIC_API_GATEWAY_URL and restart dev server.
-          </div>
-        </footer>
+        <footer className="mt-8 text-sm text-gray-500"></footer>
       </div>
     </div>
   );

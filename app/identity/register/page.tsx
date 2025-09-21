@@ -2,8 +2,10 @@
 
 import { identityServerUrl } from "@/utils/api-links";
 import { useState } from "react";
+import { useRouter } from "next/navigation"; // <--- import useRouter
 
 export default function RegisterPage() {
+  const router = useRouter(); // <--- hook router
   const [form, setForm] = useState({
     username: "",
     email: "",
@@ -130,6 +132,18 @@ export default function RegisterPage() {
         {message && (
           <p className="text-center text-sm text-gray-700">{message}</p>
         )}
+
+        {/* Link back to login */}
+        <p className="mt-2 text-center text-sm text-gray-500">
+          Already have an account?{" "}
+          <button
+            type="button"
+            onClick={() => router.push("/identity/login")}
+            className="text-blue-600 hover:underline"
+          >
+            Login here
+          </button>
+        </p>
       </form>
     </div>
   );

@@ -94,6 +94,18 @@ export default function LoginPage() {
         {message && (
           <p className="text-center text-sm text-gray-700">{message}</p>
         )}
+
+        {/* Link register */}
+        <p className="mt-2 text-center text-sm text-gray-500">
+          Don't have an account?{" "}
+          <button
+            type="button"
+            onClick={() => router.push("/identity/register")}
+            className="text-blue-600 hover:underline"
+          >
+            Register here
+          </button>
+        </p>
       </form>
     </div>
   );

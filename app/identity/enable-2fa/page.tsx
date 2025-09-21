@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { QRCodeCanvas } from "qrcode.react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
@@ -9,34 +9,37 @@ import { identityServerUrl } from "@/utils/api-links";
 export default function Enable2FAPage() {
   const [loading, setLoading] = useState(false);
   const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
-  const [secret, setSecret] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [code, setCode] = useState("");
   const router = useRouter();
 
-  const handleEnable = async () => {
-    setLoading(true);
-    setMessage(null);
+  useEffect(() => {
+    const enable2FA = async () => {
+      setLoading(true);
+      setMessage(null);
+      try {
+        const res = await fetch(`${identityServerUrl}/Auth/enable-2fa`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+        });
 
-    try {
-      const res = await fetch(`${identityServerUrl}/Auth/enable-2fa`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-      });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data?.error || "Enable 2FA failed");
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "Enable 2FA failed");
+        setMessage(
+          "Two-Factor Authentication is enabled! Scan the QR code below with your authenticator app."
+        );
+        setQrCodeUrl(data.qrCodeUrl);
+      } catch (err: any) {
+        setMessage("❌ " + err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-      setMessage("✅ 2FA Enabled. Scan the QR Code below.");
-      setQrCodeUrl(data.qrCodeUrl);
-      setSecret(data.secret);
-    } catch (err: any) {
-      setMessage("❌ " + err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+    enable2FA();
+  }, []);
 
   const handleVerify = async () => {
     try {
@@ -50,49 +53,63 @@ export default function Enable2FAPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Verify 2FA failed");
 
-      await signIn("identity", {
-        callbackUrl: "/identity/home",
-      });
+      await signIn("identity", { callbackUrl: "/identity/home" });
     } catch (err: any) {
       setMessage("❌ " + err.message);
     }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50">
-      <div className="w-full max-w-md space-y-4 rounded-2xl bg-white p-6 shadow">
-        <h1 className="text-xl font-semibold text-gray-800">Enable 2FA</h1>
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-xl max-w-lg w-full p-8 space-y-6">
+        <h1 className="text-2xl font-bold text-center text-gray-800">
+          Set up Two-Factor Authentication
+        </h1>
 
-        <button
-          onClick={handleEnable}
-          disabled={loading}
-          className="w-full rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700 disabled:opacity-50"
-        >
-          {loading ? "Enabling..." : "Enable 2FA"}
-        </button>
+        <p className="text-gray-600 text-center text-sm">
+          Scan the QR code with your authenticator app to continue.
+        </p>
 
-        {message && (
-          <p className="text-center text-sm text-gray-700">{message}</p>
+        {loading && (
+          <p className="text-center text-gray-500">Loading QR code…</p>
+        )}
+
+        {message && !loading && (
+          <p className="text-center text-gray-700 text-sm">{message}</p>
         )}
 
         {qrCodeUrl && (
-          <div className="flex flex-col items-center gap-2 pt-4">
-            <QRCodeCanvas value={qrCodeUrl} size={180} />
+          <div className="flex flex-col items-center space-y-4">
+            <div className="p-4 bg-gray-50 border rounded-lg">
+              <QRCodeCanvas value={qrCodeUrl} size={200} />
+            </div>
+
             <input
               type="text"
-              placeholder="Enter 2FA code"
+              placeholder="Enter 6-digit code"
               value={code}
               onChange={(e) => setCode(e.target.value)}
-              className="w-full border px-3 py-2 rounded"
+              className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-center text-lg"
             />
+
             <button
               onClick={handleVerify}
-              className="w-full bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg transition"
             >
-              Verify 2FA
+              Verify
             </button>
           </div>
         )}
+
+        <p className="text-center text-sm text-gray-500">
+          <button
+            type="button"
+            onClick={() => router.push("/identity/login")}
+            className="text-blue-600 hover:underline"
+          >
+            Back to Login
+          </button>
+        </p>
       </div>
     </div>
   );

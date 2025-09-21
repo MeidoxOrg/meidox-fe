@@ -1,2 +1,2 @@
 export const identityServerUrl = "https://identity.solocode.click";
-export const evofastApiUrl = "http://localhost:8002";
+export const evofastApiUrl = "https://evofastapi.solocode.click";

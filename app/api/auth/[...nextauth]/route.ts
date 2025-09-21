@@ -46,7 +46,7 @@ async function refreshAccessToken(token: any) {
       accessToken: refreshedTokens.access_token,
       refreshToken: refreshedTokens.refresh_token ?? token.refreshToken,
       idToken: refreshedTokens.id_token ?? token.idToken,
-      accessTokenExpires: Date.now() + (refreshedTokens.expires_in ?? 0) * 1000,
+      accessTokenExpires: Date.now() + (refreshedTokens.expires_in ?? 3600) * 1000,
     };
   } catch (error) {
     console.error("Error refreshing access token", error);
@@ -65,7 +65,7 @@ export const authOptions: NextAuthOptions = {
           accessToken: account.access_token,
           refreshToken: account.refresh_token,
           idToken: account.id_token,
-          accessTokenExpires: Date.now() + (account.expires_at ?? 3600) * 1000,
+          accessTokenExpires: Date.now() + ((account as any).expires_in ?? 3600) * 1000,
         };
       }
 

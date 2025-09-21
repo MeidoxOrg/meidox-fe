@@ -52,7 +52,7 @@ export default function WorkStartPage() {
     try {
       const res = await fetch(`${evofastApiUrl}/AiTests`, {
         headers: {
-          Authorization: `Bearer ${(session as any).idToken}`, // hoặc accessToken
+          Authorization: `Bearer ${(session as any).accessToken}`, // hoặc accessToken
         },
       });
 

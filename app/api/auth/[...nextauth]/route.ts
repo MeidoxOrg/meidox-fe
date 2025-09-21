@@ -10,7 +10,7 @@ const IdentityServerProvider = {
   wellKnown: `${identityServerUrl}/.well-known/openid-configuration`,
   clientId: "spa-client",
   clientSecret: "",
-  authorization: { params: { scope: "openid profile email offline_access" } },
+  authorization: { params: { scope: "openid profile email offline_access evofast_api" } },
   profile: function (profile: any, tokens: TokenSet): Awaitable<User> {
     return {
       id: profile.sub,
@@ -68,11 +68,12 @@ export const authOptions: NextAuthOptions = {
           accessTokenExpires: Date.now() + ((account as any).expires_in ?? 3600) * 1000,
         };
       }
-
+      console.log('Date.now(): ', Date.now())
+      console.log('token.accessTokenExpires: ', token.accessTokenExpires)
       if (Date.now() < (token.accessTokenExpires as number)) {
         return token;
       }
-
+      console.log('refreshAccessToken')
       return await refreshAccessToken(token);
     },
 

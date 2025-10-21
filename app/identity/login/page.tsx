@@ -4,8 +4,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { identityServerUrl } from "@/utils/api-links";
 import { Eye, EyeOff } from "lucide-react";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export default function LoginPage() {
+  const { t } = useLanguage();
   const router = useRouter();
   const [form, setForm] = useState({
     username: "",
@@ -63,7 +65,7 @@ export default function LoginPage() {
         onSubmit={handleSubmit}
         className="w-full max-w-md space-y-4 rounded-2xl bg-white p-6 shadow"
       >
-        <h1 className="text-xl font-semibold text-gray-800 text-center">Login</h1>
+        <h1 className="text-xl font-semibold text-gray-800 text-center">{t('login')}</h1>
 
         <input
           type="text"
@@ -77,12 +79,12 @@ export default function LoginPage() {
 
         <div className="relative">
           <input
-            type={showPassword ? "text" : "password"} // 👈 bật/tắt type
+            type={showPassword ? "text" : "password"}
             name="password"
             placeholder="Password"
             value={form.password}
             onChange={handleChange}
-            className="w-full rounded-lg border px-3 py-2 pr-10" // thêm padding phải
+            className="w-full rounded-lg border px-3 py-2 pr-10"
             required
           />
           <button

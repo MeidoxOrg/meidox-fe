@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { identityServerUrl } from "@/utils/api-links";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -12,6 +13,8 @@ export default function LoginPage() {
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -25,7 +28,6 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     setMessage(null);
-
     try {
       const res = await fetch(`${identityServerUrl}/Auth/login`, {
         method: "POST",
@@ -61,7 +63,7 @@ export default function LoginPage() {
         onSubmit={handleSubmit}
         className="w-full max-w-md space-y-4 rounded-2xl bg-white p-6 shadow"
       >
-        <h1 className="text-xl font-semibold text-gray-800">Login</h1>
+        <h1 className="text-xl font-semibold text-gray-800 text-center">Login</h1>
 
         <input
           type="text"
@@ -73,15 +75,28 @@ export default function LoginPage() {
           required
         />
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={form.password}
-          onChange={handleChange}
-          className="w-full rounded-lg border px-3 py-2"
-          required
-        />
+        <div className="relative">
+          <input
+            type={showPassword ? "text" : "password"} // 👈 bật/tắt type
+            name="password"
+            placeholder="Password"
+            value={form.password}
+            onChange={handleChange}
+            className="w-full rounded-lg border px-3 py-2 pr-10" // thêm padding phải
+            required
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((prev) => !prev)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+          >
+            {showPassword ? (
+              <EyeOff className="size-5" />
+            ) : (
+              <Eye className="size-5" />
+            )}
+          </button>
+        </div>
 
         <button
           type="submit"

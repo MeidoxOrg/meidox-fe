@@ -6,5 +6,18 @@
   "please_enter_your_username": "ユーザー名を入力してください。",
   "please_enter_your_password": "パスワードを入力してください。",
   "dont_have_an_account": "アカウントをお持ちではありませんか？",
-  "register_here": "こちらで登録"
+  "register_here": "こちらで登録",
+  "register": "新規登録",
+  "registering": "登録中",
+  "register_success": "登録が完了しました！",
+  "register_failed": "登録に失敗しました。",
+  "already_have_an_account": "すでにアカウントをお持ちですか？",
+  "login_here": "こちらからログイン",
+  "email": "メールアドレス",
+  "confirm_password": "パスワード（確認）",
+  "please_enter_your_email": "メールアドレスを入力してください。",
+  "please_confirm_your_password": "確認用パスワードを入力してください。",
+  "passwords_do_not_match": "パスワードが一致しません。",
+  "enable_two_factor": "二要素認証を有効にする",
+  "password_format_invalid": "パスワードは8文字以上で、大文字・小文字・数字・記号（例：P@ssword123）を含める必要があります。"
 }

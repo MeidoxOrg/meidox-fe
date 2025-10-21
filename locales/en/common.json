@@ -6,5 +6,18 @@
   "please_enter_your_username": "Please enter your username.",
   "please_enter_your_password": "Please enter your password.",
   "dont_have_an_account": "Don’t have an account?",
-  "register_here": "Register here"
+  "register_here": "Register here",
+  "register": "Register",
+  "registering": "Registering",
+  "register_success": "Register success!",
+  "register_failed": "Register failed.",
+  "already_have_an_account": "Already have an account?",
+  "login_here": "Login here",
+  "confirm_password": "Confirm password",
+  "please_enter_your_email": "Please enter your email.",
+  "please_confirm_your_password": "Please confirm your password.",
+  "passwords_do_not_match": "Passwords do not match.",
+  "enable_two_factor": "Enable Two-Factor Authentication",
+  "email": "Email",
+  "password_format_invalid": "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character (e.g. P@ssword123)."
 }

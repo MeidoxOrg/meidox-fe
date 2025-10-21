@@ -65,11 +65,11 @@ export default function LoginPage() {
           <FormField
             control={form.control}
             name="username"
-            rules={{ required: "Please enter your username." }}
+            rules={{ required: `${t("please_enter_your_username")}` }}
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input placeholder="Username" {...field} />
+                  <Input placeholder={t("username")} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -80,14 +80,14 @@ export default function LoginPage() {
           <FormField
             control={form.control}
             name="password"
-            rules={{ required: "Please enter your password." }}
+            rules={{ required: `${t("please_enter_your_password")}` }}
             render={({ field }) => (
               <FormItem>
                 <FormControl>
                   <div className="relative">
                     <Input
                       type={showPassword ? "text" : "password"}
-                      placeholder="Password"
+                      placeholder={t("password")}
                       {...field}
                       className="pr-10"
                     />
@@ -110,17 +110,17 @@ export default function LoginPage() {
           />
 
           <Button type="submit" className="w-full">
-            {form.formState.isSubmitting ? "Logging in..." : "Login"}
+            {form.formState.isSubmitting ? `${t("logging_in")}...` : `${t("login")}`}
           </Button>
 
           <p className="mt-2 text-center text-sm text-gray-500">
-            Don’t have an account?{" "}
+            {t("dont_have_an_account")}
             <button
               type="button"
               onClick={() => router.push("/identity/register")}
               className="text-blue-600 hover:underline"
             >
-              Register here
+              {t("register_here")}
             </button>
           </p>
         </form>

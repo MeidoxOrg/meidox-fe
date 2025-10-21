@@ -1,3 +1,10 @@
 {
-  "login": "Login"
+  "login": "Login",
+  "username": "Username",
+  "password": "Password",
+  "logging_in": "Logging in...",
+  "please_enter_your_username": "Please enter your username.",
+  "please_enter_your_password": "Please enter your password.",
+  "dont_have_an_account": "Don’t have an account?",
+  "register_here": "Register here"
 }

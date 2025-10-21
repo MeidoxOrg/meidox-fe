@@ -1,3 +1,10 @@
 {
-  "login": "ログイン"
+  "login": "ログイン",
+  "username": "ユーザー名",
+  "password": "パスワード",
+  "logging_in": "ログイン中...",
+  "please_enter_your_username": "ユーザー名を入力してください。",
+  "please_enter_your_password": "パスワードを入力してください。",
+  "dont_have_an_account": "アカウントをお持ちではありませんか？",
+  "register_here": "こちらで登録"
 }

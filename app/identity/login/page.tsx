@@ -5,12 +5,10 @@ import { useForm } from "react-hook-form";
 import { identityServerUrl } from "@/utils/api-links";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
 import {
   Form,
   FormField,
   FormItem,
-  FormLabel,
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
@@ -21,7 +19,6 @@ import { useLanguage } from "@/hooks/useLanguage";
 export default function LoginPage() {
   const { t } = useLanguage();
   const router = useRouter();
-  const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm({
@@ -44,28 +41,12 @@ export default function LoginPage() {
 
       if (!res.ok) {
         if (data?.error === "two_factor_required") {
-          toast({
-            title: "Two-Factor Required",
-            description: "Please complete two-factor authentication.",
-            variant: "destructive",
-          });
           return router.push("/enable-2fa");
         }
         throw new Error(data?.error || "Login failed");
       }
-
-      toast({
-        title: "Login success 🎉",
-        description: "Welcome back!",
-      });
-
       router.push("/");
     } catch (err: any) {
-      toast({
-        title: "Login failed",
-        description: err.message,
-        variant: "destructive",
-      });
     }
   };
 

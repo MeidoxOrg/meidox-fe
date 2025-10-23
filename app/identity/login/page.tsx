@@ -15,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/hooks/useLanguage";
+import { signIn } from "next-auth/react";
 
 export default function LoginPage() {
   const { t } = useLanguage();
@@ -40,11 +41,9 @@ export default function LoginPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        if (data?.error === "two_factor_required") {
-          return router.push("/enable-2fa");
-        }
         throw new Error(data?.error || "Login failed");
       }
+      await signIn("identity", { callbackUrl: "/identity/home" });
       router.push("/");
     } catch (err: any) {
     }

@@ -1,5 +1,10 @@
 import { identityServerUrl } from "@/utils/api-links";
-import NextAuth, { Awaitable, NextAuthOptions, TokenSet, User } from "next-auth";
+import NextAuth, {
+  Awaitable,
+  NextAuthOptions,
+  TokenSet,
+  User,
+} from "next-auth";
 import { OAuthConfig } from "next-auth/providers/oauth";
 
 const IdentityServerProvider = {
@@ -10,7 +15,9 @@ const IdentityServerProvider = {
   wellKnown: `${identityServerUrl}/.well-known/openid-configuration`,
   clientId: "spa-client",
   clientSecret: "",
-  authorization: { params: { scope: "openid profile email offline_access evofast_api" } },
+  authorization: {
+    params: { scope: "openid profile email offline_access meidox_api" },
+  },
   profile: function (profile: any, tokens: TokenSet): Awaitable<User> {
     return {
       id: profile.sub,
@@ -39,7 +46,7 @@ async function refreshAccessToken(token: any) {
 
     const refreshedTokens = await res.json();
 
-    console.log('refreshedTokens: ', refreshedTokens)
+    console.log("refreshedTokens: ", refreshedTokens);
 
     if (!res.ok) throw refreshedTokens;
 
@@ -48,7 +55,8 @@ async function refreshAccessToken(token: any) {
       accessToken: refreshedTokens.access_token,
       refreshToken: refreshedTokens.refresh_token ?? token.refreshToken,
       idToken: refreshedTokens.id_token ?? token.idToken,
-      accessTokenExpires: Date.now() + (refreshedTokens.expires_in ?? 3600) * 1000,
+      accessTokenExpires:
+        Date.now() + (refreshedTokens.expires_in ?? 3600) * 1000,
     };
   } catch (error) {
     console.error("Error refreshing access token", error);
@@ -62,21 +70,22 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, account }) {
       if (account) {
-        console.log('account jwt: ', account)
+        console.log("account jwt: ", account);
         return {
           ...token,
           accessToken: account.access_token,
           refreshToken: account.refresh_token,
           idToken: account.id_token,
-          accessTokenExpires: Date.now() + ((account as any).expires_in ?? 3600) * 1000,
+          accessTokenExpires:
+            Date.now() + ((account as any).expires_in ?? 3600) * 1000,
         };
       }
-      console.log('Date.now(): ', Date.now())
-      console.log('token.accessTokenExpires: ', token.accessTokenExpires)
+      console.log("Date.now(): ", Date.now());
+      console.log("token.accessTokenExpires: ", token.accessTokenExpires);
       if (Date.now() < (token.accessTokenExpires as number)) {
         return token;
       }
-      console.log('refreshAccessToken')
+      console.log("refreshAccessToken");
       return await refreshAccessToken(token);
     },
 

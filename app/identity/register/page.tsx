@@ -27,10 +27,10 @@ export default function RegisterPage() {
     mode: "onChange",
     defaultValues: {
       username: "",
-      email: "",
+      // email: "",
       password: "",
       confirmPassword: "",
-      enableTwoFactor: false,
+      // enableTwoFactor: false,
     },
   });
 
@@ -102,7 +102,7 @@ export default function RegisterPage() {
           />
 
           {/* Email */}
-          <FormField
+          {/* <FormField
             control={form.control}
             name="email"
             rules={{ required: t("please_enter_your_email") }}
@@ -114,7 +114,7 @@ export default function RegisterPage() {
                 <FormMessage />
               </FormItem>
             )}
-          />
+          /> */}
 
           {/* Password */}
           <FormField
@@ -201,7 +201,7 @@ export default function RegisterPage() {
           />
 
           {/* Enable 2FA */}
-          <FormField
+          {/* <FormField
             control={form.control}
             name="enableTwoFactor"
             render={({ field }) => (
@@ -216,7 +216,7 @@ export default function RegisterPage() {
                 </label>
               </FormItem>
             )}
-          />
+          /> */}
 
           <Button type="submit" className="w-full">
             {form.formState.isSubmitting

@@ -27,7 +27,7 @@ export default function RegisterPage() {
     mode: "onChange",
     defaultValues: {
       username: "",
-      // email: "",
+      name: "",
       password: "",
       confirmPassword: "",
       // enableTwoFactor: false,
@@ -46,7 +46,7 @@ export default function RegisterPage() {
     setMessage(null);
 
     if (values.password !== values.confirmPassword) {
-      setMessage("❌ " + t("passwords_do_not_match"));
+      setMessage(t("passwords_do_not_match"));
       return;
     }
 
@@ -57,21 +57,19 @@ export default function RegisterPage() {
         credentials: "include",
         body: JSON.stringify({
           username: values.username,
-          email: values.email,
+          name: values.name,
           password: values.password,
-          enableTwoFactor: values.enableTwoFactor,
         }),
       });
 
       const data = await res.json();
 
-      if (!res.ok) throw new Error(data?.message || "Register failed");
+      if (!res.ok) throw new Error(data?.message || t("register_failed"));
 
-      setMessage("✅ " + t("register_success"));
-      console.log("Register response:", data);
+      setMessage(t("register_success"));
       setTimeout(() => router.push("/identity/login"), 1500);
     } catch (err: any) {
-      setMessage("❌ " + (err.message || t("register_failed")));
+      setMessage(err.message || t("register_failed"));
     }
   };
 
@@ -101,20 +99,19 @@ export default function RegisterPage() {
             )}
           />
 
-          {/* Email */}
-          {/* <FormField
+          <FormField
             control={form.control}
-            name="email"
-            rules={{ required: t("please_enter_your_email") }}
+            name="name"
+            rules={{ required: t("please_enter_your_name") }}
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input type="email" placeholder={t("email")} {...field} />
+                  <Input placeholder={t("name")} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
-          /> */}
+          />
 
           {/* Password */}
           <FormField

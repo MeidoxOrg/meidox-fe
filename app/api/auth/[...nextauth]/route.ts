@@ -80,6 +80,10 @@ export const authOptions: NextAuthOptions = {
           accessTokenExpires:
             Date.now() + ((account as any).expires_in ?? 3600) * 1000,
           sub: profile.sub,
+          email: "thanhtrong@gmail.com",
+          name: "",
+          picture: "",
+          username: "",
         };
       }
       console.log("Date.now(): ", Date.now());
@@ -91,12 +95,16 @@ export const authOptions: NextAuthOptions = {
       return await refreshAccessToken(token);
     },
 
-    async session({ session, token }) {
+    async session({ session, token, user }) {
+      console.log("user ", user);
       (session as any).accessToken = token.accessToken;
       (session as any).refreshToken = token.refreshToken;
       (session as any).idToken = token.idToken;
       (session as any).error = token.error;
-      (session as any).user.id = token.sub;
+      // (session as any).user.id = token.sub;
+      user.id = token?.sub ?? "";
+      // user.username = token.username;
+      user.name = token.name;
       return session;
     },
   },

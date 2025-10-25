@@ -21,9 +21,9 @@ const IdentityServerProvider = {
   profile: function (profile: any, tokens: TokenSet): Awaitable<User> {
     return {
       id: profile.sub,
-      name: profile.name ?? profile.preferred_username ?? profile.email,
+      name: profile.name,
       email: profile.email,
-      image: profile.picture ?? null,
+      image: profile.picture,
     };
   },
 } satisfies OAuthConfig<any>;
@@ -54,7 +54,6 @@ async function refreshAccessToken(token: any) {
       ...token,
       accessToken: refreshedTokens.access_token,
       refreshToken: refreshedTokens.refresh_token ?? token.refreshToken,
-      idToken: refreshedTokens.id_token ?? token.idToken,
       accessTokenExpires:
         Date.now() + (refreshedTokens.expires_in ?? 3600) * 1000,
     };
@@ -68,21 +67,18 @@ export const authOptions: NextAuthOptions = {
   providers: [IdentityServerProvider],
   session: { strategy: "jwt" },
   callbacks: {
-    async jwt({ token, account, profile, user }) {
-      console.log("user jwt: ", user);
+    async jwt({ token, account, profile }) {
       if (account && profile) {
         console.log("account jwt: ", account);
         console.log("profile jwt: ", profile);
-        console.log("token jwt: ", token);
         return {
           ...token,
           accessToken: account.access_token,
           refreshToken: account.refresh_token,
-          idToken: account.id_token,
           accessTokenExpires:
             Date.now() + ((account as any).expires_in ?? 3600) * 1000,
           sub: profile.sub,
-          username: "tiger",
+          username: profile.username,
         };
       }
       console.log("Date.now(): ", Date.now());
@@ -96,8 +92,6 @@ export const authOptions: NextAuthOptions = {
 
     async session({ session, token }) {
       (session as any).accessToken = token.accessToken;
-      (session as any).refreshToken = token.refreshToken;
-      (session as any).idToken = token.idToken;
       (session as any).error = token.error;
       (session as any).user.id = token.sub;
       (session as any).user.username = token.username;

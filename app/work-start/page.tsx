@@ -81,7 +81,6 @@ export default function WorkStartPage() {
     useEffect(() => {
         getWorkShitfData();
         getMachinesData();
-        console.log(session);
     }, [getWorkShitfData, getMachinesData])
 
     return (
@@ -267,14 +266,16 @@ export default function WorkStartPage() {
                                 >
                                     作業開始
                                 </Button>
-                                {/* <Button
-                                        type="button"
-                                        variant="outline"
-                                        onClick={() => router.push("/#")}
-                                        className="px-6 py-6 border-2 border-amber-800 text-amber-800 hover:bg-amber-50"
-                                    >
-                                        社員登録アプリへ
-                                    </Button> */}
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={() => {
+                                        console.log('==> session: ', session);
+                                    }}
+                                    className="px-6 py-6 border-2 border-amber-800 text-amber-800 hover:bg-amber-50"
+                                >
+                                    社員登録アプリへ
+                                </Button>
                             </div>
                         </div>
                     </form>

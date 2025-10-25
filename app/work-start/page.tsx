@@ -16,10 +16,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Home } from "lucide-react"
 import workShiftServices from "@/services/work-shift"
 import { useCallback, useEffect, useState } from "react"
-import { WorkShift, WorkShiftResponse } from "@/model/work-shift"
+import { WorkShift } from "@/model/work-shift"
 import machinesServices from "@/services/machines"
 import { Machine } from "@/model/machines"
 import { useSession } from "next-auth/react"
+import workSessionServices from "@/services/work-session"
 
 function WorkStartHeader() {
     const router = useRouter()
@@ -73,9 +74,22 @@ export default function WorkStartPage() {
         });;
     }, [])
 
-    const onSubmit = (values: any) => {
-        console.log("Work start data:", values)
-        //router.push("/home")
+    const onSubmit = async (values: any) => {
+        try {
+            const response = await workSessionServices.createWorkSession({
+                workDate: values.date,
+                workTime: `${values.hour}:${values.minute}`,
+                employeeId: values.employeeId,
+                employeeName: values.employeeName,
+                machineId: values.machineNumber,
+                workShiftId: values.shift
+            })
+            if (response.id != null) {
+                router.push("/home")
+            }
+        } catch (error) {
+
+        }
     }
 
     useEffect(() => {

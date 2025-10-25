@@ -19,5 +19,7 @@
   "please_confirm_your_password": "確認用パスワードを入力してください。",
   "passwords_do_not_match": "パスワードが一致しません。",
   "enable_two_factor": "二要素認証を有効にする",
-  "password_format_invalid": "パスワードは8文字以上で、大文字・小文字・数字・記号（例：P@ssword123）を含める必要があります。"
+  "password_format_invalid": "パスワードは8文字以上で、大文字・小文字・数字・記号（例：P@ssword123）を含める必要があります。",
+  "name": "名前",
+  "please_enter_your_name": "お名前を入力してください。"
 }

@@ -19,5 +19,7 @@
   "passwords_do_not_match": "Passwords do not match.",
   "enable_two_factor": "Enable Two-Factor Authentication",
   "email": "Email",
-  "password_format_invalid": "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character (e.g. P@ssword123)."
+  "password_format_invalid": "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character (e.g. P@ssword123).",
+  "name": "Name",
+  "please_enter_your_name": "Please enter your name."
 }

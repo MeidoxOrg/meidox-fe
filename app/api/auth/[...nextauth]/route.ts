@@ -79,6 +79,7 @@ export const authOptions: NextAuthOptions = {
             Date.now() + ((account as any).expires_in ?? 3600) * 1000,
           sub: profile.sub,
           username: profile.username,
+          name: profile.name,
         };
       }
       console.log("Date.now(): ", Date.now());
@@ -95,6 +96,7 @@ export const authOptions: NextAuthOptions = {
       (session as any).error = token.error;
       (session as any).user.id = token.sub;
       (session as any).user.username = token.username;
+      (session as any).user.name = token.name;
       return session;
     },
   },

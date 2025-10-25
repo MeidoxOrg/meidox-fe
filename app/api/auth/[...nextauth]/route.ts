@@ -80,6 +80,7 @@ export const authOptions: NextAuthOptions = {
           accessTokenExpires:
             Date.now() + ((account as any).expires_in ?? 3600) * 1000,
           sub: profile.sub,
+          username: "tiger",
         };
       }
       console.log("Date.now(): ", Date.now());
@@ -98,6 +99,7 @@ export const authOptions: NextAuthOptions = {
       (session as any).idToken = token.idToken;
       (session as any).error = token.error;
       (session as any).user.id = token.sub;
+      (user as any).username = token.username;
       return session;
     },
   },

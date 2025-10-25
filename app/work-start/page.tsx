@@ -14,6 +14,9 @@ import {
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Home } from "lucide-react"
+import workShiftServices from "@/services/work-shift"
+import { useCallback, useEffect, useState } from "react"
+import { WorkShift, WorkShiftResponse } from "@/model/work-shift"
 
 function WorkStartHeader() {
     const router = useRouter()
@@ -33,23 +36,38 @@ function WorkStartHeader() {
 
 export default function WorkStartPage() {
     const router = useRouter()
+    const [workShiftData, setWorkShiftData] = useState<WorkShift[]>([]);
+
     const form = useForm({
         defaultValues: {
-            date: "2025-08-28",
-            hour: "17",
-            minute: "21",
-            shift: "黄",
-            machineNumber: "CHT11",
-            employeeId: "7619",
-            employeeName: "酒井 利彰",
+            date: "",
+            hour: "",
+            minute: "",
+            shift: "",
+            machineNumber: "",
+            employeeId: "",
+            employeeName: "",
         },
-        mode: "onTouched", // show errors after blur
+        mode: "onTouched",
     })
 
+    const getWorkShitfData = useCallback(async () => {
+        await workShiftServices.getWorkShiftData().then((res) => {
+            setWorkShiftData(res.workShifts.data);
+        }).catch((error) => {
+            console.log(error);
+        });;
+    }, [])
+
     const onSubmit = (values: any) => {
-        console.log("✅ Work start data:", values)
-        router.push("/home")
+        console.log("Work start data:", values)
+        console.log(workShiftData);
+        //router.push("/home")
     }
+
+    useEffect(() => {
+        getWorkShitfData();
+    }, [getWorkShitfData])
 
     return (
         <div className="min-h-screen flex flex-col bg-gray-100">
@@ -145,10 +163,13 @@ export default function WorkStartPage() {
                                                 <SelectTrigger className="w-full border-2 border-amber-800 bg-white">
                                                     <SelectValue />
                                                 </SelectTrigger>
+
                                                 <SelectContent className="bg-amber-800 text-white">
-                                                    <SelectItem value="黄">黄</SelectItem>
-                                                    <SelectItem value="青">青</SelectItem>
-                                                    <SelectItem value="赤">赤</SelectItem>
+                                                    {workShiftData.length > 0 && workShiftData.map((item) =>
+                                                        <SelectItem
+                                                            key={item.id}
+                                                            value={item.id}>{item.name}</SelectItem>
+                                                    )}
                                                 </SelectContent>
                                             </Select>
                                         </FormControl>

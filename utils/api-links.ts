@@ -1,6 +1,13 @@
 export const identityServerUrl = "https://meidox-identityserver.solocode.click";
-export const evofastApiUrl = "https://evofastapi.solocode.click";
+export const meidoxApiUrl = "https://meidoxapi.solocode.click";
 
-const apiLinks = {};
+const apiLinks = {
+  workShift: {
+    getWorkShift: `${meidoxApiUrl}/WorkShift`,
+  },
+  machines: {
+    getMachines: `${meidoxApiUrl}/Machine`,
+  },
+};
 
 export default apiLinks;

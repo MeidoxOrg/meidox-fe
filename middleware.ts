@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
-const protectedPaths = ["/home", "/setup-start"];
+const protectedPaths = ["/home", "/work-start"];
 const authPages = ["/login", "/register"];
 
 export async function middleware(req: NextRequest) {
@@ -11,11 +11,11 @@ export async function middleware(req: NextRequest) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
   if (pathname === "/") {
-    return NextResponse.redirect(new URL("/setup-start", req.url));
+    return NextResponse.redirect(new URL("/work-start", req.url));
   }
 
   if (authPages.some((p) => pathname.startsWith(p)) && token) {
-    return NextResponse.redirect(new URL("/home", req.url));
+    return NextResponse.redirect(new URL("/work-start", req.url));
   }
 
   if (protectedPaths.some((p) => pathname.startsWith(p)) && !token) {

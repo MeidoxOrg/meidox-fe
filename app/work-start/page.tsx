@@ -39,7 +39,7 @@ function WorkStartHeader() {
 
 export default function WorkStartPage() {
     const router = useRouter()
-    const { data: session } = useSession();
+    const { data: session, status } = useSession();
 
     const [workShiftData, setWorkShiftData] = useState<WorkShift[]>([]);
     const [machineData, setMachinesData] = useState<Machine[]>([]);
@@ -51,8 +51,8 @@ export default function WorkStartPage() {
             minute: "",
             shift: "",
             machineNumber: "",
-            employeeId: (session as any)?.id,
-            employeeName: session?.user?.name ?? "",
+            employeeId: "",
+            employeeName: "",
         },
         mode: "onTouched",
     })
@@ -82,6 +82,13 @@ export default function WorkStartPage() {
         getWorkShitfData();
         getMachinesData();
     }, [getWorkShitfData, getMachinesData])
+
+    useEffect(() => {
+        if (status === "authenticated" && session) {
+            form.setValue("employeeId", (session as any).id || "");
+            form.setValue("employeeName", session.user?.name || "");
+        }
+    }, [session, status, form]);
 
     return (
         <div className="min-h-screen flex flex-col bg-gray-100">

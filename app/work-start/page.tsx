@@ -19,6 +19,7 @@ import { useCallback, useEffect, useState } from "react"
 import { WorkShift, WorkShiftResponse } from "@/model/work-shift"
 import machinesServices from "@/services/machines"
 import { Machine } from "@/model/machines"
+import { useSession } from "next-auth/react"
 
 function WorkStartHeader() {
     const router = useRouter()
@@ -38,6 +39,8 @@ function WorkStartHeader() {
 
 export default function WorkStartPage() {
     const router = useRouter()
+    const { data: session } = useSession();
+
     const [workShiftData, setWorkShiftData] = useState<WorkShift[]>([]);
     const [machineData, setMachinesData] = useState<Machine[]>([]);
 
@@ -48,8 +51,8 @@ export default function WorkStartPage() {
             minute: "",
             shift: "",
             machineNumber: "",
-            employeeId: "",
-            employeeName: "",
+            employeeId: (session as any)?.id,
+            employeeName: session?.user?.name ?? "",
         },
         mode: "onTouched",
     })
@@ -72,7 +75,6 @@ export default function WorkStartPage() {
 
     const onSubmit = (values: any) => {
         console.log("Work start data:", values)
-        console.log(workShiftData);
         //router.push("/home")
     }
 
@@ -227,6 +229,7 @@ export default function WorkStartPage() {
                                         <FormControl>
                                             <Input
                                                 {...field}
+                                                disabled
                                                 className="border-2 border-amber-800 rounded-md px-3 py-2 w-full bg-white"
                                             />
                                         </FormControl>

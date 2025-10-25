@@ -8,6 +8,9 @@ const apiLinks = {
   machines: {
     getMachines: `${meidoxApiUrl}/Machine`,
   },
+  worksession: {
+    create: `${meidoxApiUrl}/WorkSession`,
+  },
 };
 
 export default apiLinks;

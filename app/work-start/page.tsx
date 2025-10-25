@@ -85,7 +85,7 @@ export default function WorkStartPage() {
 
     useEffect(() => {
         if (status === "authenticated" && session) {
-            form.setValue("employeeId", (session as any).id || "");
+            form.setValue("employeeId", (session as any)?.user?.id || "");
             form.setValue("employeeName", session.user?.name || "");
         }
     }, [session, status, form]);

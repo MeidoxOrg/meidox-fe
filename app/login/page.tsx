@@ -43,7 +43,7 @@ export default function LoginPage() {
       if (!res.ok) {
         throw new Error(data?.error || "Login failed");
       }
-      await signIn("identity", { callbackUrl: "/identity/home" });
+      await signIn("identity", { callbackUrl: "/home" });
       router.push("/");
     } catch (err: any) {
     }

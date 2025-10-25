@@ -68,9 +68,10 @@ export const authOptions: NextAuthOptions = {
   providers: [IdentityServerProvider],
   session: { strategy: "jwt" },
   callbacks: {
-    async jwt({ token, account }) {
-      if (account) {
+    async jwt({ token, account, profile }) {
+      if (account && profile) {
         console.log("account jwt: ", account);
+        console.log("profile jwt: ", profile);
         return {
           ...token,
           accessToken: account.access_token,
@@ -78,6 +79,7 @@ export const authOptions: NextAuthOptions = {
           idToken: account.id_token,
           accessTokenExpires:
             Date.now() + ((account as any).expires_in ?? 3600) * 1000,
+          sub: profile.sub,
         };
       }
       console.log("Date.now(): ", Date.now());
@@ -94,6 +96,7 @@ export const authOptions: NextAuthOptions = {
       (session as any).refreshToken = token.refreshToken;
       (session as any).idToken = token.idToken;
       (session as any).error = token.error;
+      (session as any).user.id = token.sub;
       return session;
     },
   },

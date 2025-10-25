@@ -81,6 +81,7 @@ export default function WorkStartPage() {
     useEffect(() => {
         getWorkShitfData();
         getMachinesData();
+        console.log(session);
     }, [getWorkShitfData, getMachinesData])
 
     return (

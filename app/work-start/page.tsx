@@ -17,6 +17,8 @@ import { Home } from "lucide-react"
 import workShiftServices from "@/services/work-shift"
 import { useCallback, useEffect, useState } from "react"
 import { WorkShift, WorkShiftResponse } from "@/model/work-shift"
+import machinesServices from "@/services/machines"
+import { Machine } from "@/model/machines"
 
 function WorkStartHeader() {
     const router = useRouter()
@@ -37,6 +39,7 @@ function WorkStartHeader() {
 export default function WorkStartPage() {
     const router = useRouter()
     const [workShiftData, setWorkShiftData] = useState<WorkShift[]>([]);
+    const [machineData, setMachinesData] = useState<Machine[]>([]);
 
     const form = useForm({
         defaultValues: {
@@ -59,6 +62,14 @@ export default function WorkStartPage() {
         });;
     }, [])
 
+    const getMachinesData = useCallback(async () => {
+        await machinesServices.getMachinesData().then((res) => {
+            setMachinesData(res.machines.data);
+        }).catch((error) => {
+            console.log(error);
+        });;
+    }, [])
+
     const onSubmit = (values: any) => {
         console.log("Work start data:", values)
         console.log(workShiftData);
@@ -67,7 +78,8 @@ export default function WorkStartPage() {
 
     useEffect(() => {
         getWorkShitfData();
-    }, [getWorkShitfData])
+        getMachinesData();
+    }, [getWorkShitfData, getMachinesData])
 
     return (
         <div className="min-h-screen flex flex-col bg-gray-100">
@@ -192,9 +204,10 @@ export default function WorkStartPage() {
                                                     <SelectValue />
                                                 </SelectTrigger>
                                                 <SelectContent className="bg-amber-800 text-white">
-                                                    <SelectItem value="CHT11">CHT11</SelectItem>
-                                                    <SelectItem value="CHT12">CHT12</SelectItem>
-                                                    <SelectItem value="CHT13">CHT13</SelectItem>
+                                                    {machineData.length > 0 && machineData.map((item) =>
+                                                        <SelectItem key={item.id} value={item.id}>{item.machineNumber}</SelectItem>
+
+                                                    )}
                                                 </SelectContent>
                                             </Select>
                                         </FormControl>

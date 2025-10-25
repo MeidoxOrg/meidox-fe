@@ -5,6 +5,9 @@ const apiLinks = {
   workShift: {
     getWorkShift: `${meidoxApiUrl}/WorkShift`,
   },
+  machines: {
+    getMachines: `${meidoxApiUrl}/Machine`,
+  },
 };
 
 export default apiLinks;

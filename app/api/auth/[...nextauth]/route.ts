@@ -68,10 +68,12 @@ export const authOptions: NextAuthOptions = {
   providers: [IdentityServerProvider],
   session: { strategy: "jwt" },
   callbacks: {
-    async jwt({ token, account, profile }) {
+    async jwt({ token, account, profile, user }) {
+      console.log("user jwt: ", user);
       if (account && profile) {
         console.log("account jwt: ", account);
         console.log("profile jwt: ", profile);
+        console.log("token jwt: ", token);
         return {
           ...token,
           accessToken: account.access_token,
@@ -92,14 +94,13 @@ export const authOptions: NextAuthOptions = {
       return await refreshAccessToken(token);
     },
 
-    async session({ session, token, user }) {
-      console.log("user ", user);
+    async session({ session, token }) {
       (session as any).accessToken = token.accessToken;
       (session as any).refreshToken = token.refreshToken;
       (session as any).idToken = token.idToken;
       (session as any).error = token.error;
       (session as any).user.id = token.sub;
-      (user as any).username = token.username;
+      (session as any).user.username = token.username;
       return session;
     },
   },

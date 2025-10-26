@@ -10,7 +10,7 @@ export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-
+  console.log(`==> MIDDLEWARE_ERROR__${token?.error}`);
   if (token?.error.error === "invalid_grant") {
     const csrfTokenValue =
       req.cookies.get('next-auth.csrf-token')?.value?.split('|')[0] ??

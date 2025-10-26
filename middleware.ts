@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
-import { withAuth } from "next-auth/middleware";
+import { REFRESH_TOKEN_ERROR } from "./utils/constants";
 
 const protectedPaths = ["/home", "/work-start"];
 const authPages = ["/login", "/register"];
@@ -10,8 +10,7 @@ export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-  console.log(`==> MIDDLEWARE_ERROR__${token?.error}`);
-  if (token?.error.error === "invalid_grant") {
+  if (token?.error === REFRESH_TOKEN_ERROR) {
     const csrfTokenValue =
       req.cookies.get('next-auth.csrf-token')?.value?.split('|')[0] ??
       req.cookies.get('__Host-next-auth.csrf-token')?.value?.split('|')[0] ?? '';

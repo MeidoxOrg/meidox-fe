@@ -1,4 +1,5 @@
 import { identityServerUrl } from "@/utils/api-links";
+import { REFRESH_TOKEN_ERROR } from "@/utils/constants";
 import NextAuth, {
   Awaitable,
   NextAuthOptions,
@@ -59,7 +60,7 @@ async function refreshAccessToken(token: any) {
     };
   } catch (error) {
     console.error("Error refreshing access token", error);
-    return { ...token, error: error };
+    return { ...token, error: REFRESH_TOKEN_ERROR };
   }
 }
 

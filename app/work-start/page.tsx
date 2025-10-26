@@ -47,11 +47,15 @@ export default function WorkStartPage() {
     const [workShiftData, setWorkShiftData] = useState<WorkShift[]>([]);
     const [machineData, setMachinesData] = useState<Machine[]>([]);
 
+    const now = new Date()
+    const currentDate = now.toISOString().split("T")[0]
+    const currentTime = now.toTimeString().slice(0, 5)
+
     const form = useForm({
         defaultValues: {
-            date: "",
-            hour: "",
-            minute: "",
+            date: currentDate,
+            hour: currentTime.split(":")[0],
+            minute: currentTime.split(":")[1],
             shift: "",
             machineNumber: "",
             employeeId: "",

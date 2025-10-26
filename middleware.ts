@@ -3,7 +3,11 @@ import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 import { REFRESH_TOKEN_ERROR } from "./utils/constants";
 
-const protectedPaths = ["/home", "/work-start"];
+const protectedPaths = [
+  "/home",
+  "/work-start",
+  "/normal-production/setup-start",
+];
 const authPages = ["/login", "/register"];
 
 export async function middleware(req: NextRequest) {

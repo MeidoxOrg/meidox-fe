@@ -21,6 +21,8 @@ import machinesServices from "@/services/machines"
 import { Machine } from "@/model/machines"
 import { useSession } from "next-auth/react"
 import workSessionServices from "@/services/work-session"
+import { localStorageService } from "@/helper/localstorage"
+import { WORKSESSION_ID } from "@/utils/constants"
 
 function WorkStartHeader() {
     const router = useRouter()
@@ -85,6 +87,7 @@ export default function WorkStartPage() {
                 workShiftId: values.shift
             })
             if (response.id != null) {
+                localStorageService.set<string>(WORKSESSION_ID, response.id)
                 router.push("/home")
             }
         } catch (error) {
@@ -287,16 +290,14 @@ export default function WorkStartPage() {
                                 >
                                     作業開始
                                 </Button>
-                                <Button
+                                {/* <Button
                                     type="button"
                                     variant="outline"
-                                    onClick={() => {
-                                        console.log('==> session: ', session);
-                                    }}
+                                    onClick={() => { }}
                                     className="px-6 py-6 border-2 border-amber-800 text-amber-800 hover:bg-amber-50"
                                 >
                                     社員登録アプリへ
-                                </Button>
+                                </Button> */}
                             </div>
                         </div>
                     </form>

@@ -59,7 +59,7 @@ async function refreshAccessToken(token: any) {
     };
   } catch (error) {
     console.error("Error refreshing access token", error);
-    return { ...token, error: "RefreshAccessTokenError" };
+    return { ...token, error: error };
   }
 }
 
@@ -86,16 +86,15 @@ export const authOptions: NextAuthOptions = {
       if (Date.now() < (token.expiresAt as number)) {
         return token;
       }
-      console.log("refreshAccessToken");
       return await refreshAccessToken(token);
     },
 
     async session({ session, token }) {
-      (session as any).accessToken = token.accessToken;
-      (session as any).error = token.error;
-      (session as any).user.id = token.sub;
-      (session as any).user.username = token.username;
-      (session as any).user.name = token.name;
+      session.accessToken = token.accessToken;
+      session.error = token.error;
+      session.user!.id = token.sub;
+      session.user!.username = token.username;
+      session.user!.name = token.name;
       return session;
     },
   },

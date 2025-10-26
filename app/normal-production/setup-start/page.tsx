@@ -7,6 +7,9 @@ import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "
 import { Input } from "@/components/ui/input"
 import { PageLayout } from "@/components/layout/page-layout"
 import { useState } from "react"
+import workSessionServices from "@/services/work-session"
+import { localStorageService } from "@/helper/localstorage"
+import { WORKSESSION_ID } from "@/utils/constants"
 
 type SetupFormValues = {
   productNumber: string
@@ -56,9 +59,28 @@ export default function SetupStartPage() {
     setValue("materialNumber", value)
   }
 
-  const onSubmit = (data: SetupFormValues) => {
-    console.log("✅ Submit:", { ...data, kanbanData, materialData })
-    // router.push("/normal-production/setup-progress")
+  const onSubmit = async (data: SetupFormValues) => {
+    try {
+      const now = new Date()
+      const currentDate = now.toISOString().split("T")[0]
+      const currentTime = now.toTimeString().slice(0, 5)
+      const workSessionId = localStorageService.get<string>(WORKSESSION_ID, "")
+
+      const response = await workSessionServices.createWorkSessionSetup({
+        dateStart: currentDate,
+        timeStart: currentTime,
+        lotNumber: data.lotNumber,
+        materialNumber: data.materialNumber,
+        productNumber: data.productNumber,
+        workSessionId: workSessionId
+      });
+
+      if (response.id != null) {
+        router.push("/normal-production/setup-progress")
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (

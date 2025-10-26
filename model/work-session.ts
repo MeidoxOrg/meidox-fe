@@ -26,3 +26,16 @@ export interface WorkSessionModel {
 export interface WorkSessionByIdResponse {
   workSession: WorkSessionModel;
 }
+
+export interface WorkSessionSetupBody {
+  workSessionId: string;
+  dateStart: string;
+  timeStart: string;
+  productNumber: string;
+  lotNumber: string;
+  materialNumber: string;
+}
+
+export interface PostAPIResponse {
+  id: string;
+}

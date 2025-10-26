@@ -75,16 +75,15 @@ export const authOptions: NextAuthOptions = {
           ...token,
           accessToken: account.access_token,
           refreshToken: account.refresh_token,
-          accessTokenExpires:
-            Date.now() + ((account as any).expires_in ?? 3600) * 1000,
+          expiresAt: account.expires_at,
           sub: profile.sub,
           username: profile.username,
           name: profile.name,
         };
       }
       console.log("Date.now(): ", Date.now());
-      console.log("token.accessTokenExpires: ", token.accessTokenExpires);
-      if (Date.now() < (token.accessTokenExpires as number)) {
+      console.log("token.expiresAt: ", token.expiresAt);
+      if (Date.now() < (token.expiresAt as number)) {
         return token;
       }
       console.log("refreshAccessToken");

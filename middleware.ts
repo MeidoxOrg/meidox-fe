@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
+import { withAuth } from "next-auth/middleware";
 
 const protectedPaths = ["/home", "/work-start"];
 const authPages = ["/login", "/register"];
@@ -9,6 +10,24 @@ export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+  if (token?.error.error === "invalid_grant") {
+    const csrfTokenValue =
+      req.cookies.get('next-auth.csrf-token')?.value?.split('|')[0] ??
+      req.cookies.get('__Host-next-auth.csrf-token')?.value?.split('|')[0] ?? '';
+    const html = `
+      <html>
+        <body>
+          <form method="POST" action="${process.env.NEXTAUTH_URL}/api/auth/signout">
+            <input type="hidden" name="callbackUrl" value="/signin" />
+            <input type="hidden" name="csrfToken" value="${csrfTokenValue}" />
+          </form>
+          <script>document.forms[0].submit();</script>
+        </body>
+      </html>
+    `;
+    return new NextResponse(html, { headers: { "Content-Type": "text/html" } });
+  }
 
   if (pathname === "/") {
     return NextResponse.redirect(new URL("/work-start", req.url));

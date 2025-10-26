@@ -38,6 +38,6 @@ declare module "next-auth/jwt" {
     username?: string | null;
     name?: string | null;
     sub?: string | null;
-    error?: string;
+    error?: any;
   }
 }

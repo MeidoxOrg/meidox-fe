@@ -19,7 +19,7 @@ export async function middleware(req: NextRequest) {
       <html>
         <body>
           <form method="POST" action="${process.env.NEXTAUTH_URL}/api/auth/signout">
-            <input type="hidden" name="callbackUrl" value="/signin" />
+            <input type="hidden" name="callbackUrl" value="/login" />
             <input type="hidden" name="csrfToken" value="${csrfTokenValue}" />
           </form>
           <script>document.forms[0].submit();</script>

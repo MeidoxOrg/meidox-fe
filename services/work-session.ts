@@ -1,5 +1,6 @@
 import {
   PostWorkSessionResponse,
+  WorkSessionByIdResponse,
   WorkSessionParams,
 } from "@/model/work-session";
 import apiLinks from "@/utils/api-links";
@@ -16,8 +17,19 @@ const createWorkSession = async (
   return response.data;
 };
 
+const getWorkSessionById = async (
+  workSessionId: String
+): Promise<WorkSessionByIdResponse> => {
+  const response = await httpClient.post<WorkSessionByIdResponse>({
+    url: `${apiLinks.worksession.getById}/${workSessionId}`,
+  });
+
+  return response.data;
+};
+
 const workSessionServices = {
   createWorkSession,
+  getWorkSessionById,
 };
 
 export default workSessionServices;

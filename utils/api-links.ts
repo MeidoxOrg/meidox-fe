@@ -10,6 +10,7 @@ const apiLinks = {
   },
   worksession: {
     create: `${meidoxApiUrl}/WorkSession`,
+    getById: `${meidoxApiUrl}/WorkSession`,
   },
 };
 

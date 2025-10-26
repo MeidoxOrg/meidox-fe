@@ -70,8 +70,6 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, account, profile }) {
       if (account && profile) {
-        console.log("account jwt: ", account);
-        console.log("profile jwt: ", profile);
         return {
           ...token,
           accessToken: account.access_token,
@@ -82,8 +80,6 @@ export const authOptions: NextAuthOptions = {
           name: profile.name,
         };
       }
-      console.log("Date.now(): ", Date.now());
-      console.log("token.expiresAt: ", token.expiresAt);
       if (Date.now() < (token.expiresAt as number)) {
         return token;
       }

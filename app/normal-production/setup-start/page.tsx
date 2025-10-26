@@ -17,7 +17,7 @@ export default function SetupStartPage() {
   })
 
   const handleStartSetup = () => {
-    router.push("/setup-progress")
+    router.push("/normal-production/setup-progress")
   }
 
   return (

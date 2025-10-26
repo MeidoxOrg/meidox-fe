@@ -8,73 +8,7 @@ import { TimePicker } from "@/components/ui/time-picker"
 import { TimerDisplay } from "@/components/ui/timer-display"
 import { PageLayout } from "@/components/layout/page-layout"
 import { Textarea } from "@/components/ui/textarea"
-import { Dialog, DialogContent } from "@/components/ui/dialog"
-
-// Numpad Modal Component
-function NumpadModal({
-  open,
-  onClose,
-  onConfirm,
-  initialValue = "",
-}: {
-  open: boolean
-  onClose: () => void
-  onConfirm: (value: string) => void
-  initialValue?: string
-}) {
-  const [inputValue, setInputValue] = useState(initialValue)
-
-  const handleInput = (num: string) => setInputValue((prev) => prev + num)
-  const handleClear = () => setInputValue("")
-
-  return (
-    <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-xs">
-        <div className="text-center font-bold text-lg mb-4">数字入力</div>
-
-        {/* Display */}
-        <div className="border rounded-md p-2 text-xl text-center bg-gray-100 mb-4 h-12 flex items-center justify-center">
-          {inputValue || "0"}
-        </div>
-
-        {/* Numpad */}
-        <div className="grid grid-cols-3 gap-4 mb-4 justify-items-center">
-          {["7", "8", "9", "4", "5", "6", "1", "2", "3", "0"].map((num) => (
-            <button
-              key={num}
-              onClick={() => handleInput(num)}
-              className="w-16 h-16 rounded-full bg-amber-900 text-white text-2xl font-bold flex items-center justify-center"
-            >
-              {num}
-            </button>
-          ))}
-        </div>
-
-        {/* Clear */}
-        <button
-          onClick={handleClear}
-          className="w-full bg-green-400 text-black py-2 rounded-md font-bold"
-        >
-          クリア
-        </button>
-
-        {/* Action */}
-        <div className="flex justify-between mt-4">
-          <Button variant="outline" onClick={onClose}>キャンセル</Button>
-          <Button
-            className="bg-amber-800 text-white"
-            onClick={() => {
-              onConfirm(inputValue || "0")
-              onClose()
-            }}
-          >
-            OK
-          </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
-  )
-}
+import { NumpadModal } from "@/components/ui/numpad-modal"
 
 export default function SetupProgressPage() {
   const router = useRouter()
@@ -241,6 +175,11 @@ export default function SetupProgressPage() {
       <NumpadModal
         open={!!numpadTarget}
         onClose={() => setNumpadTarget(null)}
+        title={
+          numpadTarget === "items" ? "段取り調整品（個）入力" :
+            numpadTarget === "weight" ? "段取り調整品（kg）入力" :
+              "数字入力"
+        }
         initialValue={
           numpadTarget === "items"
             ? formData.adjustmentItems
@@ -256,6 +195,7 @@ export default function SetupProgressPage() {
           }
         }}
       />
+
 
     </PageLayout>
   )

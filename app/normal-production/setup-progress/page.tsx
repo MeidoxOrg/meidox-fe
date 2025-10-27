@@ -17,7 +17,7 @@ import { getEndTimeFromStart } from "@/utils/time-utils"
 
 export default function SetupProgressPage() {
   const router = useRouter()
-  const [workSessionSetup, setWorkSessionSetup] = useState<WorkSessionSetup>()
+  const workSessionSetupId = localStorageService.get<string>(WORKSESSION_SETUP_ID, '');
 
   const [formData, setFormData] = useState({
     productNumber: "",
@@ -34,18 +34,16 @@ export default function SetupProgressPage() {
     notes: "",
   })
 
+  const [errors, setErrors] = useState({
+    adjustmentItems: "",
+    adjustmentWeight: "",
+  })
+
   const [numpadTarget, setNumpadTarget] = useState<null | "items" | "weight">(null)
 
-  const handlePauseSetup = () => {
-    console.log(workSessionSetup)
-  }
-  const handleCompleteSetup = () => router.push("/home")
-
   const getWorkSessionSetupById = useCallback(async () => {
-    const workSessionSetupId = localStorageService.get<string>(WORKSESSION_SETUP_ID, '');
 
     await workSessionServices.getWorkSessionSetupId(workSessionSetupId).then((res) => {
-      setWorkSessionSetup(res.workSessionSetup)
       handleSetValueDefault(res.workSessionSetup)
 
     }).catch((error) => { })
@@ -64,6 +62,52 @@ export default function SetupProgressPage() {
     setFormData((prev) => ({ ...prev, endMinute: getEndTimeFromStart(data.timeStart).endMinute }))
   }
 
+  const handlePauseSetup = () => {
+    router.push("/home")
+  }
+  const handleCompleteSetup = () => {
+    let newErrors = { adjustmentItems: "", adjustmentWeight: "" }
+    let hasError = false
+
+    if (!formData.adjustmentItems) {
+      newErrors.adjustmentItems = "段取り調整品（個）を入力してください。"
+      hasError = true
+    }
+
+    if (!formData.adjustmentWeight) {
+      newErrors.adjustmentWeight = "段取り調整品（kg）を入力してください。"
+      hasError = true
+    }
+
+    setErrors(newErrors)
+
+    if (hasError) return
+
+    console.log("Dữ liệu hợp lệ:", formData)
+    // router.push("/home")
+  }
+
+  const handleUpdateAdjustmentItemUnit = async (unitValue: string) => {
+    try {
+      const response = await workSessionServices.updateAdjustmentItemUnit(workSessionSetupId, parseInt(unitValue));
+      if (response.id) {
+        setErrors((prev) => ({ ...prev, adjustmentItems: "" }))
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const handleUpdateAdjustmentItemKg = async (kgValue: string) => {
+    try {
+      const response = await workSessionServices.updateAdjustmentItemKg(workSessionSetupId, parseInt(kgValue));
+      if (response.id) {
+        setErrors((prev) => ({ ...prev, adjustmentWeight: "" }))
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   useEffect(() => {
     getWorkSessionSetupById()
@@ -113,6 +157,9 @@ export default function SetupProgressPage() {
                   ⌨
                 </Button>
               </div>
+              {errors.adjustmentItems && (
+                <p className="text-red-600 text-sm mt-1">{errors.adjustmentItems}</p>
+              )}
             </div>
 
             {/* 段取り調整品（kg） */}
@@ -129,6 +176,9 @@ export default function SetupProgressPage() {
                   ⌨
                 </Button>
               </div>
+              {errors.adjustmentWeight && (
+                <p className="text-red-600 text-sm mt-1">{errors.adjustmentWeight}</p>
+              )}
             </div>
 
           </div>
@@ -229,8 +279,10 @@ export default function SetupProgressPage() {
         onConfirm={(val) => {
           if (numpadTarget === "items") {
             setFormData((prev) => ({ ...prev, adjustmentItems: val }))
+            handleUpdateAdjustmentItemUnit(val)
           } else if (numpadTarget === "weight") {
             setFormData((prev) => ({ ...prev, adjustmentWeight: val }))
+            handleUpdateAdjustmentItemKg(val)
           }
         }}
       />

@@ -13,6 +13,8 @@ const apiLinks = {
     getById: `${meidoxApiUrl}/WorkSession`,
     createWorkSessionSetup: `${meidoxApiUrl}/WorkSessionSetup`,
     getWorkSessionSetupById: `${meidoxApiUrl}/WorkSessionSetup`,
+    updateAdjustmentItemUnit: `${meidoxApiUrl}/AdjustmentItemUnit`,
+    updateAdjustmentItemKg: `${meidoxApiUrl}/AdjustmentItemKg`,
   },
 };
 

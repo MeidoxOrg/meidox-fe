@@ -51,11 +51,43 @@ const getWorkSessionSetupId = async (
   return response.data;
 };
 
+const updateAdjustmentItemUnit = async (
+  workSessionSetupId: String,
+  quantiy: Number
+): Promise<PostAPIResponse> => {
+  const response = await httpClient.put<PostAPIResponse>({
+    url: apiLinks.worksession.updateAdjustmentItemUnit,
+    data: {
+      id: workSessionSetupId,
+      quantity: quantiy,
+    },
+  });
+
+  return response.data;
+};
+
+const updateAdjustmentItemKg = async (
+  workSessionSetupId: String,
+  quantiy: Number
+): Promise<PostAPIResponse> => {
+  const response = await httpClient.put<PostAPIResponse>({
+    url: apiLinks.worksession.updateAdjustmentItemKg,
+    data: {
+      id: workSessionSetupId,
+      quantity: quantiy,
+    },
+  });
+
+  return response.data;
+};
+
 const workSessionServices = {
   createWorkSession,
   getWorkSessionById,
   createWorkSessionSetup,
   getWorkSessionSetupId,
+  updateAdjustmentItemUnit,
+  updateAdjustmentItemKg,
 };
 
 export default workSessionServices;

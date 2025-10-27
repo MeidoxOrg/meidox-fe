@@ -7,6 +7,7 @@ const protectedPaths = [
   "/home",
   "/work-start",
   "/normal-production/setup-start",
+  "/normal-production/setup-progress",
 ];
 const authPages = ["/login", "/register"];
 
@@ -16,8 +17,9 @@ export async function middleware(req: NextRequest) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   if (token?.error === REFRESH_TOKEN_ERROR) {
     const csrfTokenValue =
-      req.cookies.get('next-auth.csrf-token')?.value?.split('|')[0] ??
-      req.cookies.get('__Host-next-auth.csrf-token')?.value?.split('|')[0] ?? '';
+      req.cookies.get("next-auth.csrf-token")?.value?.split("|")[0] ??
+      req.cookies.get("__Host-next-auth.csrf-token")?.value?.split("|")[0] ??
+      "";
     const html = `
       <html>
         <body>

@@ -31,7 +31,7 @@ export default function SetupProgressPage() {
     endMinute: "",
     adjustmentItems: "",
     adjustmentWeight: "",
-    notes: "",
+    remark: "",
   })
 
   const [errors, setErrors] = useState({
@@ -65,7 +65,7 @@ export default function SetupProgressPage() {
   const handlePauseSetup = () => {
     router.push("/home")
   }
-  const handleCompleteSetup = () => {
+  const handleCompleteSetup = async () => {
     let newErrors = { adjustmentItems: "", adjustmentWeight: "" }
     let hasError = false
 
@@ -83,7 +83,10 @@ export default function SetupProgressPage() {
 
     if (hasError) return
 
-    console.log("Dữ liệu hợp lệ:", formData)
+    if (formData.remark) {
+      await workSessionServices.updateWorkSessionSetupRemark(workSessionSetupId, formData.remark);
+    }
+    console.log('DONE');
     // router.push("/home")
   }
 
@@ -225,9 +228,9 @@ export default function SetupProgressPage() {
             <div className="mt-12">
               <label className="block text-sm font-medium text-black mb-2">備考</label>
               <Textarea
-                value={formData.notes}
+                value={formData.remark}
                 onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, notes: e.target.value }))
+                  setFormData((prev) => ({ ...prev, remark: e.target.value }))
                 }
                 placeholder="備考入力　入力の際は↓の□を押す"
                 className="border-2 border-gray-400 rounded-md resize-none h-20 bg-gray-100"

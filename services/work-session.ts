@@ -81,6 +81,21 @@ const updateAdjustmentItemKg = async (
   return response.data;
 };
 
+const updateWorkSessionSetupRemark = async (
+  workSessionSetupId: String,
+  remark: string
+): Promise<PostAPIResponse> => {
+  const response = await httpClient.put<PostAPIResponse>({
+    url: apiLinks.worksession.updateRemark,
+    data: {
+      id: workSessionSetupId,
+      remark: remark,
+    },
+  });
+
+  return response.data;
+};
+
 const workSessionServices = {
   createWorkSession,
   getWorkSessionById,
@@ -88,6 +103,7 @@ const workSessionServices = {
   getWorkSessionSetupId,
   updateAdjustmentItemUnit,
   updateAdjustmentItemKg,
+  updateWorkSessionSetupRemark,
 };
 
 export default workSessionServices;

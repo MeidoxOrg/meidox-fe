@@ -67,7 +67,7 @@ export default function RegisterPage() {
       if (!res.ok) throw new Error(data?.message || t("register_failed"));
 
       setMessage(t("register_success"));
-      setTimeout(() => router.push("/identity/login"), 1500);
+      setTimeout(() => router.push("/login"), 1500);
     } catch (err: any) {
       setMessage(err.message || t("register_failed"));
     }

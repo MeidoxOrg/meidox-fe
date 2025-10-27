@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 
 interface NumpadModalProps {
@@ -21,11 +21,8 @@ export function NumpadModal({
 }: NumpadModalProps) {
     const [inputValue, setInputValue] = useState(initialValue)
 
-    // reset mỗi khi modal mở mới → tránh giữ giá trị cũ
     useEffect(() => {
-        if (open) {
-            setInputValue(initialValue || "")
-        }
+        if (open) setInputValue(initialValue || "")
     }, [open, initialValue])
 
     const handleInput = (num: string) => setInputValue((prev) => prev + num)
@@ -34,7 +31,8 @@ export function NumpadModal({
     return (
         <Dialog open={open} onOpenChange={onClose}>
             <DialogContent className="max-w-xs">
-                <div className="text-center font-bold text-lg mb-4">{title}</div>
+                <DialogTitle>{title}</DialogTitle>
+                <DialogDescription>数字を入力してください</DialogDescription>
 
                 {/* Display */}
                 <div className="border rounded-md p-2 text-xl text-center bg-gray-100 mb-4 h-12 flex items-center justify-center">
@@ -54,7 +52,6 @@ export function NumpadModal({
                     ))}
                 </div>
 
-                {/* Clear */}
                 <button
                     onClick={handleClear}
                     className="w-full bg-green-400 text-black py-2 rounded-md font-bold"
@@ -62,7 +59,6 @@ export function NumpadModal({
                     クリア
                 </button>
 
-                {/* Action */}
                 <div className="flex justify-between mt-4">
                     <Button variant="outline" onClick={onClose}>
                         キャンセル

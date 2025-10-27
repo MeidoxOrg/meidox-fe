@@ -16,6 +16,8 @@ const apiLinks = {
     updateAdjustmentItemUnit: `${meidoxApiUrl}/AdjustmentItemUnit`,
     updateAdjustmentItemKg: `${meidoxApiUrl}/AdjustmentItemKg`,
     updateRemark: `${meidoxApiUrl}/Remark`,
+    completeWorkSessionSetup: `${meidoxApiUrl}/Complete`,
+    pauseWorkSessionSetup: `${meidoxApiUrl}/Pause`,
   },
 };
 

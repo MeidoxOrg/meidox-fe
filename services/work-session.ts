@@ -1,4 +1,5 @@
 import {
+  CompleteWorkSessionSetup,
   PostAPIResponse,
   PostWorkSessionResponse,
   WorkSessionByIdResponse,
@@ -96,6 +97,28 @@ const updateWorkSessionSetupRemark = async (
   return response.data;
 };
 
+const completeWorkSessionSetup = async (
+  completeBody: CompleteWorkSessionSetup
+): Promise<PostAPIResponse> => {
+  const response = await httpClient.put<PostAPIResponse>({
+    url: apiLinks.worksession.completeWorkSessionSetup,
+    data: completeBody,
+  });
+
+  return response.data;
+};
+
+const pauseWorkSessionSetup = async (id: string): Promise<PostAPIResponse> => {
+  const response = await httpClient.put<PostAPIResponse>({
+    url: apiLinks.worksession.pauseWorkSessionSetup,
+    data: {
+      id: id,
+    },
+  });
+
+  return response.data;
+};
+
 const workSessionServices = {
   createWorkSession,
   getWorkSessionById,
@@ -104,6 +127,8 @@ const workSessionServices = {
   updateAdjustmentItemUnit,
   updateAdjustmentItemKg,
   updateWorkSessionSetupRemark,
+  completeWorkSessionSetup,
+  pauseWorkSessionSetup,
 };
 
 export default workSessionServices;

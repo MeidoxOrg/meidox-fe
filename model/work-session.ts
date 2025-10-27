@@ -59,3 +59,9 @@ export interface WorkSessionSetup {
 export interface WorkSessionSetupResponse {
   workSessionSetup: WorkSessionSetup;
 }
+
+export interface CompleteWorkSessionSetup {
+  id: string;
+  dateComplete: string;
+  timeComplete: string;
+}

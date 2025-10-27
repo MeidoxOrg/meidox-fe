@@ -62,10 +62,20 @@ export default function SetupProgressPage() {
     setFormData((prev) => ({ ...prev, endMinute: getEndTimeFromStart(data.timeStart).endMinute }))
   }
 
-  const handlePauseSetup = () => {
-    router.push("/home")
+  const handlePauseSetup = async () => {
+    try {
+      await workSessionServices.pauseWorkSessionSetup(workSessionSetupId)
+      router.push("/home")
+    } catch (error) {
+      console.log(error);
+    }
   }
+
   const handleCompleteSetup = async () => {
+    const now = new Date()
+    const currentDate = now.toISOString().split("T")[0]
+    const currentTime = now.toTimeString().slice(0, 5)
+
     let newErrors = { adjustmentItems: "", adjustmentWeight: "" }
     let hasError = false
 
@@ -86,8 +96,14 @@ export default function SetupProgressPage() {
     if (formData.remark) {
       await workSessionServices.updateWorkSessionSetupRemark(workSessionSetupId, formData.remark);
     }
-    console.log('DONE');
-    // router.push("/home")
+
+    await workSessionServices.completeWorkSessionSetup({
+      id: workSessionSetupId,
+      dateComplete: currentDate,
+      timeComplete: currentTime
+    })
+
+    router.push("/home")
   }
 
   const handleUpdateAdjustmentItemUnit = async (unitValue: string) => {
@@ -289,8 +305,6 @@ export default function SetupProgressPage() {
           }
         }}
       />
-
-
     </PageLayout>
   )
 }

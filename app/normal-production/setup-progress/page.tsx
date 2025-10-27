@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { FormField } from "@/components/ui/form-field"
@@ -9,21 +9,26 @@ import { TimerDisplay } from "@/components/ui/timer-display"
 import { PageLayout } from "@/components/layout/page-layout"
 import { Textarea } from "@/components/ui/textarea"
 import { NumpadModal } from "@/components/ui/numpad-modal"
+import workSessionServices from "@/services/work-session"
+import { WorkSessionSetup } from "@/model/work-session"
+import { localStorageService } from "@/helper/localstorage"
+import { WORKSESSION_SETUP_ID } from "@/utils/constants"
+import { getEndTimeFromStart } from "@/utils/time-utils"
 
 export default function SetupProgressPage() {
   const router = useRouter()
-  const today = new Date().toISOString().split("T")[0] // YYYY-MM-DD
+  const [workSessionSetup, setWorkSessionSetup] = useState<WorkSessionSetup>()
 
   const [formData, setFormData] = useState({
-    productCode: "",
+    productNumber: "",
     lotNumber: "",
     materialNumber: "",
-    startDate: today,
-    startHour: "19",
-    startMinute: "13",
-    endDate: today,
-    endHour: "19",
-    endMinute: "14",
+    startDate: "",
+    startHour: "",
+    startMinute: "59",
+    endDate: "",
+    endHour: "",
+    endMinute: "",
     adjustmentItems: "",
     adjustmentWeight: "",
     notes: "",
@@ -31,8 +36,39 @@ export default function SetupProgressPage() {
 
   const [numpadTarget, setNumpadTarget] = useState<null | "items" | "weight">(null)
 
-  const handlePauseSetup = () => console.log("Setup paused")
+  const handlePauseSetup = () => {
+    console.log(workSessionSetup)
+  }
   const handleCompleteSetup = () => router.push("/home")
+
+  const getWorkSessionSetupById = useCallback(async () => {
+    const workSessionSetupId = localStorageService.get<string>(WORKSESSION_SETUP_ID, '');
+
+    await workSessionServices.getWorkSessionSetupId(workSessionSetupId).then((res) => {
+      setWorkSessionSetup(res.workSessionSetup)
+      handleSetValueDefault(res.workSessionSetup)
+
+    }).catch((error) => { })
+
+  }, [])
+
+  const handleSetValueDefault = (data: WorkSessionSetup) => {
+    setFormData((prev) => ({ ...prev, productNumber: data.productNumber }))
+    setFormData((prev) => ({ ...prev, lotNumber: data.lotNumber }))
+    setFormData((prev) => ({ ...prev, materialNumber: data.materialNumber }))
+    setFormData((prev) => ({ ...prev, startDate: data.dateStart }))
+    setFormData((prev) => ({ ...prev, startHour: data.timeStart.split(":")[0] }))
+    setFormData((prev) => ({ ...prev, startMinute: data.timeStart.split(":")[1] }))
+    setFormData((prev) => ({ ...prev, endDate: data.dateStart }))
+    setFormData((prev) => ({ ...prev, endHour: getEndTimeFromStart(data.timeStart).endHour }))
+    setFormData((prev) => ({ ...prev, endMinute: getEndTimeFromStart(data.timeStart).endMinute }))
+  }
+
+
+  useEffect(() => {
+    getWorkSessionSetupById()
+  }, [getWorkSessionSetupById])
+
 
   return (
     <PageLayout title="段取り中" rightContent="19:14:03">
@@ -42,9 +78,10 @@ export default function SetupProgressPage() {
           <div className="space-y-6">
             <FormField
               label="品番"
-              value={formData.productCode}
-              onChange={(value) => setFormData((prev) => ({ ...prev, productCode: value }))}
+              value={formData.productNumber}
+              onChange={(value) => setFormData((prev) => ({ ...prev, productNumber: value }))}
               className="w-full"
+              disabled
             />
 
             <FormField
@@ -52,6 +89,7 @@ export default function SetupProgressPage() {
               value={formData.lotNumber}
               onChange={(value) => setFormData((prev) => ({ ...prev, lotNumber: value }))}
               className="w-full"
+              disabled
             />
 
             <FormField
@@ -59,6 +97,7 @@ export default function SetupProgressPage() {
               value={formData.materialNumber}
               onChange={(value) => setFormData((prev) => ({ ...prev, materialNumber: value }))}
               className="w-full"
+              disabled
             />
             {/* 段取り調整品（個） */}
             <div>

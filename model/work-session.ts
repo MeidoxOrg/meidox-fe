@@ -39,3 +39,23 @@ export interface WorkSessionSetupBody {
 export interface PostAPIResponse {
   id: string;
 }
+
+export interface WorkSessionSetup {
+  id: string;
+  productNumber: string;
+  lotNumber: string;
+  materialNumber: string;
+  dateStart: string;
+  timeStart: string;
+  remark: string | null;
+  adjustmentItemUnit: string | null;
+  adjustmentItemKg: string | null;
+  dateComplete: string | null;
+  timeComplete: string | null;
+  status: number;
+  workSession: WorkSessionModel;
+}
+
+export interface WorkSessionSetupResponse {
+  workSessionSetup: WorkSessionSetup;
+}

@@ -4,6 +4,7 @@ import {
   WorkSessionByIdResponse,
   WorkSessionParams,
   WorkSessionSetupBody,
+  WorkSessionSetupResponse,
 } from "@/model/work-session";
 import apiLinks from "@/utils/api-links";
 import httpClient from "@/utils/http-client";
@@ -40,10 +41,21 @@ const createWorkSessionSetup = async (
   return response.data;
 };
 
+const getWorkSessionSetupId = async (
+  workSessionSetupId: String
+): Promise<WorkSessionSetupResponse> => {
+  const response = await httpClient.get<WorkSessionSetupResponse>({
+    url: `${apiLinks.worksession.getWorkSessionSetupById}/${workSessionSetupId}`,
+  });
+
+  return response.data;
+};
+
 const workSessionServices = {
   createWorkSession,
   getWorkSessionById,
   createWorkSessionSetup,
+  getWorkSessionSetupId,
 };
 
 export default workSessionServices;

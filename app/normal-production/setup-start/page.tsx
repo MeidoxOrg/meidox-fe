@@ -9,7 +9,7 @@ import { PageLayout } from "@/components/layout/page-layout"
 import { useState } from "react"
 import workSessionServices from "@/services/work-session"
 import { localStorageService } from "@/helper/localstorage"
-import { WORKSESSION_ID } from "@/utils/constants"
+import { WORKSESSION_ID, WORKSESSION_SETUP_ID } from "@/utils/constants"
 
 type SetupFormValues = {
   productNumber: string
@@ -76,6 +76,7 @@ export default function SetupStartPage() {
       });
 
       if (response.id != null) {
+        localStorageService.set<string>(WORKSESSION_SETUP_ID, response.id)
         router.push("/normal-production/setup-progress")
       }
     } catch (error) {

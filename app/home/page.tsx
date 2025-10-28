@@ -1,11 +1,16 @@
 "use client"
 
-import { useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
+import workSessionServices from "@/services/work-session"
+import { localStorageService } from "@/helper/localstorage"
+import { WORKSESSION_ID } from "@/utils/constants"
+import { WorkSessionModel } from "@/model/work-session"
 
 export default function Dashboard() {
     const router = useRouter()
+    const [workSessionData, setWorkSessionData] = useState<WorkSessionModel>();
     const [showMessage, setShowMessage] = useState(true)
 
     const mainGridButtons = [
@@ -44,6 +49,22 @@ export default function Dashboard() {
         { label: "編集画面へ", color: "bg-amber-800 hover:bg-amber-900 text-white", route: "/edit" },
     ]
 
+    const getWorkSessionById = useCallback(async () => {
+        try {
+            const workSessionId = localStorageService.get(WORKSESSION_ID, '');
+            const response = await workSessionServices.getWorkSessionById(workSessionId)
+            if (response.workSession.id) {
+                setWorkSessionData(response.workSession)
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }, [])
+
+    useEffect(() => {
+        getWorkSessionById()
+    }, [getWorkSessionById])
+
     return (
         <div className="min-h-screen bg-gray-200 relative overflow-hidden">
             <div
@@ -65,7 +86,7 @@ export default function Dashboard() {
                         </Button>
 
                         <div className="bg-pink-200 p-4 rounded-lg border-2 border-gray-400 flex-1">
-                            <p className="font-bold text-sm">CHT11 作業中です。</p>
+                            <p className="font-bold text-sm">{workSessionData?.machine.machineNumber} 作業中です。</p>
                             <p className="text-sm">機械番号が間違っていた場合は作業終了してください。</p>
                         </div>
 

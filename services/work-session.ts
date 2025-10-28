@@ -24,7 +24,7 @@ const createWorkSession = async (
 const getWorkSessionById = async (
   workSessionId: String
 ): Promise<WorkSessionByIdResponse> => {
-  const response = await httpClient.post<WorkSessionByIdResponse>({
+  const response = await httpClient.get<WorkSessionByIdResponse>({
     url: `${apiLinks.worksession.getById}/${workSessionId}`,
   });
 

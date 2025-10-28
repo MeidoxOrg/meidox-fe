@@ -13,11 +13,11 @@ const apiLinks = {
     getById: `${meidoxApiUrl}/WorkSession`,
     createWorkSessionSetup: `${meidoxApiUrl}/WorkSessionSetup`,
     getWorkSessionSetupById: `${meidoxApiUrl}/WorkSessionSetup`,
-    updateAdjustmentItemUnit: `${meidoxApiUrl}/AdjustmentItemUnit`,
-    updateAdjustmentItemKg: `${meidoxApiUrl}/AdjustmentItemKg`,
-    updateRemark: `${meidoxApiUrl}/Remark`,
-    completeWorkSessionSetup: `${meidoxApiUrl}/Complete`,
-    pauseWorkSessionSetup: `${meidoxApiUrl}/Pause`,
+    updateAdjustmentItemUnit: `${meidoxApiUrl}/WorkSessionSetup/AdjustmentItemUnit`,
+    updateAdjustmentItemKg: `${meidoxApiUrl}/WorkSessionSetup/AdjustmentItemKg`,
+    updateRemark: `${meidoxApiUrl}/WorkSessionSetup/Remark`,
+    completeWorkSessionSetup: `${meidoxApiUrl}/WorkSessionSetup/Complete`,
+    pauseWorkSessionSetup: `${meidoxApiUrl}/WorkSessionSetup/Pause`,
   },
 };
 

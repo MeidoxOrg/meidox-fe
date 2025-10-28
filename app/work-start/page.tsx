@@ -60,6 +60,7 @@ export default function WorkStartPage() {
             machineNumber: "",
             employeeId: "",
             employeeName: "",
+            username: "",
         },
         mode: "onTouched",
     })
@@ -106,6 +107,7 @@ export default function WorkStartPage() {
 
     useEffect(() => {
         if (status === "authenticated" && session) {
+            form.setValue("username", (session as any)?.user?.username || "");
             form.setValue("employeeId", (session as any)?.user?.id || "");
             form.setValue("employeeName", session.user?.name || "");
         }
@@ -249,7 +251,7 @@ export default function WorkStartPage() {
                             {/* 👥 社員番号 */}
                             <FormField
                                 control={form.control}
-                                name="employeeId"
+                                name="username"
                                 rules={{ required: "社員番号を入力してください。" }}
                                 render={({ field }) => (
                                     <FormItem>

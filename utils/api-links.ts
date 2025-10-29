@@ -26,6 +26,7 @@ const apiLinks = {
     updateCanNumber: `${meidoxApiUrl}/WorkSessionProduction/CanNumber`,
     updateRemark: `${meidoxApiUrl}/WorkSessionProduction/Remark`,
     completeWorkSessionProduction: `${meidoxApiUrl}/WorkSessionProduction/Complete`,
+    pauseWorkSessionProduction: `${meidoxApiUrl}/WorkSessionProduction/Pause`,
   },
 };
 

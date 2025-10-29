@@ -84,6 +84,19 @@ const completeWorkSessionProduction = async (
   return response.data;
 };
 
+const pauseWorkSessionProduction = async (
+  id: string
+): Promise<PostAPIResponse> => {
+  const response = await httpClient.put<PostAPIResponse>({
+    url: apiLinks.workSessionProduction.pauseWorkSessionProduction,
+    data: {
+      id: id,
+    },
+  });
+
+  return response.data;
+};
+
 const workSessionProduction = {
   createWorkSessionProduction,
   getWorkSessionProductionId,
@@ -91,6 +104,7 @@ const workSessionProduction = {
   updateCanNumber,
   updateWorkSessionProductionRemark,
   completeWorkSessionProduction,
+  pauseWorkSessionProduction,
 };
 
 export default workSessionProduction;

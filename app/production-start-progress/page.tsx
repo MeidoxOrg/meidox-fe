@@ -8,7 +8,6 @@ import { TimePicker } from "@/components/ui/time-picker"
 import { TimerDisplay } from "@/components/ui/timer-display"
 import { PageLayout } from "@/components/layout/page-layout"
 import { Textarea } from "@/components/ui/textarea"
-import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { NumpadModal } from "@/components/ui/numpad-modal"
 import workSessionProduction from "@/services/work-session-production"
 import { localStorageService } from "@/helper/localstorage"
@@ -20,8 +19,6 @@ import { getEndTimeFromStart } from "@/utils/time-utils"
 export default function ProductionStartProgress() {
     const router = useRouter()
     const workSessionProductionId = localStorageService.get<string>(WORKSESSION_PRODUCTION_ID, '');
-
-    const today = new Date().toISOString().split("T")[0] // YYYY-MM-DD
 
     const [formData, setFormData] = useState({
         productNumber: "",
@@ -45,8 +42,6 @@ export default function ProductionStartProgress() {
 
     const [numpadTarget, setNumpadTarget] = useState<null | "numberOfGoodProduct" | "canNumber">(null)
 
-    const handlePauseSetup = () => router.push("/home")
-
     const getWorkSessionProductionById = useCallback(async () => {
 
         await workSessionProduction.getWorkSessionProductionId(workSessionProductionId).then((res) => {
@@ -68,7 +63,7 @@ export default function ProductionStartProgress() {
         setFormData((prev) => ({ ...prev, endMinute: getEndTimeFromStart(data.timeStart).endMinute }))
     }
 
-    const handleCompleteSetup = async () => {
+    const handleCompleteWorkSessionProduction = async () => {
         const now = new Date()
         const currentDate = now.toISOString().split("T")[0]
         const currentTime = now.toTimeString().slice(0, 5)
@@ -120,6 +115,32 @@ export default function ProductionStartProgress() {
             if (response.id) {
                 setErrors((prev) => ({ ...prev, canNumber: "" }))
             }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const handlePauseWorkSessionProduction = async () => {
+        try {
+            let newErrors = { numberOfGoodProduct: "", canNumber: "" }
+            let hasError = false
+
+            if (!formData.numberOfGoodProduct) {
+                newErrors.numberOfGoodProduct = "良品数を入力してください。"
+                hasError = true
+            }
+
+            if (!formData.canNumber) {
+                newErrors.canNumber = "J缶番号を入力してください。"
+                hasError = true
+            }
+
+            setErrors(newErrors)
+
+            if (hasError) return
+
+            await workSessionProduction.pauseWorkSessionProduction(workSessionProductionId)
+            router.push("/home")
         } catch (error) {
             console.log(error);
         }
@@ -258,14 +279,14 @@ export default function ProductionStartProgress() {
 
                         <div className="space-y-4 flex-1 flex flex-col justify-center">
                             <Button
-                                onClick={handlePauseSetup}
+                                onClick={handlePauseWorkSessionProduction}
                                 className="w-full bg-amber-900 hover:bg-amber-800 text-white py-6 text-lg font-bold rounded-md"
                             >
                                 生産一時停止
                             </Button>
 
                             <Button
-                                onClick={handleCompleteSetup}
+                                onClick={handleCompleteWorkSessionProduction}
                                 className="w-full bg-amber-900 hover:bg-amber-800 text-white py-6 text-lg font-bold rounded-md"
                             >
                                 生産終了

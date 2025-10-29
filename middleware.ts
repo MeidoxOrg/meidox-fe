@@ -8,6 +8,8 @@ const protectedPaths = [
   "/work-start",
   "/normal-production/setup-start",
   "/normal-production/setup-progress",
+  "/production-start",
+  "/production-start-progress",
 ];
 const authPages = ["/login", "/register"];
 

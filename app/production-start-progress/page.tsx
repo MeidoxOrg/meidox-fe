@@ -94,13 +94,13 @@ export default function ProductionStartProgress() {
             await workSessionProduction.updateWorkSessionProductionRemark(workSessionProductionId, formData.remark);
         }
 
-        // await workSessionServices.completeWorkSessionSetup({
-        //     id: workSessionSetupId,
-        //     dateComplete: currentDate,
-        //     timeComplete: currentTime
-        // })
+        await workSessionProduction.completeWorkSessionProduction({
+            id: workSessionProductionId,
+            dateComplete: currentDate,
+            timeComplete: currentTime
+        })
 
-        // router.push("/home")
+        router.push("/home")
     }
 
     const handleUpdateNumberOfGoodProduct = async (numberOfGoodProduct: string) => {

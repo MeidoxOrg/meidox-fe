@@ -28,3 +28,9 @@ export interface WorkSessionProduction {
 export interface WorkSessionProductionResponse {
   workSessionProduction: WorkSessionProduction;
 }
+
+export interface CompleteWorkSessionProduction {
+  id: string;
+  dateComplete: string;
+  timeComplete: string;
+}

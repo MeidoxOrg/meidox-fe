@@ -25,6 +25,7 @@ const apiLinks = {
     updateNumberOfGoodProduct: `${meidoxApiUrl}/WorkSessionProduction/NumberOfGoodProduct`,
     updateCanNumber: `${meidoxApiUrl}/WorkSessionProduction/CanNumber`,
     updateRemark: `${meidoxApiUrl}/WorkSessionProduction/Remark`,
+    completeWorkSessionProduction: `${meidoxApiUrl}/WorkSessionProduction/Complete`,
   },
 };
 

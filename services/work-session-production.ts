@@ -1,5 +1,6 @@
 import { PostAPIResponse } from "@/model/work-session";
 import {
+  CompleteWorkSessionProduction,
   WorkSessionProductionBody,
   WorkSessionProductionResponse,
 } from "@/model/work-session-production";
@@ -72,12 +73,24 @@ const updateWorkSessionProductionRemark = async (
   return response.data;
 };
 
+const completeWorkSessionProduction = async (
+  completeBody: CompleteWorkSessionProduction
+): Promise<PostAPIResponse> => {
+  const response = await httpClient.put<PostAPIResponse>({
+    url: apiLinks.workSessionProduction.completeWorkSessionProduction,
+    data: completeBody,
+  });
+
+  return response.data;
+};
+
 const workSessionProduction = {
   createWorkSessionProduction,
   getWorkSessionProductionId,
   updateNumberOfGoodProduct,
   updateCanNumber,
   updateWorkSessionProductionRemark,
+  completeWorkSessionProduction,
 };
 
 export default workSessionProduction;

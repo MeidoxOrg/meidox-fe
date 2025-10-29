@@ -2,110 +2,103 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { FormField } from "@/components/ui/form-field"
 import { PageLayout } from "@/components/layout/page-layout"
+import SetupFormLayout from "@/components/common/SetupFormLayout"
+import { useForm } from "react-hook-form"
+import { localStorageService } from "@/helper/localstorage"
+import { WORKSESSION_ID, WORKSESSION_PRODUCTION_ID } from "@/utils/constants"
+import workSessionProduction from "@/services/work-session-production"
+
+type SetupFormValues = {
+    productNumber: string
+    lotNumber: string
+    materialNumber: string
+}
 
 export default function SetupStartPage() {
     const router = useRouter()
-    const [formData, setFormData] = useState({
-        productCode: "",
-        lotNumber: "",
-        materialNumber: "",
-        kanbanData: "",
-        materialData: "",
+    const [kanbanData, setKanbanData] = useState("")
+    const [materialData, setMaterialData] = useState("")
+    const [isScanningKanban, setIsScanningKanban] = useState(false)
+    const [isScanningMaterialData, setIsScanningMaterialData] = useState(false)
+
+    const form = useForm<SetupFormValues>({
+        defaultValues: {
+            productNumber: "",
+            lotNumber: "",
+            materialNumber: "",
+        },
     })
 
-    const handleProductionStart = () => {
-        router.push("/production-start-progress")
+    const { setValue } = form
+
+    // --- かんばんスキャン処理 ---
+    const handleScanKanban = (value: string) => {
+        setKanbanData(value)
+
+        // ロット№
+        const rawLot = value.substring(5, 15).trim()
+        const lotValue =
+            rawLot.length >= 10
+                ? `${rawLot.substring(0, 6)}-${rawLot.substring(6, 10)}`
+                : rawLot
+
+        // 品番
+        const after21 = value.substring(21)
+        const spaceIndex = after21.indexOf(" ")
+        const productValue =
+            spaceIndex !== -1 ? after21.substring(0, spaceIndex).trim() : after21.trim()
+
+        // react-hook-form setValue
+        setValue("lotNumber", lotValue)
+        setValue("productNumber", productValue)
     }
 
+    const handleScanMaterial = (value: string) => {
+        setMaterialData(value)
+        setValue("materialNumber", value)
+    }
+
+    const onSubmit = async (data: SetupFormValues) => {
+        try {
+            const now = new Date()
+            const currentDate = now.toISOString().split("T")[0]
+            const currentTime = now.toTimeString().slice(0, 5)
+            const workSessionId = localStorageService.get<string>(WORKSESSION_ID, "")
+
+            const response = await workSessionProduction.createWorkSessionProduction({
+                dateStart: currentDate,
+                timeStart: currentTime,
+                lotNumber: data.lotNumber,
+                materialNumber: data.materialNumber,
+                productNumber: data.productNumber,
+                workSessionId: workSessionId
+            });
+
+            if (response.id != null) {
+                localStorageService.set<string>(WORKSESSION_PRODUCTION_ID, response.id)
+                router.push("/production-start-progress")
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
     return (
         <PageLayout title="生産中">
             <div className="max-w-7xl mx-auto bg-sky-100 p-6 rounded-md min-h-[calc(100vh-160px)]">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-full items-stretch">
-                    {/* Left column - Form inputs */}
-                    <div className="flex flex-col space-y-6 h-full">
-                        <FormField
-                            label="品番（かんばん無い場合手入力も可）"
-                            value={formData.productCode}
-                            onChange={(value) => setFormData((prev) => ({ ...prev, productCode: value }))}
-                            placeholder=""
-                            className="w-full"
-                        />
-
-                        <FormField
-                            label="ロット№"
-                            value={formData.lotNumber}
-                            onChange={(value) => setFormData((prev) => ({ ...prev, lotNumber: value }))}
-                            placeholder=""
-                            className="w-full"
-                        />
-
-                        <FormField
-                            label="材料№"
-                            value={formData.materialNumber}
-                            onChange={(value) => setFormData((prev) => ({ ...prev, materialNumber: value }))}
-                            placeholder=""
-                            className="w-full"
-                        />
-
-                        {/* Button sát đáy cột */}
-                        <div className="mt-auto">
-                            <Button className="bg-amber-900 hover:bg-amber-800 text-white py-3 w-full text-lg font-bold rounded-md">
-                                2ロット入り
-                            </Button>
-                        </div>
-                    </div>
-
-                    {/* Middle column - Kanban scanning */}
-                    <div className="flex flex-col justify-between h-full">
-                        <div className="text-center w-full">
-                            <p className="text-sm font-medium mb-2">↓かんばん読み込む↓</p>
-                            <Button className="w-full bg-amber-900 hover:bg-amber-800 text-white py-3 text-lg font-bold rounded-md mb-3">
-                                かんばん
-                            </Button>
-                            <div className="border-2 border-amber-800 rounded-md bg-white h-40 flex items-center justify-center">
-                                <input
-                                    type="text"
-                                    className="w-full h-full border-none outline-none text-center text-lg"
-                                    placeholder=""
-                                    value={formData.kanbanData}
-                                    onChange={(e) => setFormData((prev) => ({ ...prev, kanbanData: e.target.value }))}
-                                />
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Right column - Material scanning */}
-                    <div className="flex flex-col justify-between h-full">
-                        <div className="text-center">
-                            <p className="text-sm font-medium mb-2">↓材料エフ読み込む↓</p>
-                            <Button className="w-full bg-amber-900 hover:bg-amber-800 text-white py-3 text-lg font-bold rounded-md mb-3">
-                                材料
-                            </Button>
-                            <div className="border-2 border-amber-800 rounded-md bg-white h-40 flex items-center justify-center">
-                                <input
-                                    type="text"
-                                    className="w-full h-full border-none outline-none text-center text-lg"
-                                    placeholder=""
-                                    value={formData.materialData}
-                                    onChange={(e) => setFormData((prev) => ({ ...prev, materialData: e.target.value }))}
-                                />
-                            </div>
-                        </div>
-
-                        {/* Start button sát đáy cột */}
-                        <div className="flex justify-end mt-6">
-                            <Button
-                                onClick={handleProductionStart}
-                                className="bg-green-400 hover:bg-green-500 text-black py-4 px-10 text-xl font-bold rounded-lg"
-                            >
-                                生産開始
-                            </Button>
-                        </div>
-                    </div>
-                </div>
+                <SetupFormLayout
+                    form={form}
+                    onSubmit={onSubmit}
+                    kanbanData={kanbanData}
+                    materialData={materialData}
+                    isScanningKanban={isScanningKanban}
+                    isScanningMaterialData={isScanningMaterialData}
+                    handleScanKanban={handleScanKanban}
+                    handleScanMaterial={handleScanMaterial}
+                    setIsScanningKanban={setIsScanningKanban}
+                    setIsScanningMaterialData={setIsScanningMaterialData}
+                    submitLabel="生産開始"
+                />
             </div>
         </PageLayout>
     )

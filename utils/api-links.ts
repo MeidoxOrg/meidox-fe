@@ -19,6 +19,9 @@ const apiLinks = {
     completeWorkSessionSetup: `${meidoxApiUrl}/WorkSessionSetup/Complete`,
     pauseWorkSessionSetup: `${meidoxApiUrl}/WorkSessionSetup/Pause`,
   },
+  workSessionProduction: {
+    create: `${meidoxApiUrl}/WorkSessionProduction`,
+  },
 };
 
 export default apiLinks;

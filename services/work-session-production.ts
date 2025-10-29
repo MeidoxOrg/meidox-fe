@@ -27,9 +27,41 @@ const getWorkSessionProductionId = async (
   return response.data;
 };
 
+const updateNumberOfGoodProduct = async (
+  workSessionProductionId: String,
+  quantiy: Number
+): Promise<PostAPIResponse> => {
+  const response = await httpClient.put<PostAPIResponse>({
+    url: apiLinks.workSessionProduction.updateNumberOfGoodProduct,
+    data: {
+      id: workSessionProductionId,
+      quantity: quantiy,
+    },
+  });
+
+  return response.data;
+};
+
+const updateCanNumber = async (
+  workSessionProductionId: String,
+  canNumber: String
+): Promise<PostAPIResponse> => {
+  const response = await httpClient.put<PostAPIResponse>({
+    url: apiLinks.workSessionProduction.updateCanNumber,
+    data: {
+      id: workSessionProductionId,
+      canNumber: canNumber,
+    },
+  });
+
+  return response.data;
+};
+
 const workSessionProduction = {
   createWorkSessionProduction,
   getWorkSessionProductionId,
+  updateNumberOfGoodProduct,
+  updateCanNumber,
 };
 
 export default workSessionProduction;

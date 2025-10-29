@@ -22,6 +22,8 @@ const apiLinks = {
   workSessionProduction: {
     create: `${meidoxApiUrl}/WorkSessionProduction`,
     getWorkSessionProductionById: `${meidoxApiUrl}/WorkSessionProduction`,
+    updateNumberOfGoodProduct: `${meidoxApiUrl}/WorkSessionProduction/NumberOfGoodProduct`,
+    updateCanNumber: `${meidoxApiUrl}/WorkSessionProduction/CanNumber`,
   },
 };
 

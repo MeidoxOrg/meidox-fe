@@ -38,10 +38,14 @@ export default function ProductionStartProgress() {
         remark: "",
     })
 
+    const [errors, setErrors] = useState({
+        numberOfGoodProduct: "",
+        canNumber: "",
+    })
+
     const [numpadTarget, setNumpadTarget] = useState<null | "numberOfGoodProduct" | "canNumber">(null)
 
     const handlePauseSetup = () => router.push("/home")
-    const handleCompleteSetup = () => router.push("/home")
 
     const getWorkSessionProductionById = useCallback(async () => {
 
@@ -62,6 +66,63 @@ export default function ProductionStartProgress() {
         setFormData((prev) => ({ ...prev, endDate: data.dateStart }))
         setFormData((prev) => ({ ...prev, endHour: getEndTimeFromStart(data.timeStart).endHour }))
         setFormData((prev) => ({ ...prev, endMinute: getEndTimeFromStart(data.timeStart).endMinute }))
+    }
+
+    const handleCompleteSetup = async () => {
+        const now = new Date()
+        const currentDate = now.toISOString().split("T")[0]
+        const currentTime = now.toTimeString().slice(0, 5)
+
+        let newErrors = { numberOfGoodProduct: "", canNumber: "" }
+        let hasError = false
+
+        if (!formData.numberOfGoodProduct) {
+            newErrors.numberOfGoodProduct = "良品数を入力してください。"
+            hasError = true
+        }
+
+        if (!formData.canNumber) {
+            newErrors.canNumber = "J缶番号を入力してください。"
+            hasError = true
+        }
+
+        setErrors(newErrors)
+
+        if (hasError) return
+
+        // if (formData.remark) {
+        //     await workSessionServices.updateWorkSessionSetupRemark(workSessionSetupId, formData.remark);
+        // }
+
+        // await workSessionServices.completeWorkSessionSetup({
+        //     id: workSessionSetupId,
+        //     dateComplete: currentDate,
+        //     timeComplete: currentTime
+        // })
+
+        // router.push("/home")
+    }
+
+    const handleUpdateNumberOfGoodProduct = async (numberOfGoodProduct: string) => {
+        try {
+            const response = await workSessionProduction.updateNumberOfGoodProduct(workSessionProductionId, parseInt(numberOfGoodProduct));
+            if (response.id) {
+                setErrors((prev) => ({ ...prev, numberOfGoodProduct: "" }))
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const handleUpdateCanNumber = async (canNumber: string) => {
+        try {
+            const response = await workSessionProduction.updateCanNumber(workSessionProductionId, canNumber);
+            if (response.id) {
+                setErrors((prev) => ({ ...prev, canNumber: "" }))
+            }
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     useEffect(() => {
@@ -111,6 +172,9 @@ export default function ProductionStartProgress() {
                                     ⌨
                                 </Button>
                             </div>
+                            {errors.numberOfGoodProduct && (
+                                <p className="text-red-600 text-sm mt-1">{errors.numberOfGoodProduct}</p>
+                            )}
                         </div>
 
                         {/* 段取り調整品（kg） */}
@@ -127,6 +191,9 @@ export default function ProductionStartProgress() {
                                     ⌨
                                 </Button>
                             </div>
+                            {errors.canNumber && (
+                                <p className="text-red-600 text-sm mt-1">{errors.canNumber}</p>
+                            )}
                         </div>
 
                     </div>
@@ -222,8 +289,10 @@ export default function ProductionStartProgress() {
                 onConfirm={(val) => {
                     if (numpadTarget === "numberOfGoodProduct") {
                         setFormData((prev) => ({ ...prev, numberOfGoodProduct: val }))
+                        handleUpdateNumberOfGoodProduct(val)
                     } else if (numpadTarget === "canNumber") {
                         setFormData((prev) => ({ ...prev, canNumber: val }))
+                        handleUpdateCanNumber(val)
                     }
                 }}
             />

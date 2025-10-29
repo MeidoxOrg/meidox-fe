@@ -90,9 +90,9 @@ export default function ProductionStartProgress() {
 
         if (hasError) return
 
-        // if (formData.remark) {
-        //     await workSessionServices.updateWorkSessionSetupRemark(workSessionSetupId, formData.remark);
-        // }
+        if (formData.remark) {
+            await workSessionProduction.updateWorkSessionProductionRemark(workSessionProductionId, formData.remark);
+        }
 
         // await workSessionServices.completeWorkSessionSetup({
         //     id: workSessionSetupId,
@@ -242,7 +242,7 @@ export default function ProductionStartProgress() {
                             <Textarea
                                 value={formData.remark}
                                 onChange={(e) =>
-                                    setFormData((prev) => ({ ...prev, notes: e.target.value }))
+                                    setFormData((prev) => ({ ...prev, remark: e.target.value }))
                                 }
                                 placeholder="備考入力　入力の際は↓の□を押す"
                                 className="border-2 border-gray-400 rounded-md resize-none h-20 bg-gray-100"

@@ -57,11 +57,27 @@ const updateCanNumber = async (
   return response.data;
 };
 
+const updateWorkSessionProductionRemark = async (
+  workSessionSetupId: String,
+  remark: string
+): Promise<PostAPIResponse> => {
+  const response = await httpClient.put<PostAPIResponse>({
+    url: apiLinks.workSessionProduction.updateRemark,
+    data: {
+      id: workSessionSetupId,
+      remark: remark,
+    },
+  });
+
+  return response.data;
+};
+
 const workSessionProduction = {
   createWorkSessionProduction,
   getWorkSessionProductionId,
   updateNumberOfGoodProduct,
   updateCanNumber,
+  updateWorkSessionProductionRemark,
 };
 
 export default workSessionProduction;

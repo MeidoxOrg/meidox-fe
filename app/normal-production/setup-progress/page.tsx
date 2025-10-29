@@ -25,7 +25,7 @@ export default function SetupProgressPage() {
     materialNumber: "",
     startDate: "",
     startHour: "",
-    startMinute: "59",
+    startMinute: "",
     endDate: "",
     endHour: "",
     endMinute: "",

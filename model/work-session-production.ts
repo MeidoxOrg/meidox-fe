@@ -1,3 +1,5 @@
+import { WorkSessionModel } from "./work-session";
+
 export interface WorkSessionProductionBody {
   workSessionId: string;
   dateStart: string;
@@ -5,4 +7,24 @@ export interface WorkSessionProductionBody {
   productNumber: string;
   lotNumber: string;
   materialNumber: string;
+}
+
+export interface WorkSessionProduction {
+  id: string;
+  productNumber: string;
+  lotNumber: string;
+  materialNumber: string;
+  dateStart: string;
+  timeStart: string;
+  remark: string | null;
+  numberOfGoodProduct: number | null;
+  canNumber: number | null;
+  dateComplete: string | null;
+  timeComplete: string | null;
+  status: number;
+  workSession: WorkSessionModel;
+}
+
+export interface WorkSessionProductionResponse {
+  workSessionProduction: WorkSessionProduction;
 }

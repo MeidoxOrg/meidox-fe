@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { FormField } from "@/components/ui/form-field"
@@ -9,96 +9,64 @@ import { TimerDisplay } from "@/components/ui/timer-display"
 import { PageLayout } from "@/components/layout/page-layout"
 import { Textarea } from "@/components/ui/textarea"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { NumpadModal } from "@/components/ui/numpad-modal"
+import workSessionProduction from "@/services/work-session-production"
+import { localStorageService } from "@/helper/localstorage"
+import { WORKSESSION_PRODUCTION_ID } from "@/utils/constants"
+import { WorkSessionProduction } from "@/model/work-session-production"
+import { getEndTimeFromStart } from "@/utils/time-utils"
 
-// Numpad Modal Component
-function NumpadModal({
-    open,
-    onClose,
-    onConfirm,
-    initialValue = "",
-}: {
-    open: boolean
-    onClose: () => void
-    onConfirm: (value: string) => void
-    initialValue?: string
-}) {
-    const [inputValue, setInputValue] = useState(initialValue)
-
-    const handleInput = (num: string) => setInputValue((prev) => prev + num)
-    const handleClear = () => setInputValue("")
-
-    return (
-        <Dialog open={open} onOpenChange={onClose}>
-            <DialogContent className="max-w-xs">
-                <div className="text-center font-bold text-lg mb-4">数字入力</div>
-
-                {/* Display */}
-                <div className="border rounded-md p-2 text-xl text-center bg-gray-100 mb-4 h-12 flex items-center justify-center">
-                    {inputValue || "0"}
-                </div>
-
-                {/* Numpad */}
-                <div className="grid grid-cols-3 gap-4 mb-4 justify-items-center">
-                    {["7", "8", "9", "4", "5", "6", "1", "2", "3", "0"].map((num) => (
-                        <button
-                            key={num}
-                            onClick={() => handleInput(num)}
-                            className="w-16 h-16 rounded-full bg-amber-900 text-white text-2xl font-bold flex items-center justify-center"
-                        >
-                            {num}
-                        </button>
-                    ))}
-                </div>
-
-                {/* Clear */}
-                <button
-                    onClick={handleClear}
-                    className="w-full bg-green-400 text-black py-2 rounded-md font-bold"
-                >
-                    クリア
-                </button>
-
-                {/* Action */}
-                <div className="flex justify-between mt-4">
-                    <Button variant="outline" onClick={onClose}>キャンセル</Button>
-                    <Button
-                        className="bg-amber-800 text-white"
-                        onClick={() => {
-                            onConfirm(inputValue || "0")
-                            onClose()
-                        }}
-                    >
-                        OK
-                    </Button>
-                </div>
-            </DialogContent>
-        </Dialog>
-    )
-}
 
 export default function ProductionStartProgress() {
     const router = useRouter()
+    const workSessionProductionId = localStorageService.get<string>(WORKSESSION_PRODUCTION_ID, '');
+
     const today = new Date().toISOString().split("T")[0] // YYYY-MM-DD
 
     const [formData, setFormData] = useState({
-        productCode: "",
+        productNumber: "",
         lotNumber: "",
         materialNumber: "",
-        startDate: today,
-        startHour: "19",
-        startMinute: "13",
-        endDate: today,
-        endHour: "19",
-        endMinute: "14",
-        adjustmentItems: "",
-        adjustmentWeight: "",
-        notes: "",
+        startDate: "",
+        startHour: "",
+        startMinute: "",
+        endDate: "",
+        endHour: "",
+        endMinute: "",
+        numberOfGoodProduct: "",
+        canNumber: "",
+        remark: "",
     })
 
-    const [numpadTarget, setNumpadTarget] = useState<null | "items" | "weight">(null)
+    const [numpadTarget, setNumpadTarget] = useState<null | "numberOfGoodProduct" | "canNumber">(null)
 
     const handlePauseSetup = () => router.push("/home")
     const handleCompleteSetup = () => router.push("/home")
+
+    const getWorkSessionProductionById = useCallback(async () => {
+
+        await workSessionProduction.getWorkSessionProductionId(workSessionProductionId).then((res) => {
+            handleSetValueDefault(res.workSessionProduction)
+
+        }).catch((error) => { })
+
+    }, [])
+
+    const handleSetValueDefault = (data: WorkSessionProduction) => {
+        setFormData((prev) => ({ ...prev, productNumber: data.productNumber }))
+        setFormData((prev) => ({ ...prev, lotNumber: data.lotNumber }))
+        setFormData((prev) => ({ ...prev, materialNumber: data.materialNumber }))
+        setFormData((prev) => ({ ...prev, startDate: data.dateStart }))
+        setFormData((prev) => ({ ...prev, startHour: data.timeStart.split(":")[0] }))
+        setFormData((prev) => ({ ...prev, startMinute: data.timeStart.split(":")[1] }))
+        setFormData((prev) => ({ ...prev, endDate: data.dateStart }))
+        setFormData((prev) => ({ ...prev, endHour: getEndTimeFromStart(data.timeStart).endHour }))
+        setFormData((prev) => ({ ...prev, endMinute: getEndTimeFromStart(data.timeStart).endMinute }))
+    }
+
+    useEffect(() => {
+        getWorkSessionProductionById()
+    }, [getWorkSessionProductionById])
 
     return (
         <PageLayout title="生産中" rightContent="19:14:03">
@@ -108,9 +76,10 @@ export default function ProductionStartProgress() {
                     <div className="space-y-6">
                         <FormField
                             label="品番"
-                            value={formData.productCode}
+                            value={formData.productNumber}
                             onChange={(value) => setFormData((prev) => ({ ...prev, productCode: value }))}
                             className="w-full"
+                            disabled
                         />
 
                         <FormField
@@ -118,6 +87,7 @@ export default function ProductionStartProgress() {
                             value={formData.lotNumber}
                             onChange={(value) => setFormData((prev) => ({ ...prev, lotNumber: value }))}
                             className="w-full"
+                            disabled
                         />
 
                         <FormField
@@ -125,16 +95,17 @@ export default function ProductionStartProgress() {
                             value={formData.materialNumber}
                             onChange={(value) => setFormData((prev) => ({ ...prev, materialNumber: value }))}
                             className="w-full"
+                            disabled
                         />
                         {/* 段取り調整品（個） */}
                         <div>
                             <label className="block text-sm font-medium text-black mb-2">良品数</label>
                             <div className="flex items-center gap-2">
                                 <div className="flex-1 bg-green-200 border-2 border-amber-800 rounded-md px-3 py-3 text-center font-medium">
-                                    {formData.adjustmentItems ? `${formData.adjustmentItems} 個` : "入力はこちら→"}
+                                    {formData.numberOfGoodProduct ? `${formData.numberOfGoodProduct} 個` : "入力はこちら→"}
                                 </div>
                                 <Button
-                                    onClick={() => setNumpadTarget("items")}
+                                    onClick={() => setNumpadTarget("numberOfGoodProduct")}
                                     className="bg-amber-800 hover:bg-amber-900 text-white p-3 rounded-md"
                                 >
                                     ⌨
@@ -147,10 +118,10 @@ export default function ProductionStartProgress() {
                             <label className="block text-sm font-medium text-black mb-2">J缶№</label>
                             <div className="flex items-center gap-2">
                                 <div className="flex-1 bg-green-200 border-2 border-amber-800 rounded-md px-3 py-3 text-center font-medium">
-                                    {formData.adjustmentWeight ? `${formData.adjustmentWeight}` : "入力はこちら→"}
+                                    {formData.canNumber ? `${formData.canNumber}` : "入力はこちら→"}
                                 </div>
                                 <Button
-                                    onClick={() => setNumpadTarget("weight")}
+                                    onClick={() => setNumpadTarget("canNumber")}
                                     className="bg-amber-800 hover:bg-amber-900 text-white p-3 rounded-md"
                                 >
                                     ⌨
@@ -202,7 +173,7 @@ export default function ProductionStartProgress() {
                         <div className="mt-12">
                             <label className="block text-sm font-medium text-black mb-2">備考</label>
                             <Textarea
-                                value={formData.notes}
+                                value={formData.remark}
                                 onChange={(e) =>
                                     setFormData((prev) => ({ ...prev, notes: e.target.value }))
                                 }
@@ -242,17 +213,17 @@ export default function ProductionStartProgress() {
                 open={!!numpadTarget}
                 onClose={() => setNumpadTarget(null)}
                 initialValue={
-                    numpadTarget === "items"
-                        ? formData.adjustmentItems
-                        : numpadTarget === "weight"
-                            ? formData.adjustmentWeight
+                    numpadTarget === "numberOfGoodProduct"
+                        ? formData.numberOfGoodProduct
+                        : numpadTarget === "canNumber"
+                            ? formData.canNumber
                             : ""
                 }
                 onConfirm={(val) => {
-                    if (numpadTarget === "items") {
-                        setFormData((prev) => ({ ...prev, adjustmentItems: val }))
-                    } else if (numpadTarget === "weight") {
-                        setFormData((prev) => ({ ...prev, adjustmentWeight: val }))
+                    if (numpadTarget === "numberOfGoodProduct") {
+                        setFormData((prev) => ({ ...prev, numberOfGoodProduct: val }))
+                    } else if (numpadTarget === "canNumber") {
+                        setFormData((prev) => ({ ...prev, canNumber: val }))
                     }
                 }}
             />

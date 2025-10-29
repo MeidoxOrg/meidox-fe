@@ -21,6 +21,7 @@ const apiLinks = {
   },
   workSessionProduction: {
     create: `${meidoxApiUrl}/WorkSessionProduction`,
+    getWorkSessionProductionById: `${meidoxApiUrl}/WorkSessionProduction`,
   },
 };
 

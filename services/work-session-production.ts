@@ -1,5 +1,8 @@
 import { PostAPIResponse } from "@/model/work-session";
-import { WorkSessionProductionBody } from "@/model/work-session-production";
+import {
+  WorkSessionProductionBody,
+  WorkSessionProductionResponse,
+} from "@/model/work-session-production";
 import apiLinks from "@/utils/api-links";
 import httpClient from "@/utils/http-client";
 
@@ -14,8 +17,19 @@ const createWorkSessionProduction = async (
   return response.data;
 };
 
+const getWorkSessionProductionId = async (
+  workSessionSetupId: String
+): Promise<WorkSessionProductionResponse> => {
+  const response = await httpClient.get<WorkSessionProductionResponse>({
+    url: `${apiLinks.workSessionProduction.getWorkSessionProductionById}/${workSessionSetupId}`,
+  });
+
+  return response.data;
+};
+
 const workSessionProduction = {
   createWorkSessionProduction,
+  getWorkSessionProductionId,
 };
 
 export default workSessionProduction;

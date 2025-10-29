@@ -10,6 +10,7 @@ interface NumpadModalProps {
     onConfirm: (value: string) => void
     initialValue?: string
     title?: string
+    keys?: string[] // 👈 thêm prop
 }
 
 export function NumpadModal({
@@ -18,9 +19,9 @@ export function NumpadModal({
     onConfirm,
     initialValue = "",
     title = "数字入力",
+    keys = ["7", "8", "9", "4", "5", "6", "1", "2", "3", "0"],
 }: NumpadModalProps) {
     const [inputValue, setInputValue] = useState(initialValue)
-
     useEffect(() => {
         if (open) setInputValue(initialValue || "")
     }, [open, initialValue])
@@ -41,7 +42,7 @@ export function NumpadModal({
 
                 {/* Numpad */}
                 <div className="grid grid-cols-3 gap-4 mb-4 justify-items-center">
-                    {["7", "8", "9", "4", "5", "6", "1", "2", "3", "0"].map((num) => (
+                    {keys.map((num) => (
                         <button
                             key={num}
                             onClick={() => handleInput(num)}

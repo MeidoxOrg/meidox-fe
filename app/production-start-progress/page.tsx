@@ -316,6 +316,11 @@ export default function ProductionStartProgress() {
                         handleUpdateCanNumber(val)
                     }
                 }}
+                keys={
+                    numpadTarget === "canNumber"
+                        ? ["7", "8", "9", "4", "5", "6", "1", "2", "3", "0", "M"]
+                        : undefined
+                }
             />
 
         </PageLayout>

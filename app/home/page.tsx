@@ -98,10 +98,10 @@ export default function Dashboard() {
                     {/* Right small buttons */}
                     <div className="grid grid-cols-2 gap-3 w-full md:w-80">
                         <Button className="h-20 text-sm font-bold rounded-lg bg-yellow-300 text-black"
-                            onClick={() => router.push("/operation-end")}>作業終了</Button>
+                            onClick={() => router.push("/operation-end")} disabled>作業終了</Button>
 
                         <Button className="h-20 text-sm font-bold rounded-lg bg-amber-800 text-white"
-                            onClick={() => router.push("/data-correction")}>編集画面へ</Button>
+                            onClick={() => router.push("/data-correction")} disabled>編集画面へ</Button>
                     </div>
                 </div>
 
@@ -115,6 +115,7 @@ export default function Dashboard() {
                                     key={index}
                                     onClick={() => router.push(button.route)}
                                     className={`h-20 text-sm font-bold whitespace-pre-line rounded-lg ${button.color}`}
+                                    disabled={index !== 0 ? true : false}
                                 >
                                     {button.label}
                                 </Button>
@@ -131,6 +132,7 @@ export default function Dashboard() {
                                 key={index}
                                 onClick={() => router.push(button.route)}
                                 className="h-20 text-sm font-bold whitespace-pre-line rounded-lg bg-white border-2 border-gray-400 text-black"
+                                disabled
                             >
                                 {button.label}
                             </Button>

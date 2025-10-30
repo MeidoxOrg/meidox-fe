@@ -60,26 +60,54 @@ export default function DailySummaryPage() {
             {/* Main content: left list + right summary */}
             <div className="flex flex-1 flex-col md:flex-row overflow-hidden">
                 {/* LEFT SIDE */}
-                {/* LEFT SIDE */}
                 <div className="w-full md:w-1/2 overflow-y-auto p-3 bg-gray-50 border-r border-gray-200">
-                    {dataWorkSessionSetup.length > 0 && dataWorkSessionSetup?.map((item, idx) => (
-                        <Card key={idx} className="p-3 mb-3 bg-gray-100 rounded-md shadow-sm">
-                            <div className="grid grid-cols-3 gap-x-6 gap-y-1 text-[13px] leading-tight text-gray-800">
-                                <p>{formatDateToJapanese(item?.dateStart)}</p>
-                                <p>{formatTimeToJapanese(item?.timeStart)}</p>
-                                <p className="text-right">{item.productNumber}</p>
+                    {dataWorkSessionSetup.map((item, idx) => {
+                        const start = new Date(`${item.dateStart}T${item.timeStart}`)
+                        const end = new Date(`${item.dateComplete}T${item.timeComplete}`)
+                        const diffMinutes = Math.round((end.getTime() - start.getTime()) / 60000) // tính phút
 
-                                <p>{session?.user?.username}</p>
-                                <p>段取り開始</p>
-                                <p className="text-right">{item.lotNumber}</p>
+                        return (
+                            <>
+                                {/* Card 1: 段取り開始 */}
+                                <Card key={`${idx}-start`} className="p-3 mb-3 bg-gray-100 rounded-md shadow-sm">
+                                    <div className="grid grid-cols-3 gap-x-6 gap-y-1 text-[13px] leading-tight text-gray-800">
+                                        <p>{formatDateToJapanese(item.dateStart)}</p>
+                                        <p>{formatTimeToJapanese(item.timeStart)}</p>
+                                        <p className="text-right">{item.productNumber}</p>
 
-                                <p className="col-span-3 mt-1 text-right">{item.materialNumber}</p>
-                            </div>
-                        </Card>
-                    ))}
+                                        <p>{session?.user?.username}</p>
+                                        <p>段取り開始</p>
+                                        <p className="text-right">{item.lotNumber}</p>
+
+                                        <p className="col-span-3 mt-1 text-right">{item.materialNumber}</p>
+                                    </div>
+                                </Card>
+
+                                {/* Card 2: 段取り完了 */}
+                                {item.timeComplete !== null && <Card key={`${idx}-end`} className="p-3 mb-3 bg-gray-100 rounded-md shadow-sm">
+                                    <div className="grid grid-cols-3 gap-x-6 gap-y-1 text-[13px] leading-tight text-gray-800">
+                                        <p>{formatDateToJapanese(item.dateStart)}</p>
+                                        <p>{formatTimeToJapanese(item?.timeComplete ?? "")}</p>
+                                        <p className="text-right">{item.productNumber}</p>
+
+                                        <p>{session?.user?.username}</p>
+                                        <p>段取り完了</p>
+                                        <p className="text-right">{item.lotNumber}</p>
+
+                                        <p className="col-span-3 mt-1 text-right">
+                                            {diffMinutes}分
+                                        </p>
+                                        <p className="col-span-3 mt-1 text-right">
+                                            {item.materialNumber}
+                                        </p>
+                                    </div>
+                                </Card>}
+                            </>
+                        )
+                    })}
+
                 </div>
 
-                {/* RIGHT SIDE */}
                 {/* RIGHT SIDE */}
                 <div className="w-full md:w-1/2 overflow-y-auto p-4 bg-white">
                     {/* Top summary numbers */}

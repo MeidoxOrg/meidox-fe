@@ -65,3 +65,23 @@ export interface CompleteWorkSessionSetup {
   dateComplete: string;
   timeComplete: string;
 }
+
+export interface WorkSessionSetupByWs {
+  id: string;
+  workSessionId: string;
+  productNumber: string;
+  lotNumber: string;
+  materialNumber: string;
+  dateStart: string;
+  timeStart: string;
+  remark: string | null;
+  adjustmentItemUnit: number | null;
+  adjustmentItemKg: number | null;
+  dateComplete: string | null;
+  timeComplete: string | null;
+  status: number;
+}
+
+export interface WorkSessionSetupByWsIdResponse {
+  workSessionSetups: WorkSessionSetupByWs[];
+}

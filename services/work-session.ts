@@ -5,6 +5,7 @@ import {
   WorkSessionByIdResponse,
   WorkSessionParams,
   WorkSessionSetupBody,
+  WorkSessionSetupByWsIdResponse,
   WorkSessionSetupResponse,
 } from "@/model/work-session";
 import apiLinks from "@/utils/api-links";
@@ -119,6 +120,16 @@ const pauseWorkSessionSetup = async (id: string): Promise<PostAPIResponse> => {
   return response.data;
 };
 
+const getWorkSessionSetupByWsId = async (
+  workSessionId: String
+): Promise<WorkSessionSetupByWsIdResponse> => {
+  const response = await httpClient.get<WorkSessionSetupByWsIdResponse>({
+    url: `${apiLinks.worksession.workSessionSetupByWsId}/${workSessionId}`,
+  });
+
+  return response.data;
+};
+
 const workSessionServices = {
   createWorkSession,
   getWorkSessionById,
@@ -129,6 +140,7 @@ const workSessionServices = {
   updateWorkSessionSetupRemark,
   completeWorkSessionSetup,
   pauseWorkSessionSetup,
+  getWorkSessionSetupByWsId,
 };
 
 export default workSessionServices;

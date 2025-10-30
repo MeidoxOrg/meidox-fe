@@ -18,6 +18,7 @@ const apiLinks = {
     updateRemark: `${meidoxApiUrl}/WorkSessionSetup/Remark`,
     completeWorkSessionSetup: `${meidoxApiUrl}/WorkSessionSetup/Complete`,
     pauseWorkSessionSetup: `${meidoxApiUrl}/WorkSessionSetup/Pause`,
+    workSessionSetupByWsId: `${meidoxApiUrl}/WorkSessionSetup/WorkSession`,
   },
   workSessionProduction: {
     create: `${meidoxApiUrl}/WorkSessionProduction`,

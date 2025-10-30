@@ -1,15 +1,40 @@
 "use client"
 
-import { useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ChevronLeft, Home } from "lucide-react"
+import workSessionServices from "@/services/work-session"
+import { localStorageService } from "@/helper/localstorage"
+import { WORKSESSION_ID } from "@/utils/constants"
+import { WorkSessionSetupByWs } from "@/model/work-session"
+import { formatDateToJapanese, formatTimeToJapanese } from "@/utils/time-utils"
+import { useSession } from "next-auth/react"
+
 
 export default function DailySummaryPage() {
     const [selectedDate] = useState("2025年8月28日")
     const [shift] = useState("黄")
     const [machine] = useState("CPH35")
+    const { data: session } = useSession()
+
+    const workSessionId = localStorageService.get<string>(WORKSESSION_ID, "")
+
+    const [dataWorkSessionSetup, setDataWorkSessionSetup] = useState<WorkSessionSetupByWs[]>([])
+
+    const getDataWorkSessionSetupByWsId = useCallback(async () => {
+        try {
+            const response = await workSessionServices.getWorkSessionSetupByWsId(workSessionId);
+            setDataWorkSessionSetup(response.workSessionSetups);
+        } catch (error) {
+
+        }
+    }, [])
+
+    useEffect(() => {
+        getDataWorkSessionSetupByWsId()
+    }, [getDataWorkSessionSetupByWsId])
 
     return (
         <div className="flex flex-col h-screen bg-gray-100">
@@ -37,45 +62,19 @@ export default function DailySummaryPage() {
                 {/* LEFT SIDE */}
                 {/* LEFT SIDE */}
                 <div className="w-full md:w-1/2 overflow-y-auto p-3 bg-gray-50 border-r border-gray-200">
-                    {[
-                        {
-                            time: "18時00分",
-                            action: "作業開始",
-                            remark: "",
-                        },
-                        {
-                            time: "18時00分",
-                            action: "ミーティング開始",
-                            remark: "",
-                        },
-                        {
-                            time: "18時25分",
-                            action: "ミーティング終了",
-                            remark: "25分",
-                        },
-                        {
-                            time: "18時25分",
-                            action: "材料交換開始",
-                            remark: "MGH250828034",
-                        },
-                        {
-                            time: "18時44分",
-                            action: "材料交換終了",
-                            remark: "19分 MGH250828034",
-                        },
-                        {
-                            time: "18時44分",
-                            action: "生産開始",
-                            remark: "119515-01200 / MGH250828034",
-                        },
-                    ].map((item, idx) => (
-                        <Card key={idx} className="p-3 mb-3 bg-white shadow-sm">
-                            <p className="text-sm text-gray-700">{selectedDate}</p>
-                            <p className="font-semibold text-gray-900">{item.time}</p>
-                            <p className="text-sm">{item.action}</p>
-                            {item.remark && (
-                                <p className="text-xs text-gray-600 mt-1">{item.remark}</p>
-                            )}
+                    {dataWorkSessionSetup.length > 0 && dataWorkSessionSetup?.map((item, idx) => (
+                        <Card key={idx} className="p-3 mb-3 bg-gray-100 rounded-md shadow-sm">
+                            <div className="grid grid-cols-3 gap-x-6 gap-y-1 text-[13px] leading-tight text-gray-800">
+                                <p>{formatDateToJapanese(item?.dateStart)}</p>
+                                <p>{formatTimeToJapanese(item?.timeStart)}</p>
+                                <p className="text-right">{item.productNumber}</p>
+
+                                <p>{session?.user?.username}</p>
+                                <p>段取り開始</p>
+                                <p className="text-right">{item.lotNumber}</p>
+
+                                <p className="col-span-3 mt-1 text-right">{item.materialNumber}</p>
+                            </div>
                         </Card>
                     ))}
                 </div>

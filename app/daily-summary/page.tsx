@@ -23,6 +23,7 @@ export default function DailySummaryPage() {
 
     const workSessionId = localStorageService.get<string>(WORKSESSION_ID, "")
 
+    const [totalSetupTime, setTotalSetupTime] = useState<number>()
     const [dataWorkSessionSetup, setDataWorkSessionSetup] = useState<WorkSessionSetupByWs[]>([])
     const [dataWorkSessionProduction, setDataWorkSessionProduction] = useState<WorkSessionProductionByWsId[]>([])
 
@@ -43,6 +44,49 @@ export default function DailySummaryPage() {
 
         }
     }, [])
+
+    const calculateStandardProcessingQuantity = (
+        productions: WorkSessionProductionByWsId[]
+    ): number => {
+        if (!productions?.length) return 0
+        return productions.reduce(
+            (sum, item) => sum + (item.numberOfGoodProduct || 0),
+            0
+        )
+    }
+
+    const calculateDefectQuantity = (
+        productions: WorkSessionSetupByWs[]
+    ): number => {
+        if (!productions?.length) return 0
+        return productions.reduce(
+            (sum, item) => sum + (item.adjustmentItemUnit || 0),
+            0
+        )
+    }
+
+    const calculateTotalSetupDurationMinutes = (
+        setups: WorkSessionSetupByWs[] = []
+    ): number => {
+        if (!Array.isArray(setups) || setups.length === 0) return 0
+
+        return setups.reduce((sum, item) => {
+            if (!item.dateStart || !item.timeStart || !item.dateComplete || !item.timeComplete) {
+                return sum // bỏ qua nếu thiếu dữ liệu
+            }
+
+            const start = new Date(`${item.dateStart}T${item.timeStart}`)
+            const end = new Date(`${item.dateComplete}T${item.timeComplete}`)
+
+            // xử lý nếu qua ngày (VD: setup từ 23:50 → 00:10 hôm sau)
+            if (end < start) {
+                end.setDate(end.getDate() + 1)
+            }
+
+            const diffMinutes = Math.round((end.getTime() - start.getTime()) / 60000)
+            return sum + diffMinutes
+        }, 0)
+    }
 
     useEffect(() => {
         getDataWorkSessionSetupByWsId()
@@ -172,58 +216,58 @@ export default function DailySummaryPage() {
                 <div className="w-full md:w-1/2 overflow-y-auto p-4 bg-white">
                     {/* Top summary numbers */}
                     <div className="grid grid-cols-4 gap-2 text-sm mb-4">
-                        <SummaryItem label="標準加工数" value="10800個" />
-                        <SummaryItem label="負荷時間" value="557分" />
-                        <SummaryItem label="停止時間" value="195分" />
-                        <SummaryItem label="稼働時間" value="362分" />
+                        <SummaryItem label="標準加工数" value={`${calculateStandardProcessingQuantity(dataWorkSessionProduction)}個`} />
+                        <SummaryItem label="負荷時間" value="X分" />
+                        <SummaryItem label="停止時間" value="X分" />
+                        <SummaryItem label="稼働時間" value="X分" />
 
-                        <SummaryItem label="操業時間" value="658分" />
-                        <SummaryItem label="良品数" value="48180個" />
-                        <SummaryItem label="異常数" value="700個" />
-                        <SummaryItem label="段取回数" value="2回" />
+                        <SummaryItem label="操業時間" value="X分" />
+                        <SummaryItem label="良品数" value="X個" />
+                        <SummaryItem label="異常数" value={`${calculateDefectQuantity(dataWorkSessionSetup)}個`} />
+                        <SummaryItem label="段取回数" value={`${dataWorkSessionSetup.length}回`} />
                     </div>
 
                     {/* Table 1: operations */}
                     <div className="border border-gray-300 rounded-md mb-4 p-2 bg-yellow-50">
                         <div className="grid grid-cols-4 gap-2 text-sm">
-                            <SummaryItem label="段取り" value="135分" />
-                            <SummaryItem label="金型交換" value="0分" />
-                            <SummaryItem label="材料交換" value="39分" />
-                            <SummaryItem label="調整" value="0分" />
+                            <SummaryItem label="段取り" value={`${calculateTotalSetupDurationMinutes(dataWorkSessionSetup)}分`} />
+                            <SummaryItem label="金型交換" value="X分" />
+                            <SummaryItem label="材料交換" value="X分" />
+                            <SummaryItem label="調整" value="X分" />
 
-                            <SummaryItem label="設備故障" value="0分" />
-                            <SummaryItem label="異常処置" value="0分" />
-                            <SummaryItem label="生産準備" value="0分" />
-                            <SummaryItem label="他機対応" value="0分" />
+                            <SummaryItem label="設備故障" value="X分" />
+                            <SummaryItem label="異常処置" value="X分" />
+                            <SummaryItem label="生産準備" value="X分" />
+                            <SummaryItem label="他機対応" value="X分" />
 
-                            <SummaryItem label="品質チェック" value="0分" />
-                            <SummaryItem label="選別" value="0分" />
-                            <SummaryItem label="4S" value="0分" />
-                            <SummaryItem label="その他停止" value="21分" />
+                            <SummaryItem label="品質チェック" value="X分" />
+                            <SummaryItem label="選別" value="X分" />
+                            <SummaryItem label="4S" value="X分" />
+                            <SummaryItem label="その他停止" value="X分" />
                         </div>
                     </div>
 
                     {/* Table 2: meetings and breaks */}
                     <div className="border border-gray-300 rounded-md mb-4 p-2 bg-rose-50">
                         <div className="grid grid-cols-4 gap-2 text-sm">
-                            <SummaryItem label="休憩" value="76分" />
-                            <SummaryItem label="ミーティング" value="25分" />
-                            <SummaryItem label="計画保全" value="0分" />
-                            <SummaryItem label="4S（昼休憩後）" value="0分" />
+                            <SummaryItem label="休憩" value="X分" />
+                            <SummaryItem label="ミーティング" value="X分" />
+                            <SummaryItem label="計画保全" value="X分" />
+                            <SummaryItem label="4S（昼休憩後）" value="X分" />
 
-                            <SummaryItem label="かんばんなし" value="0分" />
-                            <SummaryItem label="材料・金型欠品" value="0分" />
-                            <SummaryItem label="作業者なし" value="0分" />
-                            <SummaryItem label="その他停止" value="0分" />
+                            <SummaryItem label="かんばんなし" value="X分" />
+                            <SummaryItem label="材料・金型欠品" value="X分" />
+                            <SummaryItem label="作業者なし" value="X分" />
+                            <SummaryItem label="その他停止" value="X分" />
                         </div>
                     </div>
 
                     {/* Performance summary */}
                     <div className="grid grid-cols-4 gap-2 text-sm text-center">
-                        <SummaryItem label="時間稼働率" value="65%" />
-                        <SummaryItem label="性能稼働率" value="73.9%" />
-                        <SummaryItem label="良品率" value="98.6%" />
-                        <SummaryItem label="設備総合効率" value="47.4%" />
+                        <SummaryItem label="時間稼働率" value="X%" />
+                        <SummaryItem label="性能稼働率" value="X%" />
+                        <SummaryItem label="良品率" value="X%" />
+                        <SummaryItem label="設備総合効率" value="X%" />
                     </div>
                 </div>
             </div>

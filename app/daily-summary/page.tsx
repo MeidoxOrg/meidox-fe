@@ -8,7 +8,7 @@ import { Home } from "lucide-react"
 import workSessionServices from "@/services/work-session"
 import { localStorageService } from "@/helper/localstorage"
 import { WORKSESSION_ID } from "@/utils/constants"
-import { WorkSessionSetupByWs } from "@/model/work-session"
+import { WorkSessionModel, WorkSessionSetupByWs } from "@/model/work-session"
 import { formatDateToJapanese, formatTimeToJapanese } from "@/utils/time-utils"
 import { useSession } from "next-auth/react"
 import workSessionProduction from "@/services/work-session-production"
@@ -23,9 +23,9 @@ export default function DailySummaryPage() {
 
     const workSessionId = localStorageService.get<string>(WORKSESSION_ID, "")
 
-    const [totalSetupTime, setTotalSetupTime] = useState<number>()
     const [dataWorkSessionSetup, setDataWorkSessionSetup] = useState<WorkSessionSetupByWs[]>([])
     const [dataWorkSessionProduction, setDataWorkSessionProduction] = useState<WorkSessionProductionByWsId[]>([])
+    const [workSessionData, setWorkSessionData] = useState<WorkSessionModel>();
 
     const getDataWorkSessionSetupByWsId = useCallback(async () => {
         try {
@@ -42,6 +42,18 @@ export default function DailySummaryPage() {
             setDataWorkSessionProduction(response.workSessionProductions);
         } catch (error) {
 
+        }
+    }, [])
+
+    const getWorkSessionById = useCallback(async () => {
+        try {
+            const workSessionId = localStorageService.get(WORKSESSION_ID, '');
+            const response = await workSessionServices.getWorkSessionById(workSessionId)
+            if (response.workSession.id) {
+                setWorkSessionData(response.workSession)
+            }
+        } catch (error) {
+            console.error(error);
         }
     }, [])
 
@@ -91,7 +103,8 @@ export default function DailySummaryPage() {
     useEffect(() => {
         getDataWorkSessionSetupByWsId()
         getDataWorkSessionProductionByWsId()
-    }, [getDataWorkSessionSetupByWsId, getDataWorkSessionProductionByWsId])
+        getWorkSessionById()
+    }, [getDataWorkSessionSetupByWsId, getDataWorkSessionProductionByWsId, getWorkSessionById])
 
     return (
         <div className="flex flex-col h-screen bg-gray-100">
@@ -118,6 +131,17 @@ export default function DailySummaryPage() {
             <div className="flex flex-1 flex-col md:flex-row overflow-hidden">
                 {/* LEFT SIDE */}
                 <div className="w-full md:w-1/2 overflow-y-auto p-3 bg-gray-50 border-r border-gray-200">
+
+                    <Card className="p-3 mb-3 bg-gray-100 rounded-md shadow-sm">
+                        <div className="grid grid-cols-3 gap-x-6 gap-y-1 text-[13px] leading-tight text-gray-800">
+                            <p>{formatDateToJapanese(workSessionData?.workDate ?? "")}</p>
+                            <p>{formatTimeToJapanese(workSessionData?.workTime ?? "")}</p>
+                            <p></p>
+                            <p>{session?.user?.username}</p>
+                            <p>作業開始</p>
+                        </div>
+                    </Card>
+
                     {dataWorkSessionSetup.map((item, idx) => {
                         const start = new Date(`${item.dateStart}T${item.timeStart}`)
                         const end = new Date(`${item.dateComplete}T${item.timeComplete}`)

@@ -43,7 +43,7 @@ export default function LoginPage() {
       if (!res.ok) {
         throw new Error(data?.error || "Login failed");
       }
-      await signIn("identity", { callbackUrl: "/work-start" });
+      await signIn("identity", { callbackUrl: "/introduction" });
       router.push("/");
     } catch (err: any) {
     }

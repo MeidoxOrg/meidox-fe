@@ -11,6 +11,7 @@ const protectedPaths = [
   "/production-start",
   "/production-start-progress",
   "/daily-summary",
+  "/introduction",
 ];
 const authPages = ["/login", "/register"];
 

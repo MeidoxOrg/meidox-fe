@@ -3,6 +3,7 @@ import {
   CompleteWorkSessionProduction,
   WorkSessionProductionBody,
   WorkSessionProductionResponse,
+  WorkSessionProductionsByWsIdResponse,
 } from "@/model/work-session-production";
 import apiLinks from "@/utils/api-links";
 import httpClient from "@/utils/http-client";
@@ -97,6 +98,16 @@ const pauseWorkSessionProduction = async (
   return response.data;
 };
 
+const getWorkSessionProductionByWsId = async (
+  workSessionId: String
+): Promise<WorkSessionProductionsByWsIdResponse> => {
+  const response = await httpClient.get<WorkSessionProductionsByWsIdResponse>({
+    url: `${apiLinks.workSessionProduction.getWorkSessionProductionByWsId}/${workSessionId}`,
+  });
+
+  return response.data;
+};
+
 const workSessionProduction = {
   createWorkSessionProduction,
   getWorkSessionProductionId,
@@ -105,6 +116,7 @@ const workSessionProduction = {
   updateWorkSessionProductionRemark,
   completeWorkSessionProduction,
   pauseWorkSessionProduction,
+  getWorkSessionProductionByWsId,
 };
 
 export default workSessionProduction;

@@ -4,13 +4,15 @@ import { useCallback, useEffect, useState } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { ChevronLeft, Home } from "lucide-react"
+import { Home } from "lucide-react"
 import workSessionServices from "@/services/work-session"
 import { localStorageService } from "@/helper/localstorage"
 import { WORKSESSION_ID } from "@/utils/constants"
 import { WorkSessionSetupByWs } from "@/model/work-session"
 import { formatDateToJapanese, formatTimeToJapanese } from "@/utils/time-utils"
 import { useSession } from "next-auth/react"
+import workSessionProduction from "@/services/work-session-production"
+import { WorkSessionProductionByWsId } from "@/model/work-session-production"
 
 
 export default function DailySummaryPage() {
@@ -22,6 +24,7 @@ export default function DailySummaryPage() {
     const workSessionId = localStorageService.get<string>(WORKSESSION_ID, "")
 
     const [dataWorkSessionSetup, setDataWorkSessionSetup] = useState<WorkSessionSetupByWs[]>([])
+    const [dataWorkSessionProduction, setDataWorkSessionProduction] = useState<WorkSessionProductionByWsId[]>([])
 
     const getDataWorkSessionSetupByWsId = useCallback(async () => {
         try {
@@ -32,9 +35,19 @@ export default function DailySummaryPage() {
         }
     }, [])
 
+    const getDataWorkSessionProductionByWsId = useCallback(async () => {
+        try {
+            const response = await workSessionProduction.getWorkSessionProductionByWsId(workSessionId);
+            setDataWorkSessionProduction(response.workSessionProductions);
+        } catch (error) {
+
+        }
+    }, [])
+
     useEffect(() => {
         getDataWorkSessionSetupByWsId()
-    }, [getDataWorkSessionSetupByWsId])
+        getDataWorkSessionProductionByWsId()
+    }, [getDataWorkSessionSetupByWsId, getDataWorkSessionProductionByWsId])
 
     return (
         <div className="flex flex-col h-screen bg-gray-100">
@@ -92,6 +105,53 @@ export default function DailySummaryPage() {
 
                                         <p>{session?.user?.username}</p>
                                         <p>段取り完了</p>
+                                        <p className="text-right">{item.lotNumber}</p>
+
+                                        <p className="col-span-3 mt-1 text-right">
+                                            {diffMinutes}分
+                                        </p>
+                                        <p className="col-span-3 mt-1 text-right">
+                                            {item.materialNumber}
+                                        </p>
+                                    </div>
+                                </Card>}
+                            </>
+                        )
+                    })}
+
+                    {/* SHOW CARD WORKSESIONPRODUCTION */}
+
+                    {dataWorkSessionProduction.map((item, idx) => {
+                        const start = new Date(`${item.dateStart}T${item.timeStart}`)
+                        const end = new Date(`${item.dateComplete}T${item.timeComplete}`)
+                        const diffMinutes = Math.round((end.getTime() - start.getTime()) / 60000) // tính phút
+
+                        return (
+                            <>
+                                {/* Card 1: 段取り開始 */}
+                                <Card key={`${idx}-start`} className="p-3 mb-3 bg-gray-100 rounded-md shadow-sm">
+                                    <div className="grid grid-cols-3 gap-x-6 gap-y-1 text-[13px] leading-tight text-gray-800">
+                                        <p>{formatDateToJapanese(item.dateStart)}</p>
+                                        <p>{formatTimeToJapanese(item.timeStart)}</p>
+                                        <p className="text-right">{item.productNumber}</p>
+
+                                        <p>{session?.user?.username}</p>
+                                        <p>生産開始</p>
+                                        <p className="text-right">{item.lotNumber}</p>
+
+                                        <p className="col-span-3 mt-1 text-right">{item.materialNumber}</p>
+                                    </div>
+                                </Card>
+
+                                {/* Card 2: 段取り完了 */}
+                                {item.timeComplete !== null && <Card key={`${idx}-end`} className="p-3 mb-3 bg-gray-100 rounded-md shadow-sm">
+                                    <div className="grid grid-cols-3 gap-x-6 gap-y-1 text-[13px] leading-tight text-gray-800">
+                                        <p>{formatDateToJapanese(item.dateStart)}</p>
+                                        <p>{formatTimeToJapanese(item?.timeComplete ?? "")}</p>
+                                        <p className="text-right">{item.productNumber}</p>
+
+                                        <p>{session?.user?.username}</p>
+                                        <p>生産終了</p>
                                         <p className="text-right">{item.lotNumber}</p>
 
                                         <p className="col-span-3 mt-1 text-right">

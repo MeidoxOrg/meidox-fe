@@ -28,6 +28,7 @@ const apiLinks = {
     updateRemark: `${meidoxApiUrl}/WorkSessionProduction/Remark`,
     completeWorkSessionProduction: `${meidoxApiUrl}/WorkSessionProduction/Complete`,
     pauseWorkSessionProduction: `${meidoxApiUrl}/WorkSessionProduction/Pause`,
+    getWorkSessionProductionByWsId: `${meidoxApiUrl}/WorkSessionProduction/WorkSession`,
   },
 };
 

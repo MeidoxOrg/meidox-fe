@@ -34,3 +34,23 @@ export interface CompleteWorkSessionProduction {
   dateComplete: string;
   timeComplete: string;
 }
+
+export interface WorkSessionProductionByWsId {
+  id: string;
+  workSessionId: string;
+  productNumber: string;
+  lotNumber: string;
+  materialNumber: string;
+  dateStart: string;
+  timeStart: string;
+  remark: string | null;
+  numberOfGoodProduct: number;
+  canNumber: string;
+  dateComplete: string | null;
+  timeComplete: string | null;
+  status: number;
+}
+
+export interface WorkSessionProductionsByWsIdResponse {
+  workSessionProductions: WorkSessionProductionByWsId[];
+}

@@ -10,6 +10,7 @@ const protectedPaths = [
   "/normal-production/setup-progress",
   "/production-start",
   "/production-start-progress",
+  "/daily-summary",
 ];
 const authPages = ["/login", "/register"];
 

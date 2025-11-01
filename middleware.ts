@@ -39,11 +39,11 @@ export async function middleware(req: NextRequest) {
   }
 
   if (pathname === "/") {
-    return NextResponse.redirect(new URL("/work-start", req.url));
+    return NextResponse.redirect(new URL("/introduction", req.url));
   }
 
   if (authPages.some((p) => pathname.startsWith(p)) && token) {
-    return NextResponse.redirect(new URL("/work-start", req.url));
+    return NextResponse.redirect(new URL("/introduction", req.url));
   }
 
   if (protectedPaths.some((p) => pathname.startsWith(p)) && !token) {

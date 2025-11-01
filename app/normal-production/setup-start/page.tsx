@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form"
 import { useRouter } from "next/navigation"
 import { PageLayout } from "@/components/layout/page-layout"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import workSessionServices from "@/services/work-session"
 import { localStorageService } from "@/helper/localstorage"
 import { PRODUCT_INFO, WORKSESSION_ID, WORKSESSION_SETUP_ID } from "@/utils/constants"
@@ -23,6 +23,8 @@ export default function SetupStartPage() {
   const [materialData, setMaterialData] = useState("")
   const [isScanningKanban, setIsScanningKanban] = useState(false)
   const [isScanningMaterialData, setIsScanningMaterialData] = useState(false)
+  const workSessionId = localStorageService.get<string>(WORKSESSION_ID, "")
+  const [showScanQR, setShowScanQR] = useState<boolean>(true)
 
 
   const form = useForm<SetupFormValues>({
@@ -96,6 +98,28 @@ export default function SetupStartPage() {
   const handleUpdateProductInfoGlobal = async (value: SetupFormValuesGlobal) => {
     await localStorageService.set<SetupFormValuesGlobal>(PRODUCT_INFO, value)
   }
+
+  const getDataWorkSessionSetupByWsId = useCallback(async () => {
+    try {
+      const response = await workSessionServices.getWorkSessionSetupByWsId(workSessionId);
+      const setups = response?.workSessionSetups ?? [];
+
+      const activeSetup = setups.find((item) => item.status !== 2);
+      if (!activeSetup) return;
+      setShowScanQR(false)
+      setValue("productNumber", activeSetup.productNumber || "");
+      setValue("lotNumber", activeSetup.lotNumber || "");
+      setValue("materialNumber", activeSetup.materialNumber || "");
+
+    } catch (error) {
+      console.error("Failed to load WorkSessionSetup:", error);
+    }
+  }, [])
+
+  useEffect(() => {
+    getDataWorkSessionSetupByWsId()
+  }, [getDataWorkSessionSetupByWsId])
+
   return (
     <PageLayout title="段取り開始">
       <div className="max-w-7xl mx-auto bg-sky-100 p-6 rounded-md min-h-[calc(100vh-160px)]">
@@ -111,6 +135,7 @@ export default function SetupStartPage() {
           setIsScanningKanban={setIsScanningKanban}
           setIsScanningMaterialData={setIsScanningMaterialData}
           submitLabel="段取り開始"
+          showScanQR={showScanQR}
         />
       </div>
     </PageLayout>

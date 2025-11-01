@@ -1,22 +1,30 @@
 "use client"
 
-import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
-import { FormField } from "@/components/ui/form-field"
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
 import { PageLayout } from "@/components/layout/page-layout"
+
+type MoldChangeForm = {
+    productCode: string
+    lotNumber: string
+    materialNumber: string
+}
 
 export default function MoldChange() {
     const router = useRouter()
-    const [formData, setFormData] = useState({
-        productCode: "",
-        lotNumber: "",
-        materialNumber: "",
-        kanbanData: "",
-        materialData: "",
+    const form = useForm<MoldChangeForm>({
+        defaultValues: {
+            productCode: "",
+            lotNumber: "",
+            materialNumber: "",
+        },
     })
 
-    const handleStartMoldChange = () => {
+    const onSubmit = (data: MoldChangeForm) => {
+        // có thể lưu tạm vào localStorage nếu cần
         router.push("/normal-production/mold-change-progress")
     }
 
@@ -24,49 +32,71 @@ export default function MoldChange() {
         <PageLayout title="金型交換開始">
             <div className="max-w-7xl mx-auto bg-sky-100 p-6 rounded-md min-h-[calc(100vh-160px)] flex items-center justify-center">
                 <div className="w-full max-w-lg">
-                    <div className="flex flex-col space-y-6">
-                        <FormField
-                            label="品番（かんばん無い場合手入力も可）"
-                            value={formData.productCode}
-                            onChange={(value) =>
-                                setFormData((prev) => ({ ...prev, productCode: value }))
-                            }
-                            placeholder=""
-                            className="w-full"
-                        />
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col space-y-6">
+                            {/* 品番 */}
+                            <FormField
+                                control={form.control}
+                                name="productCode"
+                                rules={{ required: "品番を入力してください。" }}
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel style={{ color: "black" }}>品番（かんばん無い場合手入力も可）</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} placeholder="" className="w-full border-2 border-amber-800 rounded-sm text-sm px-2 py-0.5 h-[32px]
+                    focus-visible:ring-0 focus-visible:border-amber-800 bg-white leading-tight"  />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-                        <FormField
-                            label="ロット№"
-                            value={formData.lotNumber}
-                            onChange={(value) =>
-                                setFormData((prev) => ({ ...prev, lotNumber: value }))
-                            }
-                            placeholder=""
-                            className="w-full"
-                        />
+                            {/* ロット№ */}
+                            <FormField
+                                control={form.control}
+                                name="lotNumber"
+                                rules={{ required: "ロット№を入力してください。" }}
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel style={{ color: "black" }}>ロット№</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} placeholder="" className="w-full border-2 border-amber-800 rounded-sm text-sm px-2 py-0.5 h-[32px]
+                    focus-visible:ring-0 focus-visible:border-amber-800 bg-white leading-tight"  />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-                        <FormField
-                            label="材料№"
-                            value={formData.materialNumber}
-                            onChange={(value) =>
-                                setFormData((prev) => ({ ...prev, materialNumber: value }))
-                            }
-                            placeholder=""
-                            className="w-full"
-                        />
+                            {/* 材料№ */}
+                            <FormField
+                                control={form.control}
+                                name="materialNumber"
+                                rules={{ required: "材料№を入力してください。" }}
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel style={{ color: "black" }}>材料№</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} placeholder="" className="w-full border-2 border-amber-800 rounded-sm text-sm px-2 py-0.5 h-[32px]
+                    focus-visible:ring-0 focus-visible:border-amber-800 bg-white leading-tight"  />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-                        <div className="pt-4">
-                            <Button
-                                onClick={handleStartMoldChange}
-                                className="bg-green-400 hover:bg-green-500 text-black py-3 w-full text-lg font-bold rounded-md"
-                            >
-                                金型交換開始
-                            </Button>
-                        </div>
-                    </div>
+                            <div className="pt-4">
+                                <Button
+                                    type="submit"
+                                    className="bg-green-400 hover:bg-green-500 text-black py-3 w-full text-lg font-bold rounded-md"
+                                >
+                                    金型交換開始
+                                </Button>
+                            </div>
+                        </form>
+                    </Form>
                 </div>
             </div>
-
         </PageLayout>
     )
 }

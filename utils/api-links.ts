@@ -30,6 +30,9 @@ const apiLinks = {
     pauseWorkSessionProduction: `${meidoxApiUrl}/WorkSessionProduction/Pause`,
     getWorkSessionProductionByWsId: `${meidoxApiUrl}/WorkSessionProduction/WorkSession`,
   },
+  workSessionMoldChange: {
+    create: `${meidoxApiUrl}/WorkSessionMoldChange`,
+  },
 };
 
 export default apiLinks;

@@ -3,11 +3,12 @@
 import { useForm } from "react-hook-form"
 import { useRouter } from "next/navigation"
 import { PageLayout } from "@/components/layout/page-layout"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import workSessionServices from "@/services/work-session"
 import { localStorageService } from "@/helper/localstorage"
-import { WORKSESSION_ID, WORKSESSION_SETUP_ID } from "@/utils/constants"
+import { PRODUCT_INFO, WORKSESSION_ID, WORKSESSION_SETUP_ID } from "@/utils/constants"
 import SetupFormLayout from "@/components/common/SetupFormLayout"
+import { SetupFormValuesGlobal } from "@/model/custom"
 
 
 type SetupFormValues = {
@@ -68,6 +69,12 @@ export default function SetupStartPage() {
       const currentTime = now.toTimeString().slice(0, 5)
       const workSessionId = localStorageService.get<string>(WORKSESSION_ID, "")
 
+      handleUpdateProductInfoGlobal({
+        lotNumber: data.lotNumber,
+        materialNumber: data.materialNumber,
+        productNumber: data.productNumber
+      })
+
       const response = await workSessionServices.createWorkSessionSetup({
         dateStart: currentDate,
         timeStart: currentTime,
@@ -86,6 +93,9 @@ export default function SetupStartPage() {
     }
   }
 
+  const handleUpdateProductInfoGlobal = async (value: SetupFormValuesGlobal) => {
+    await localStorageService.set<SetupFormValuesGlobal>(PRODUCT_INFO, value)
+  }
   return (
     <PageLayout title="段取り開始">
       <div className="max-w-7xl mx-auto bg-sky-100 p-6 rounded-md min-h-[calc(100vh-160px)]">

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { FormField } from "@/components/ui/form-field"
@@ -8,100 +8,77 @@ import { TimePicker } from "@/components/ui/time-picker"
 import { TimerDisplay } from "@/components/ui/timer-display"
 import { PageLayout } from "@/components/layout/page-layout"
 import { Textarea } from "@/components/ui/textarea"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Dialog, DialogContent } from "@/components/ui/dialog"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import workSessionMoldChangeServies from "@/services/work-session-mold-change"
+import { localStorageService } from "@/helper/localstorage"
+import { WORKSESSION_MOLD_CHANGE_ID } from "@/utils/constants"
+import { WorkSessionMoldChange } from "@/model/work-session-mold-change"
+import { getEndTimeFromStart } from "@/utils/time-utils"
 
-function NumpadModal({
-    open,
-    onClose,
-    onConfirm,
-    initialValue = "",
-}: {
-    open: boolean
-    onClose: () => void
-    onConfirm: (value: string) => void
-    initialValue?: string
-}) {
-    const [inputValue, setInputValue] = useState(initialValue)
-
-    const handleInput = (num: string) => setInputValue((prev) => prev + num)
-    const handleClear = () => setInputValue("")
-
-    return (
-        <Dialog open={open} onOpenChange={onClose}>
-            <DialogContent className="max-w-xs">
-                <div className="text-center font-bold text-lg mb-4">数字入力</div>
-
-                {/* Display */}
-                <div className="border rounded-md p-2 text-xl text-center bg-gray-100 mb-4 h-12 flex items-center justify-center">
-                    {inputValue || ""}
-                </div>
-
-                {/* Numpad */}
-                <div className="grid grid-cols-3 gap-4 mb-4 justify-items-center">
-                    {["7", "8", "9", "4", "5", "6", "1", "2", "3", "0", "."].map((num) => (
-                        <button
-                            key={num}
-                            onClick={() => handleInput(num)}
-                            className="w-16 h-16 rounded-full bg-amber-900 text-white text-2xl font-bold flex items-center justify-center"
-                        >
-                            {num}
-                        </button>
-                    ))}
-                </div>
-
-                {/* Clear */}
-                <button
-                    onClick={handleClear}
-                    className="w-full bg-green-400 text-black py-2 rounded-md font-bold"
-                >
-                    クリア
-                </button>
-
-                {/* Action */}
-                <div className="flex justify-between mt-4">
-                    <Button variant="outline" onClick={onClose}>
-                        キャンセル
-                    </Button>
-                    <Button
-                        className="bg-amber-800 text-white"
-                        onClick={() => {
-                            onConfirm(inputValue || "")
-                            onClose()
-                        }}
-                    >
-                        OK
-                    </Button>
-                </div>
-            </DialogContent>
-        </Dialog>
-    )
-}
 
 export default function MoldChangeProgress() {
     const router = useRouter()
+
     const [formData, setFormData] = useState({
-        productCode: "",
+        productNumber: "",
         lotNumber: "",
         materialNumber: "",
-        goodCount: "44",
-        canNumber: "1236",
-        unmannedTime: "",
-        startDate: "2025-09-20",
-        startHour: "18",
-        startMinute: "13",
-        endDate: "2025-09-20",
-        endHour: "18",
-        endMinute: "13",
-        notes: "",
-        lotCompleted: false,
-        oilType: "1"
+        startDate: "",
+        startHour: "",
+        startMinute: "",
+        endDate: "",
+        endHour: "",
+        endMinute: "",
+        remark: "",
     })
 
-    const [numpadTarget, setNumpadTarget] = useState<null | "goodCount" | "canNumber" | "unmannedTime">(null)
+    const workSessionMoldChangeId = localStorageService.get(WORKSESSION_MOLD_CHANGE_ID, '');
 
-    const handleMoldChangeCompleted = () => router.push("/home")
+    const getWorkSessionSetupById = useCallback(async () => {
+
+        await workSessionMoldChangeServies.getWorkSessionMoldChangeId(workSessionMoldChangeId).then((res) => {
+            handleSetValueDefault(res.workSessionMoldChange)
+        }).catch((error) => { })
+
+    }, [])
+
+    const handleSetValueDefault = (data: WorkSessionMoldChange) => {
+        setFormData((prev) => ({ ...prev, productNumber: data.productNumber }))
+        setFormData((prev) => ({ ...prev, lotNumber: data.lotNumber }))
+        setFormData((prev) => ({ ...prev, materialNumber: data.materialNumber }))
+        setFormData((prev) => ({ ...prev, startDate: data.dateStart }))
+        setFormData((prev) => ({ ...prev, startHour: data.timeStart.split(":")[0] }))
+        setFormData((prev) => ({ ...prev, startMinute: data.timeStart.split(":")[1] }))
+        setFormData((prev) => ({ ...prev, endDate: data.dateStart }))
+        setFormData((prev) => ({ ...prev, endHour: getEndTimeFromStart(data.timeStart).endHour }))
+        setFormData((prev) => ({ ...prev, endMinute: getEndTimeFromStart(data.timeStart).endMinute }))
+    }
+
+    useEffect(() => {
+        getWorkSessionSetupById()
+    }, [getWorkSessionSetupById])
+
+    const handleMoldChangeCompleted = async () => {
+        try {
+            const now = new Date()
+            const currentDate = now.toISOString().split("T")[0]
+            const currentTime = now.toTimeString().slice(0, 5)
+
+            if (formData.remark) {
+                await workSessionMoldChangeServies.updateWorkSessionMoldChangeRemark(workSessionMoldChangeId, formData.remark);
+            }
+
+            await workSessionMoldChangeServies.completeWorkSessionSetup({
+                dateComplete: currentDate,
+                timeComplete: currentTime,
+                id: workSessionMoldChangeId
+            });
+
+            router.push("/home")
+
+        } catch (error) {
+
+        }
+    }
 
     return (
         <PageLayout
@@ -115,17 +92,20 @@ export default function MoldChangeProgress() {
                     <div className="flex flex-col space-y-6">
                         <FormField
                             label="品番"
-                            value={formData.productCode}
-                            onChange={(value) => setFormData((p) => ({ ...p, productCode: value }))}
+                            value={formData.productNumber}
+                            disabled
+                            onChange={(value) => setFormData((p) => ({ ...p, productNumber: value }))}
                         />
                         <FormField
                             label="ロット№"
                             value={formData.lotNumber}
+                            disabled
                             onChange={(value) => setFormData((p) => ({ ...p, lotNumber: value }))}
                         />
                         <FormField
                             label="材料№"
                             value={formData.materialNumber}
+                            disabled
                             onChange={(value) => setFormData((p) => ({ ...p, materialNumber: value }))}
                         />
                     </div>
@@ -162,8 +142,8 @@ export default function MoldChangeProgress() {
                         <div>
                             <label className="block font-medium mb-2">備考</label>
                             <Textarea
-                                value={formData.notes}
-                                onChange={(e) => setFormData((p) => ({ ...p, notes: e.target.value }))}
+                                value={formData.remark}
+                                onChange={(e) => setFormData((p) => ({ ...p, remark: e.target.value }))}
                                 placeholder="備考入力　入力の際は↓の□を押す"
                                 className="h-24 border-2 border-gray-300 rounded-md w-full"
                             />
@@ -182,20 +162,6 @@ export default function MoldChangeProgress() {
                     </div>
                 </div>
             </div>
-
-            {/* Numpad Modal */}
-            <NumpadModal
-                open={!!numpadTarget}
-                onClose={() => setNumpadTarget(null)}
-                initialValue={
-                    numpadTarget ? formData[numpadTarget].replace(/[^0-9]/g, "") : ""
-                }
-                onConfirm={(val) => {
-                    if (numpadTarget) {
-                        setFormData((p) => ({ ...p, [numpadTarget]: val }))
-                    }
-                }}
-            />
         </PageLayout>
     )
 }

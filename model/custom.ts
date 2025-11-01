@@ -3,3 +3,9 @@ export interface SetupFormValuesGlobal {
   lotNumber: string;
   materialNumber: string;
 }
+
+export type WorkInputFormValues = {
+  productCode: string;
+  lotNumber: string;
+  materialNumber: string;
+};

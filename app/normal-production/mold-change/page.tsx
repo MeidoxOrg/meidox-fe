@@ -17,7 +17,7 @@ export default function MoldChange() {
     })
 
     const handleStartMoldChange = () => {
-        router.push("/mold-change-progress")
+        router.push("/normal-production/mold-change-progress")
     }
 
     return (

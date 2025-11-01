@@ -18,7 +18,7 @@ export default function Dashboard() {
         { label: "調整", color: "bg-blue-500 hover:bg-blue-600", disable: true, route: "/adjustment-begins" },
         { label: "4S", color: "bg-blue-500 hover:bg-blue-600", disable: true, route: "/4S" },
         { label: "給油", color: "bg-blue-500 hover:bg-blue-600", disable: true, route: "/refuel" },
-        { label: "金型交換", color: "bg-blue-500 hover:bg-blue-600", disable: false, route: "/mold-change" },
+        { label: "金型交換", color: "bg-blue-500 hover:bg-blue-600", disable: false, route: "/normal-production/mold-change" },
         { label: "生産準備\n暖機運転\n保全チェック", color: "bg-blue-500 hover:bg-blue-600", disable: true, route: "/production-prep-check" },
         { label: "選別", color: "bg-blue-500 hover:bg-blue-600", disable: true, route: "/sorting" },
         { label: "その他停止", color: "bg-blue-500 hover:bg-blue-600", disable: true, route: "/other-stop" },

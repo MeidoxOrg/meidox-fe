@@ -2,7 +2,8 @@ export function getEndTimeFromStart(timeStart: string) {
   const [hour, minute] = timeStart.split(":").map(Number);
   const date = new Date();
   date.setHours(hour);
-  date.setMinutes(minute + 1);
+  // date.setMinutes(minute + 1);
+  date.setMinutes(minute);
   date.setSeconds(0);
 
   return {

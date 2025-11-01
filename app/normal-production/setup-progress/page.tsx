@@ -19,6 +19,10 @@ export default function SetupProgressPage() {
   const router = useRouter()
   const workSessionSetupId = localStorageService.get<string>(WORKSESSION_SETUP_ID, '');
 
+  const now = new Date()
+  const currentDate = now.toISOString().split("T")[0]
+  const currentTime = now.toTimeString().slice(0, 5)
+
   const [formData, setFormData] = useState({
     productNumber: "",
     lotNumber: "",
@@ -58,8 +62,8 @@ export default function SetupProgressPage() {
     setFormData((prev) => ({ ...prev, startHour: data.timeStart.split(":")[0] }))
     setFormData((prev) => ({ ...prev, startMinute: data.timeStart.split(":")[1] }))
     setFormData((prev) => ({ ...prev, endDate: data.dateStart }))
-    setFormData((prev) => ({ ...prev, endHour: getEndTimeFromStart(data.timeStart).endHour }))
-    setFormData((prev) => ({ ...prev, endMinute: getEndTimeFromStart(data.timeStart).endMinute }))
+    setFormData((prev) => ({ ...prev, endHour: getEndTimeFromStart(currentTime).endHour }))
+    setFormData((prev) => ({ ...prev, endMinute: getEndTimeFromStart(currentTime).endMinute }))
   }
 
   const handlePauseSetup = async () => {
@@ -72,9 +76,6 @@ export default function SetupProgressPage() {
   }
 
   const handleCompleteSetup = async () => {
-    const now = new Date()
-    const currentDate = now.toISOString().split("T")[0]
-    const currentTime = now.toTimeString().slice(0, 5)
 
     let newErrors = { adjustmentItems: "", adjustmentWeight: "" }
     let hasError = false
@@ -127,6 +128,26 @@ export default function SetupProgressPage() {
       console.log(error);
     }
   }
+
+  const handleMinuteChange = useCallback((minute: number, hour: number) => {
+    setFormData((prev) => {
+      let endHour = parseInt(prev.endHour || "0")
+      let endMinute = parseInt(prev.endMinute || "0")
+
+      // ➕ Mỗi khi callback, ta cộng thêm 1 phút
+      endMinute += 1
+      if (endMinute >= 60) {
+        endMinute = 0
+        endHour = (endHour + 1) % 24
+      }
+
+      return {
+        ...prev,
+        endHour: endHour.toString().padStart(2, "0"),
+        endMinute: endMinute.toString().padStart(2, "0"),
+      }
+    })
+  }, [])
 
   useEffect(() => {
     getWorkSessionSetupById()
@@ -257,7 +278,11 @@ export default function SetupProgressPage() {
           {/* Right column */}
           <div className="space-y-6 flex flex-col">
             <div className="flex justify-center">
-              <TimerDisplay timerId="setup-timer" autoStart={true} />
+              <TimerDisplay
+                timerId="setup-timer"
+                autoStart={true}
+                onMinuteChange={handleMinuteChange}
+              />
             </div>
 
             <div className="space-y-4 flex-1 flex flex-col justify-center">

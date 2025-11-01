@@ -1,4 +1,5 @@
 import { PostAPIResponse } from "@/model/work-session";
+import { WorkSessionMoldChangeListResponse } from "@/model/work-session-mold-change";
 import {
   CompleteWorkSessionProduction,
   WorkSessionProductionBody,
@@ -108,6 +109,16 @@ const getWorkSessionProductionByWsId = async (
   return response.data;
 };
 
+const getWorkSessionMoldChangeByWsId = async (
+  workSessionId: String
+): Promise<WorkSessionMoldChangeListResponse> => {
+  const response = await httpClient.get<WorkSessionMoldChangeListResponse>({
+    url: `${apiLinks.workSessionMoldChange.getWorkSessionMoldChangeByWsId}/${workSessionId}`,
+  });
+
+  return response.data;
+};
+
 const workSessionProduction = {
   createWorkSessionProduction,
   getWorkSessionProductionId,
@@ -117,6 +128,7 @@ const workSessionProduction = {
   completeWorkSessionProduction,
   pauseWorkSessionProduction,
   getWorkSessionProductionByWsId,
+  getWorkSessionMoldChangeByWsId,
 };
 
 export default workSessionProduction;

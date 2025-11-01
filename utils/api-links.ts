@@ -35,6 +35,7 @@ const apiLinks = {
     getWorkSessionMoldChangeById: `${meidoxApiUrl}/WorkSessionMoldChange`,
     updateWorkSessionMoldChange: `${meidoxApiUrl}/WorkSessionMoldChange/Remark`,
     completeWorkSessionMoldChange: `${meidoxApiUrl}/WorkSessionMoldChange/Complete`,
+    getWorkSessionMoldChangeByWsId: `${meidoxApiUrl}/WorkSessionMoldChange/WorkSession`,
   },
 };
 

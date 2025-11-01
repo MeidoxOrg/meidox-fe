@@ -14,33 +14,33 @@ export default function Dashboard() {
     const [showMessage, setShowMessage] = useState(true)
 
     const mainGridButtons = [
-        { label: "段取り", color: "bg-blue-500 hover:bg-blue-600", route: "/normal-production/setup-start" },
-        { label: "調整", color: "bg-blue-500 hover:bg-blue-600", route: "/adjustment-begins" },
-        { label: "4S", color: "bg-blue-500 hover:bg-blue-600", route: "/4S" },
-        { label: "給油", color: "bg-blue-500 hover:bg-blue-600", route: "/refuel" },
-        { label: "金型交換", color: "bg-blue-500 hover:bg-blue-600", route: "/mold-change" },
-        { label: "生産準備\n暖機運転\n保全チェック", color: "bg-blue-500 hover:bg-blue-600", route: "/production-prep-check" },
-        { label: "選別", color: "bg-blue-500 hover:bg-blue-600", route: "/sorting" },
-        { label: "その他停止", color: "bg-blue-500 hover:bg-blue-600", route: "/other-stop" },
-        { label: "材料交換", color: "bg-blue-500 hover:bg-blue-600", route: "/material-change" },
-        { label: "他機対応", color: "bg-blue-500 hover:bg-blue-600", route: "/other-machine-support" },
-        { label: "品質チェック", color: "bg-blue-500 hover:bg-blue-600", route: "/quality-check" },
+        { label: "段取り", color: "bg-blue-500 hover:bg-blue-600", disable: false, route: "/normal-production/setup-start" },
+        { label: "調整", color: "bg-blue-500 hover:bg-blue-600", disable: true, route: "/adjustment-begins" },
+        { label: "4S", color: "bg-blue-500 hover:bg-blue-600", disable: true, route: "/4S" },
+        { label: "給油", color: "bg-blue-500 hover:bg-blue-600", disable: true, route: "/refuel" },
+        { label: "金型交換", color: "bg-blue-500 hover:bg-blue-600", disable: false, route: "/mold-change" },
+        { label: "生産準備\n暖機運転\n保全チェック", color: "bg-blue-500 hover:bg-blue-600", disable: true, route: "/production-prep-check" },
+        { label: "選別", color: "bg-blue-500 hover:bg-blue-600", disable: true, route: "/sorting" },
+        { label: "その他停止", color: "bg-blue-500 hover:bg-blue-600", disable: true, route: "/other-stop" },
+        { label: "材料交換", color: "bg-blue-500 hover:bg-blue-600", disable: true, route: "/material-change" },
+        { label: "他機対応", color: "bg-blue-500 hover:bg-blue-600", disable: true, route: "/other-machine-support" },
+        { label: "品質チェック", color: "bg-blue-500 hover:bg-blue-600", disable: true, route: "/quality-check" },
         { label: "", color: "invisible", route: "#" },
-        { label: "異常処置", color: "bg-red-500 hover:bg-red-600", route: "/abnormal-handling" },
-        { label: "設備故障\n設備修理", color: "bg-red-500 hover:bg-red-600", route: "/equipment-repair" },
-        { label: "無人運転\n(昼休憩)", color: "bg-green-600 hover:bg-green-700", route: "/unmanned-lunch" },
-        { label: "無人運転\n(残業)", color: "bg-green-600 hover:bg-green-700", route: "/unmanned-operation-overtime" },
+        { label: "異常処置", color: "bg-red-500 hover:bg-red-600", disable: true, route: "/abnormal-handling" },
+        { label: "設備故障\n設備修理", color: "bg-red-500 hover:bg-red-600", disable: true, route: "/equipment-repair" },
+        { label: "無人運転\n(昼休憩)", color: "bg-green-600 hover:bg-green-700", disable: true, route: "/unmanned-lunch" },
+        { label: "無人運転\n(残業)", color: "bg-green-600 hover:bg-green-700", disable: true, route: "/unmanned-operation-overtime" },
     ]
 
     const rightSideButtons = [
-        { label: "休憩", route: "/reason-for-stopping/break-start" },
-        { label: "かんばんなし", route: "/reason-for-stopping/no-kanban-start" },
-        { label: "ミーティング", route: "/reason-for-stopping/meeting-start" },
-        { label: "材料・金型\n欠品", route: "/reason-for-stopping/material-mold-shortage" },
-        { label: "計画保全", route: "/reason-for-stopping/planned-maintenance" },
-        { label: "作業者なし", route: "/reason-for-stopping/no-operator" },
-        { label: "4S\n(昼休憩後)", route: "/reason-for-stopping/four-s-after-lunch-start" },
-        { label: "その他\n計画停止", route: "/reason-for-stopping/other-planned-stop-start" },
+        { label: "休憩", disable: true, route: "/reason-for-stopping/break-start" },
+        { label: "かんばんなし", disable: true, route: "/reason-for-stopping/no-kanban-start" },
+        { label: "ミーティング", disable: true, route: "/reason-for-stopping/meeting-start" },
+        { label: "材料・金型\n欠品", disable: true, route: "/reason-for-stopping/material-mold-shortage" },
+        { label: "計画保全", disable: true, route: "/reason-for-stopping/planned-maintenance" },
+        { label: "作業者なし", disable: true, route: "/reason-for-stopping/no-operator" },
+        { label: "4S\n(昼休憩後)", disable: true, route: "/reason-for-stopping/four-s-after-lunch-start" },
+        { label: "その他\n計画停止", disable: true, route: "/reason-for-stopping/other-planned-stop-start" },
     ]
 
     const topButtons = [
@@ -115,7 +115,7 @@ export default function Dashboard() {
                                     key={index}
                                     onClick={() => router.push(button.route)}
                                     className={`h-20 text-sm font-bold whitespace-pre-line rounded-lg ${button.color}`}
-                                    disabled={index !== 0 ? true : false}
+                                    disabled={button.disable}
                                 >
                                     {button.label}
                                 </Button>
@@ -132,7 +132,7 @@ export default function Dashboard() {
                                 key={index}
                                 onClick={() => router.push(button.route)}
                                 className="h-20 text-sm font-bold whitespace-pre-line rounded-lg bg-white border-2 border-gray-400 text-black"
-                                disabled
+                                disabled={button.disable}
                             >
                                 {button.label}
                             </Button>

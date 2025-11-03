@@ -19,7 +19,7 @@ const createWorkSessionMaterialChange = async (
   return response.data;
 };
 
-const getWorkSessionMoldChangeId = async (
+const getWorkSessionMaterialChangeId = async (
   workSessionMaterialChangeId: String
 ): Promise<WorkSessionMaterialChangeResponse> => {
   const response = await httpClient.get<WorkSessionMaterialChangeResponse>({
@@ -45,7 +45,7 @@ const updateWorkSessionMaterialChangeRemark = async (
   return response.data;
 };
 
-const completeWorkSessionSetup = async (
+const completeWorkSessionMaterial = async (
   completeBody: CompleteWorkSessionMaterialChange
 ): Promise<PostAPIResponse> => {
   const response = await httpClient.put<PostAPIResponse>({
@@ -68,9 +68,9 @@ const getWorkSessionMaterialChangeByWsId = async (
 
 const workSessionMaterialChangeServies = {
   createWorkSessionMaterialChange,
-  getWorkSessionMoldChangeId,
+  getWorkSessionMaterialChangeId,
   updateWorkSessionMaterialChangeRemark,
-  completeWorkSessionSetup,
+  completeWorkSessionMaterial,
   getWorkSessionMaterialChangeByWsId,
 };
 

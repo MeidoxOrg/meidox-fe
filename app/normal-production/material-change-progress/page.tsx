@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { FormField } from "@/components/ui/form-field"
@@ -8,32 +8,77 @@ import { TimePicker } from "@/components/ui/time-picker"
 import { TimerDisplay } from "@/components/ui/timer-display"
 import { PageLayout } from "@/components/layout/page-layout"
 import { Textarea } from "@/components/ui/textarea"
+import { localStorageService } from "@/helper/localstorage"
+import { WORKSESSION_MATERIAL_CHANGE_ID } from "@/utils/constants"
+import workSessionMaterialChangeServies from "@/services/work-session-material-change"
+import { WorkSessionMaterialChange } from "@/model/work-session-material-change"
+import { getEndTimeFromStart } from "@/utils/time-utils"
 
 
 
 export default function MaterialChangeProgress() {
     const router = useRouter()
+
     const [formData, setFormData] = useState({
-        productCode: "",
+        productNumber: "",
         lotNumber: "",
         materialNumber: "",
-        goodCount: "44",
-        canNumber: "1236",
-        unmannedTime: "",
-        startDate: "2025-09-20",
-        startHour: "18",
-        startMinute: "13",
-        endDate: "2025-09-20",
-        endHour: "18",
-        endMinute: "13",
-        notes: "",
-        lotCompleted: false,
-        oilType: "1"
+        startDate: "",
+        startHour: "",
+        startMinute: "",
+        endDate: "",
+        endHour: "",
+        endMinute: "",
+        remark: "",
     })
 
+    const workSessionMaterialChangeId = localStorageService.get(WORKSESSION_MATERIAL_CHANGE_ID, '');
 
-    const handleMoldChangeCompleted = () => router.push("/home")
+    const getWorkSessionMaterialById = useCallback(async () => {
 
+        await workSessionMaterialChangeServies.getWorkSessionMaterialChangeId(workSessionMaterialChangeId).then((res) => {
+            handleSetValueDefault(res.workSessionMaterialChange)
+        }).catch((error) => { })
+
+    }, [])
+
+
+    const handleSetValueDefault = (data: WorkSessionMaterialChange) => {
+        setFormData((prev) => ({ ...prev, productNumber: data.productNumber }))
+        setFormData((prev) => ({ ...prev, lotNumber: data.lotNumber }))
+        setFormData((prev) => ({ ...prev, materialNumber: data.materialNumber }))
+        setFormData((prev) => ({ ...prev, startDate: data.dateStart }))
+        setFormData((prev) => ({ ...prev, startHour: data.timeStart.split(":")[0] }))
+        setFormData((prev) => ({ ...prev, startMinute: data.timeStart.split(":")[1] }))
+        setFormData((prev) => ({ ...prev, endDate: data.dateStart }))
+        setFormData((prev) => ({ ...prev, endHour: getEndTimeFromStart(data.timeStart).endHour }))
+        setFormData((prev) => ({ ...prev, endMinute: getEndTimeFromStart(data.timeStart).endMinute }))
+    }
+
+    useEffect(() => { getWorkSessionMaterialById() }, [getWorkSessionMaterialById])
+
+    const handleMaterialChangeCompleted = async () => {
+        try {
+            const now = new Date()
+            const currentDate = now.toISOString().split("T")[0]
+            const currentTime = now.toTimeString().slice(0, 5)
+
+            if (formData.remark) {
+                await workSessionMaterialChangeServies.updateWorkSessionMaterialChangeRemark(workSessionMaterialChangeId, formData.remark);
+            }
+
+            await workSessionMaterialChangeServies.completeWorkSessionMaterial({
+                dateComplete: currentDate,
+                timeComplete: currentTime,
+                id: workSessionMaterialChangeId
+            });
+
+            router.push("/home")
+
+        } catch (error) {
+
+        }
+    }
     return (
         <PageLayout
             title="材料交換中"
@@ -46,17 +91,20 @@ export default function MaterialChangeProgress() {
                     <div className="flex flex-col space-y-6">
                         <FormField
                             label="品番"
-                            value={formData.productCode}
+                            value={formData.productNumber}
+                            disabled
                             onChange={(value) => setFormData((p) => ({ ...p, productCode: value }))}
                         />
                         <FormField
                             label="ロット№"
                             value={formData.lotNumber}
+                            disabled
                             onChange={(value) => setFormData((p) => ({ ...p, lotNumber: value }))}
                         />
                         <FormField
                             label="材料№"
                             value={formData.materialNumber}
+                            disabled
                             onChange={(value) => setFormData((p) => ({ ...p, materialNumber: value }))}
                         />
                     </div>
@@ -93,8 +141,8 @@ export default function MaterialChangeProgress() {
                         <div>
                             <label className="block font-medium mb-2">備考</label>
                             <Textarea
-                                value={formData.notes}
-                                onChange={(e) => setFormData((p) => ({ ...p, notes: e.target.value }))}
+                                value={formData.remark}
+                                onChange={(e) => setFormData((p) => ({ ...p, remark: e.target.value }))}
                                 placeholder="備考入力　入力の際は↓の□を押す"
                                 className="h-24 border-2 border-gray-300 rounded-md w-full"
                             />
@@ -106,7 +154,7 @@ export default function MaterialChangeProgress() {
                         <TimerDisplay timerId="unmanned-timer" autoStart={true} />
                         <Button
                             className="bg-amber-900 text-white p-4 rounded-lg text-center text-xl font-bold w-full"
-                            onClick={handleMoldChangeCompleted}
+                            onClick={handleMaterialChangeCompleted}
                         >
                             材料交換終了
                         </Button>

@@ -13,7 +13,9 @@ const protectedPaths = [
   "/daily-summary",
   "/introduction",
   "/normal-production/mold-change",
-  "normal-production/mold-change-progress",
+  "/normal-production/mold-change-progress",
+  "/normal-production/material-change",
+  "/normal-production/material-change-progress",
 ];
 const authPages = ["/login", "/register"];
 

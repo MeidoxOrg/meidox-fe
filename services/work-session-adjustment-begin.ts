@@ -46,7 +46,7 @@ const updateWorkSessionAdjustmentBeginRemark = async (
   return response.data;
 };
 
-const completeWorkSessionSetup = async (
+const completeWorkAdjustmentBegin = async (
   completeBody: CompleteWorkSessionAdjustmentBegin
 ): Promise<PostAPIResponse> => {
   const response = await httpClient.put<PostAPIResponse>({
@@ -73,7 +73,7 @@ const workSessionAdjustmentBeginServies = {
   createWorkSessionAdjustmentBegin,
   getWorkSessionAdjustmentBeginId,
   updateWorkSessionAdjustmentBeginRemark,
-  completeWorkSessionSetup,
+  completeWorkAdjustmentBegin,
   getWorkSessionAdjustmentBeginByWsId,
 };
 

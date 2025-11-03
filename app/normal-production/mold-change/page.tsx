@@ -13,7 +13,6 @@ export default function MoldChange() {
     const router = useRouter()
 
     const onSubmit = async (data: WorkInputFormValues) => {
-        console.log(data);
         try {
             const now = new Date()
             const currentDate = now.toISOString().split("T")[0]

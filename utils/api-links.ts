@@ -44,12 +44,12 @@ const apiLinks = {
     completeWorkSessionMatertialChange: `${meidoxApiUrl}/WorkSessionMaterialChange/Complete`,
     getWorkSessionMatertialChangeByWsId: `${meidoxApiUrl}/WorkSessionMaterialChange/WorkSession`,
   },
-  workSessionAdjustmentBeginChange: {
+  workSessionAdjustmentBegin: {
     create: `${meidoxApiUrl}/WorkSessionAdjustmentBegin`,
-    getWorkSessionAdjustmentBeginChangeById: `${meidoxApiUrl}/WorkSessionAdjustmentBegin`,
-    updateWorkSessionAdjustmentBeginChangeRemark: `${meidoxApiUrl}/WorkSessionAdjustmentBegin/Remark`,
-    completeWorkSessionAdjustmentBeginChange: `${meidoxApiUrl}/WorkSessionAdjustmentBegin/Complete`,
-    getWorkSessionAdjustmentBeginChangeByWsId: `${meidoxApiUrl}/WorkSessionAdjustmentBegin/WorkSession`,
+    getWorkSessionAdjustmentBeginById: `${meidoxApiUrl}/WorkSessionAdjustmentBegin`,
+    updateWorkSessionAdjustmentBeginRemark: `${meidoxApiUrl}/WorkSessionAdjustmentBegin/Remark`,
+    completeWorkSessionAdjustmentBegin: `${meidoxApiUrl}/WorkSessionAdjustmentBegin/Complete`,
+    getWorkSessionAdjustmentBeginByWsId: `${meidoxApiUrl}/WorkSessionAdjustmentBegin/WorkSession`,
   },
 };
 

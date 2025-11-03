@@ -37,6 +37,13 @@ const apiLinks = {
     completeWorkSessionMoldChange: `${meidoxApiUrl}/WorkSessionMoldChange/Complete`,
     getWorkSessionMoldChangeByWsId: `${meidoxApiUrl}/WorkSessionMoldChange/WorkSession`,
   },
+  workSessionMaterialChange: {
+    create: `${meidoxApiUrl}/WorkSessionMaterialChange`,
+    getWorkSessionMatertialChangeById: `${meidoxApiUrl}/WorkSessionMaterialChange`,
+    updateWorkSessionMatertialChangeRemark: `${meidoxApiUrl}/WorkSessionMaterialChange/Remark`,
+    completeWorkSessionMatertialChange: `${meidoxApiUrl}/WorkSessionMaterialChange/Complete`,
+    getWorkSessionMatertialChangeByWsId: `${meidoxApiUrl}/WorkSessionMaterialChange/WorkSession`,
+  },
 };
 
 export default apiLinks;

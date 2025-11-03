@@ -16,6 +16,8 @@ const protectedPaths = [
   "/normal-production/mold-change-progress",
   "/normal-production/material-change",
   "/normal-production/material-change-progress",
+  "/normal-production/adjustment-begins",
+  "/normal-production/adjustment-in-progress",
 ];
 const authPages = ["/login", "/register"];
 

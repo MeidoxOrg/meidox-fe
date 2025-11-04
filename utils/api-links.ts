@@ -58,6 +58,13 @@ const apiLinks = {
     completeWorkSession4S: `${meidoxApiUrl}/WorkSession4S/Complete`,
     getWorkSession4SByWsId: `${meidoxApiUrl}/WorkSession4S/WorkSession`,
   },
+  workSessionProductionPrepCheck: {
+    create: `${meidoxApiUrl}/WorkSessionProductionPrepCheck`,
+    getWorkSessionProductionPrepCheckById: `${meidoxApiUrl}/WorkSessionProductionPrepCheck`,
+    updateWorkSessionProductionPrepCheckRemark: `${meidoxApiUrl}/WorkSessionProductionPrepCheck/Remark`,
+    completeWorkSessionProductionPrepCheck: `${meidoxApiUrl}/WorkSessionProductionPrepCheck/Complete`,
+    getWorkSessionProductionPrepCheckByWsId: `${meidoxApiUrl}/WorkSessionProductionPrepCheck/WorkSession`,
+  },
 };
 
 export default apiLinks;

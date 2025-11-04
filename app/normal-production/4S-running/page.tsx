@@ -85,7 +85,6 @@ export default function AdjustmentInProgress() {
                     timerId="4S-timer"
                 />
             </div>
-
         </PageLayout>
     )
 }

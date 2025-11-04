@@ -51,6 +51,13 @@ const apiLinks = {
     completeWorkSessionAdjustmentBegin: `${meidoxApiUrl}/WorkSessionAdjustmentBegin/Complete`,
     getWorkSessionAdjustmentBeginByWsId: `${meidoxApiUrl}/WorkSessionAdjustmentBegin/WorkSession`,
   },
+  workSession4S: {
+    create: `${meidoxApiUrl}/WorkSession4S`,
+    getWorkSession4SById: `${meidoxApiUrl}/WorkSession4S`,
+    updateWorkSession4SRemark: `${meidoxApiUrl}/WorkSession4S/Remark`,
+    completeWorkSession4S: `${meidoxApiUrl}/WorkSession4S/Complete`,
+    getWorkSession4SByWsId: `${meidoxApiUrl}/WorkSession4S/WorkSession`,
+  },
 };
 
 export default apiLinks;

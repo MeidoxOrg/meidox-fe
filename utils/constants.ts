@@ -8,3 +8,5 @@ export const WORKSESSION_MATERIAL_CHANGE_ID = "workSessionMaterialChangeId";
 export const WORKSESSION_ADJUSTMENT_BEGIN_CHANGE_ID =
   "workSessionAdjustmentBeginId";
 export const WORKSESSION_4S_ID = "workSession4SId";
+export const WORKSESSION_PRODUCTION_PREP_CHECK_ID =
+  "workSessionProductionPrepCheckId";

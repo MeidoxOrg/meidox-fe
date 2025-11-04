@@ -10,3 +10,4 @@ export const WORKSESSION_ADJUSTMENT_BEGIN_CHANGE_ID =
 export const WORKSESSION_4S_ID = "workSession4SId";
 export const WORKSESSION_PRODUCTION_PREP_CHECK_ID =
   "workSessionProductionPrepCheckId";
+export const WORKSESSION_SORTING_ID = "workSessionSortingId";

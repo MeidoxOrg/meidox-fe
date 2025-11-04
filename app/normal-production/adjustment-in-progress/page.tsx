@@ -8,17 +8,14 @@ import { TimePicker } from "@/components/ui/time-picker"
 import { TimerDisplay } from "@/components/ui/timer-display"
 import { PageLayout } from "@/components/layout/page-layout"
 import { Textarea } from "@/components/ui/textarea"
-import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { localStorageService } from "@/helper/localstorage"
 import { WORKSESSION_ADJUSTMENT_BEGIN_CHANGE_ID } from "@/utils/constants"
 import workSessionAdjustmentBeginServies from "@/services/work-session-adjustment-begin"
 import { WorkSessionAdjustmentBegin } from "@/model/work-session-adjustment-begin"
 import { getEndTimeFromStart } from "@/utils/time-utils"
 
-
 export default function AdjustmentInProgress() {
     const router = useRouter()
-    const today = new Date().toISOString().split("T")[0] // YYYY-MM-DD
 
     const [formData, setFormData] = useState({
         productNumber: "",
@@ -33,7 +30,6 @@ export default function AdjustmentInProgress() {
         remark: "",
     })
 
-
     const workSessionAdjustmentBeginId = localStorageService.get(WORKSESSION_ADJUSTMENT_BEGIN_CHANGE_ID, '');
 
     const getWorkSessionAdjustmentBeginById = useCallback(async () => {
@@ -43,7 +39,6 @@ export default function AdjustmentInProgress() {
         }).catch((error) => { })
 
     }, [])
-
 
     const handleSetValueDefault = (data: WorkSessionAdjustmentBegin) => {
         setFormData((prev) => ({ ...prev, productNumber: data.productNumber }))
@@ -56,8 +51,6 @@ export default function AdjustmentInProgress() {
         setFormData((prev) => ({ ...prev, endHour: getEndTimeFromStart(data.timeStart).endHour }))
         setFormData((prev) => ({ ...prev, endMinute: getEndTimeFromStart(data.timeStart).endMinute }))
     }
-
-
 
     const handleAdjustmentBeginCompleted = async () => {
         try {
@@ -187,7 +180,6 @@ export default function AdjustmentInProgress() {
                     </div>
                 </div>
             </div>
-
         </PageLayout>
     )
 }

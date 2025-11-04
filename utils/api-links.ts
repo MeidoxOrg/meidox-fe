@@ -65,6 +65,13 @@ const apiLinks = {
     completeWorkSessionProductionPrepCheck: `${meidoxApiUrl}/WorkSessionProductionPrepCheck/Complete`,
     getWorkSessionProductionPrepCheckByWsId: `${meidoxApiUrl}/WorkSessionProductionPrepCheck/WorkSession`,
   },
+  workSessionSorting: {
+    create: `${meidoxApiUrl}/WorkSessionSorting`,
+    getWorkSessionSortingById: `${meidoxApiUrl}/WorkSessionSorting`,
+    updateWorkSessionSortingRemark: `${meidoxApiUrl}/WorkSessionSorting/Remark`,
+    completeWorkSessionSorting: `${meidoxApiUrl}/WorkSessionSorting/Complete`,
+    getWorkSessionSortingByWsId: `${meidoxApiUrl}/WorkSessionSorting/WorkSession`,
+  },
 };
 
 export default apiLinks;

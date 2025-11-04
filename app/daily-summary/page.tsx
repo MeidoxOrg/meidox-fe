@@ -22,6 +22,8 @@ import workSession4SServies from "@/services/work-session-4s"
 import { WorkSession4SByWsId } from "@/model/work-session-4s"
 import workSessionProductionPrepCheckServies from "@/services/work-session-production-prep-check"
 import { WorkSessionProductionPrepCheckByWsId } from "@/model/work-session-production-prep-check"
+import workSessionSortingServies from "@/services/work-session-sorting"
+import { WorkSessionSortingByWsId } from "@/model/work-session-sorting"
 
 
 export default function DailySummaryPage() {
@@ -40,6 +42,7 @@ export default function DailySummaryPage() {
     const [dataWorkSessionAdjustmentBegin, setDataWorkSessionAdjustmentBegin] = useState<WorkSessionAdjustmentBeginByWsId[]>([])
     const [dataWorkSession4S, setDataWorkSession4S] = useState<WorkSession4SByWsId[]>([])
     const [dataWorkSessionProductionPrepCheck, setDataWorkSessionProductionPrepCheck] = useState<WorkSessionProductionPrepCheckByWsId[]>([])
+    const [dataWorkSessionSorting, setDataWorkSessionSorting] = useState<WorkSessionSortingByWsId[]>([])
 
 
     const getDataWorkSessionSetupByWsId = useCallback(async () => {
@@ -112,6 +115,15 @@ export default function DailySummaryPage() {
         try {
             const response = await workSessionProductionPrepCheckServies.getWorkSessionProductionPrepCheckByWsId(workSessionId);
             setDataWorkSessionProductionPrepCheck(response.workSessionProductionPrepChecks);
+        } catch (error) {
+
+        }
+    }, [])
+
+    const getDataWorkSessionSortingByWsId = useCallback(async () => {
+        try {
+            const response = await workSessionSortingServies.getWorkSessionSortingByWsId(workSessionId);
+            setDataWorkSessionSorting(response.workSessionSortings);
         } catch (error) {
 
         }
@@ -275,6 +287,29 @@ export default function DailySummaryPage() {
         }, 0)
     }
 
+    const calculateTotalSortingDurationMinutes = (
+        setups: WorkSessionSortingByWsId[] = []
+    ): number => {
+        if (!Array.isArray(setups) || setups.length === 0) return 0
+
+        return setups.reduce((sum, item) => {
+            if (!item.dateStart || !item.timeStart || !item.dateComplete || !item.timeComplete) {
+                return sum // bỏ qua nếu thiếu dữ liệu
+            }
+
+            const start = new Date(`${item.dateStart}T${item.timeStart}`)
+            const end = new Date(`${item.dateComplete}T${item.timeComplete}`)
+
+            // xử lý nếu qua ngày (VD: setup từ 23:50 → 00:10 hôm sau)
+            if (end < start) {
+                end.setDate(end.getDate() + 1)
+            }
+
+            const diffMinutes = Math.round((end.getTime() - start.getTime()) / 60000)
+            return sum + diffMinutes
+        }, 0)
+    }
+
     useEffect(() => {
         getDataWorkSessionSetupByWsId()
         getDataWorkSessionProductionByWsId()
@@ -284,10 +319,12 @@ export default function DailySummaryPage() {
         getDataWorkSessionAdjustmentBeginByWsId()
         getDataWorkSession4SByWsId()
         getDataWorkSessionProductionPrepCheckByWsId()
+        getDataWorkSessionSortingByWsId()
 
     }, [getDataWorkSessionSetupByWsId, getDataWorkSessionProductionByWsId, getWorkSessionById,
         getDataWorkSessionMoldChangeByWsId, getDataWorkSessionMaterialChangeByWsId,
-        getDataWorkSessionAdjustmentBeginByWsId, getDataWorkSession4SByWsId, getDataWorkSessionProductionPrepCheckByWsId])
+        getDataWorkSessionAdjustmentBeginByWsId, getDataWorkSession4SByWsId, getDataWorkSessionProductionPrepCheckByWsId,
+        getDataWorkSessionSortingByWsId])
 
     return (
         <div className="flex flex-col h-screen bg-gray-100">
@@ -651,6 +688,53 @@ export default function DailySummaryPage() {
                         )
                     })}
 
+                    {/* SHOW CARD WORKSESSION_SORTING */}
+
+                    {dataWorkSessionSorting.map((item, idx) => {
+                        const start = new Date(`${item.dateStart}T${item.timeStart}`)
+                        const end = new Date(`${item.dateComplete}T${item.timeComplete}`)
+                        const diffMinutes = Math.round((end.getTime() - start.getTime()) / 60000) // tính phút
+
+                        return (
+                            <>
+                                {/* Card 1: 段取り開始 */}
+                                <Card key={`${idx}-start`} className="p-3 mb-3 bg-gray-100 rounded-md shadow-sm">
+                                    <div className="grid grid-cols-3 gap-x-6 gap-y-1 text-[13px] leading-tight text-gray-800">
+                                        <p>{formatDateToJapanese(item.dateStart)}</p>
+                                        <p>{formatTimeToJapanese(item.timeStart)}</p>
+                                        <p className="text-right">{item.productNumber}</p>
+
+                                        <p>{session?.user?.username}</p>
+                                        <p>仕分け開始</p>
+                                        <p className="text-right">{item.lotNumber}</p>
+
+                                        <p className="col-span-3 mt-1 text-right">{item.materialNumber}</p>
+                                    </div>
+                                </Card>
+
+                                {/* Card 2: 段取り完了 */}
+                                {item.timeComplete !== null && <Card key={`${idx}-end`} className="p-3 mb-3 bg-gray-100 rounded-md shadow-sm">
+                                    <div className="grid grid-cols-3 gap-x-6 gap-y-1 text-[13px] leading-tight text-gray-800">
+                                        <p>{formatDateToJapanese(item.dateStart)}</p>
+                                        <p>{formatTimeToJapanese(item?.timeComplete ?? "")}</p>
+                                        <p className="text-right">{item.productNumber}</p>
+
+                                        <p>{session?.user?.username}</p>
+                                        <p>仕分け終了</p>
+                                        <p className="text-right">{item.lotNumber}</p>
+
+                                        <p className="col-span-3 mt-1 text-right">
+                                            {diffMinutes}分
+                                        </p>
+                                        <p className="col-span-3 mt-1 text-right">
+                                            {item.materialNumber}
+                                        </p>
+                                    </div>
+                                </Card>}
+                            </>
+                        )
+                    })}
+
                 </div>
 
                 {/* RIGHT SIDE */}
@@ -682,7 +766,7 @@ export default function DailySummaryPage() {
                             <SummaryItem label="他機対応" value="X分" />
 
                             <SummaryItem label="品質チェック" value="X分" />
-                            <SummaryItem label="選別" value="X分" />
+                            <SummaryItem label="選別" value={`${calculateTotalSortingDurationMinutes(dataWorkSessionSorting)}分`} />
                             <SummaryItem label="4S" value={`${calculateTotal4SDurationMinutes(dataWorkSession4S)}分`} />
                             <SummaryItem label="その他停止" value="X分" />
                         </div>

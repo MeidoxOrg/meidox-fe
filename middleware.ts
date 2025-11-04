@@ -22,6 +22,8 @@ const protectedPaths = [
   "/normal-production/4S-running",
   "/normal-production/production-prep-check",
   "/normal-production/production-prep-progress",
+  "/normal-production/sorting",
+  "/normal-production/sorting-progress",
 ];
 const authPages = ["/login", "/register"];
 

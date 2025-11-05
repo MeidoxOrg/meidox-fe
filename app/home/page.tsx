@@ -21,7 +21,7 @@ export default function Dashboard() {
         { label: "金型交換", color: "bg-blue-500 hover:bg-blue-600", disable: false, route: "/normal-production/mold-change" },
         { label: "生産準備\n暖機運転\n保全チェック", color: "bg-blue-500 hover:bg-blue-600", disable: false, route: "/normal-production/production-prep-check" },
         { label: "選別", color: "bg-blue-500 hover:bg-blue-600", disable: false, route: "/normal-production/sorting" },
-        { label: "その他停止", color: "bg-blue-500 hover:bg-blue-600", disable: true, route: "/other-stop" },
+        { label: "その他停止", color: "bg-blue-500 hover:bg-blue-600", disable: false, route: "/normal-production/other-stop" },
         { label: "材料交換", color: "bg-blue-500 hover:bg-blue-600", disable: false, route: "/normal-production/material-change" },
         { label: "他機対応", color: "bg-blue-500 hover:bg-blue-600", disable: true, route: "/other-machine-support" },
         { label: "品質チェック", color: "bg-blue-500 hover:bg-blue-600", disable: true, route: "/quality-check" },

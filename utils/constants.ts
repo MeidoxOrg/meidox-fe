@@ -12,3 +12,4 @@ export const WORKSESSION_PRODUCTION_PREP_CHECK_ID =
   "workSessionProductionPrepCheckId";
 export const WORKSESSION_SORTING_ID = "workSessionSortingId";
 export const WORKSESSION_ORTHER_STOP_ID = "workSessionOrtherStopId";
+export const WORKSESSION_EQUIPMENT_REPAIR_ID = "workSessionEquipmentRepairId";

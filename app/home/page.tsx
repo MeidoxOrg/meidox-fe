@@ -23,7 +23,7 @@ export default function Dashboard() {
         { label: "選別", color: "bg-blue-500 hover:bg-blue-600", disable: false, route: "/normal-production/sorting" },
         { label: "その他停止", color: "bg-blue-500 hover:bg-blue-600", disable: false, route: "/normal-production/other-stop" },
         { label: "材料交換", color: "bg-blue-500 hover:bg-blue-600", disable: false, route: "/normal-production/material-change" },
-        { label: "他機対応", color: "bg-blue-500 hover:bg-blue-600", disable: true, route: "/other-machine-support" },
+        { label: "他機対応", color: "bg-blue-500 hover:bg-blue-600", disable: false, route: "/normal-production/other-machine-support" },
         { label: "品質チェック", color: "bg-blue-500 hover:bg-blue-600", disable: true, route: "/quality-check" },
         { label: "", color: "invisible", route: "#" },
         { label: "異常処置", color: "bg-red-500 hover:bg-red-600", disable: true, route: "/abnormal-handling" },

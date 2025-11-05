@@ -79,6 +79,13 @@ const apiLinks = {
     completeWorkSessionOtherStop: `${meidoxApiUrl}/WorkSessionOtherStop/Complete`,
     getWorkSessionOtherStopByWsId: `${meidoxApiUrl}/WorkSessionOtherStop/WorkSession`,
   },
+  workSessionEquipmentRepair: {
+    create: `${meidoxApiUrl}/WorkSessionEquipmentRepair`,
+    getWorkSessionEquipmentRepairById: `${meidoxApiUrl}/WorkSessionEquipmentRepair`,
+    updateWorkSessionEquipmentRepairRemark: `${meidoxApiUrl}/WorkSessionEquipmentRepair/Remark`,
+    completeWorkSessionEquipmentRepair: `${meidoxApiUrl}/WorkSessionEquipmentRepair/Complete`,
+    getWorkSessionEquipmentRepairByWsId: `${meidoxApiUrl}/WorkSessionEquipmentRepair/WorkSession`,
+  },
 };
 
 export default apiLinks;

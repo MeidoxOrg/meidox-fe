@@ -15,3 +15,4 @@ export const WORKSESSION_ORTHER_STOP_ID = "workSessionOrtherStopId";
 export const WORKSESSION_EQUIPMENT_REPAIR_ID = "workSessionEquipmentRepairId";
 export const WORKSESSION_ORTHER_MACHINES_SUPPORT_ID =
   "workSessionOtherMachineSupportId";
+export const WORKSESSION_QUANLITY_CHECK_ID = "workSessionQuanlityCheckId";

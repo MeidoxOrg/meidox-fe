@@ -28,6 +28,8 @@ import workSessionOtherStopServies from "@/services/work-session-other-stop"
 import { WorkSessionOtherStopByWsId } from "@/model/work-session-other-stop"
 import workSessionEquipmentRepairServies from "@/services/work-session-equipment-repair​"
 import { WorkSessionEquipmentRepairByWsId } from "@/model/work-session-equipment-repair​"
+import workSessionOtherMachineSupportServies from "@/services/work-session-other-machine-support"
+import { WorkSessionOtherMachineSupportByWsId } from "@/model/work-session-other-machine-support"
 
 
 export default function DailySummaryPage() {
@@ -49,6 +51,7 @@ export default function DailySummaryPage() {
     const [dataWorkSessionSorting, setDataWorkSessionSorting] = useState<WorkSessionSortingByWsId[]>([])
     const [dataWorkSesionOrtherStop, setDataWorkSesionOrtherStop] = useState<WorkSessionOtherStopByWsId[]>([])
     const [dataWorkSesionEquipmentRepair, setDataWorkSesionEquipmentRepair] = useState<WorkSessionEquipmentRepairByWsId[]>([])
+    const [dataWorkSesionOrtherMachinesSupport, setDataWorkSesionOrtherMachinesSupport] = useState<WorkSessionOtherMachineSupportByWsId[]>([])
 
 
     const getDataWorkSessionSetupByWsId = useCallback(async () => {
@@ -148,6 +151,15 @@ export default function DailySummaryPage() {
         try {
             const response = await workSessionEquipmentRepairServies.getWorkSessionEquipmentRepairByWsId(workSessionId);
             setDataWorkSesionEquipmentRepair(response.workSessionEquipmentRepairs);
+        } catch (error) {
+
+        }
+    }, [])
+
+    const getDataWorkSessionOrtherMachinesSupportByWsId = useCallback(async () => {
+        try {
+            const response = await workSessionOtherMachineSupportServies.getWorkSessionOtherMachineSupportByWsId(workSessionId);
+            setDataWorkSesionOrtherMachinesSupport(response.workSessionOtherMachineSupports);
         } catch (error) {
 
         }
@@ -380,6 +392,29 @@ export default function DailySummaryPage() {
         }, 0)
     }
 
+    const calculateTotalOrtherMachinesSupportDurationMinutes = (
+        setups: WorkSessionOtherMachineSupportByWsId[] = []
+    ): number => {
+        if (!Array.isArray(setups) || setups.length === 0) return 0
+
+        return setups.reduce((sum, item) => {
+            if (!item.dateStart || !item.timeStart || !item.dateComplete || !item.timeComplete) {
+                return sum // bỏ qua nếu thiếu dữ liệu
+            }
+
+            const start = new Date(`${item.dateStart}T${item.timeStart}`)
+            const end = new Date(`${item.dateComplete}T${item.timeComplete}`)
+
+            // xử lý nếu qua ngày (VD: setup từ 23:50 → 00:10 hôm sau)
+            if (end < start) {
+                end.setDate(end.getDate() + 1)
+            }
+
+            const diffMinutes = Math.round((end.getTime() - start.getTime()) / 60000)
+            return sum + diffMinutes
+        }, 0)
+    }
+
     useEffect(() => {
         getDataWorkSessionSetupByWsId()
         getDataWorkSessionProductionByWsId()
@@ -392,11 +427,13 @@ export default function DailySummaryPage() {
         getDataWorkSessionSortingByWsId()
         getDataWorkSessionOrtherStopByWsId()
         getDataWorkSessionEquipmentRepairByWsId()
+        getDataWorkSessionOrtherMachinesSupportByWsId()
 
     }, [getDataWorkSessionSetupByWsId, getDataWorkSessionProductionByWsId, getWorkSessionById,
         getDataWorkSessionMoldChangeByWsId, getDataWorkSessionMaterialChangeByWsId,
         getDataWorkSessionAdjustmentBeginByWsId, getDataWorkSession4SByWsId, getDataWorkSessionProductionPrepCheckByWsId,
-        getDataWorkSessionSortingByWsId, getDataWorkSessionOrtherStopByWsId, getDataWorkSessionEquipmentRepairByWsId])
+        getDataWorkSessionSortingByWsId, getDataWorkSessionOrtherStopByWsId, getDataWorkSessionEquipmentRepairByWsId,
+        getDataWorkSessionOrtherMachinesSupportByWsId])
 
     return (
         <div className="flex flex-col h-screen bg-gray-100">
@@ -900,6 +937,52 @@ export default function DailySummaryPage() {
                             </>
                         )
                     })}
+                    {/* SHOW CARD WORKSESSION_ORTHER_MACHINES_SUPPORT */}
+
+                    {dataWorkSesionOrtherMachinesSupport.map((item, idx) => {
+                        const start = new Date(`${item.dateStart}T${item.timeStart}`)
+                        const end = new Date(`${item.dateComplete}T${item.timeComplete}`)
+                        const diffMinutes = Math.round((end.getTime() - start.getTime()) / 60000) // tính phút
+
+                        return (
+                            <>
+                                {/* Card 1: 段取り開始 */}
+                                <Card key={`${idx}-start`} className="p-3 mb-3 bg-gray-100 rounded-md shadow-sm">
+                                    <div className="grid grid-cols-3 gap-x-6 gap-y-1 text-[13px] leading-tight text-gray-800">
+                                        <p>{formatDateToJapanese(item.dateStart)}</p>
+                                        <p>{formatTimeToJapanese(item.timeStart)}</p>
+                                        <p className="text-right">{item.productNumber}</p>
+
+                                        <p>{session?.user?.username}</p>
+                                        <p>他機対応開始</p>
+                                        <p className="text-right">{item.lotNumber}</p>
+
+                                        <p className="col-span-3 mt-1 text-right">{item.materialNumber}</p>
+                                    </div>
+                                </Card>
+
+                                {/* Card 2: 段取り完了 */}
+                                {item.timeComplete !== null && <Card key={`${idx}-end`} className="p-3 mb-3 bg-gray-100 rounded-md shadow-sm">
+                                    <div className="grid grid-cols-3 gap-x-6 gap-y-1 text-[13px] leading-tight text-gray-800">
+                                        <p>{formatDateToJapanese(item.dateStart)}</p>
+                                        <p>{formatTimeToJapanese(item?.timeComplete ?? "")}</p>
+                                        <p className="text-right">{item.productNumber}</p>
+
+                                        <p>{session?.user?.username}</p>
+                                        <p>他機対応終了</p>
+                                        <p className="text-right">{item.lotNumber}</p>
+
+                                        <p className="col-span-3 mt-1 text-right">
+                                            {diffMinutes}分
+                                        </p>
+                                        <p className="col-span-3 mt-1 text-right">
+                                            {item.materialNumber}
+                                        </p>
+                                    </div>
+                                </Card>}
+                            </>
+                        )
+                    })}
 
                 </div>
 
@@ -929,7 +1012,7 @@ export default function DailySummaryPage() {
                             <SummaryItem label="設備故障" value={`${calculateTotalEquipmentRepairDurationMinutes(dataWorkSesionEquipmentRepair)}分`} />
                             <SummaryItem label="異常処置" value="X分" />
                             <SummaryItem label="生産準備" value={`${calculateTotalProductionPrepCheckDurationMinutes(dataWorkSessionProductionPrepCheck)}分`} />
-                            <SummaryItem label="他機対応" value="X分" />
+                            <SummaryItem label="他機対応" value={`${calculateTotalOrtherMachinesSupportDurationMinutes(dataWorkSesionOrtherMachinesSupport)}分`} />
 
                             <SummaryItem label="品質チェック" value="X分" />
                             <SummaryItem label="選別" value={`${calculateTotalSortingDurationMinutes(dataWorkSessionSorting)}分`} />

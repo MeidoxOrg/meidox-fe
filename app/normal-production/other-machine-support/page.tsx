@@ -1,69 +1,49 @@
 "use client"
 
-import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { FormField } from "@/components/ui/form-field"
 import { PageLayout } from "@/components/layout/page-layout"
+import { WorkInputForm } from "@/components/common/WorkInputForm"
+import { WorkInputFormValues } from "@/model/custom"
+import { localStorageService } from "@/helper/localstorage"
+import { WORKSESSION_ID, WORKSESSION_ORTHER_MACHINES_SUPPORT_ID } from "@/utils/constants"
+import workSessionOtherMachineSupportServies from "@/services/work-session-other-machine-support"
 
 export default function OtherMachineSupport() {
     const router = useRouter()
-    const [formData, setFormData] = useState({
-        productCode: "",
-        lotNumber: "",
-        materialNumber: "",
-        kanbanData: "",
-        materialData: "",
-    })
 
-    const handleOtherMachineSupport = () => {
-        router.push("/other-machine-support-progress")
+    const onSubmit = async (data: WorkInputFormValues) => {
+        try {
+            const now = new Date()
+            const currentDate = now.toISOString().split("T")[0]
+            const currentTime = now.toTimeString().slice(0, 5)
+            const workSessionId = localStorageService.get<string>(WORKSESSION_ID, "")
+
+            const response = await workSessionOtherMachineSupportServies.createWorkSessionOtherMachineSupport({
+                dateStart: currentDate,
+                timeStart: currentTime,
+                lotNumber: data.lotNumber,
+                materialNumber: data.materialNumber,
+                productNumber: data.productCode,
+                workSessionId: workSessionId
+            })
+
+            if (response.id) {
+                localStorageService.set<String>(WORKSESSION_ORTHER_MACHINES_SUPPORT_ID, response.id)
+                router.push("/normal-production/other-machine-support-progress")
+            }
+        } catch (error) {
+
+        }
     }
-
     return (
         <PageLayout title="他機対応開始">
             <div className="max-w-7xl mx-auto bg-sky-100 p-6 rounded-md min-h-[calc(100vh-160px)] flex items-center justify-center">
                 <div className="w-full max-w-lg">
-                    <div className="flex flex-col space-y-6">
-                        <FormField
-                            label="品番（かんばん無い場合手入力も可）"
-                            value={formData.productCode}
-                            onChange={(value) =>
-                                setFormData((prev) => ({ ...prev, productCode: value }))
-                            }
-                            placeholder=""
-                            className="w-full"
-                        />
-
-                        <FormField
-                            label="ロット№"
-                            value={formData.lotNumber}
-                            onChange={(value) =>
-                                setFormData((prev) => ({ ...prev, lotNumber: value }))
-                            }
-                            placeholder=""
-                            className="w-full"
-                        />
-
-                        <FormField
-                            label="材料№"
-                            value={formData.materialNumber}
-                            onChange={(value) =>
-                                setFormData((prev) => ({ ...prev, materialNumber: value }))
-                            }
-                            placeholder=""
-                            className="w-full"
-                        />
-
-                        <div className="pt-4">
-                            <Button
-                                onClick={handleOtherMachineSupport}
-                                className="bg-green-400 hover:bg-green-500 text-black py-3 w-full text-lg font-bold rounded-md"
-                            >
-                                他機対応開始
-                            </Button>
-                        </div>
-                    </div>
+                    <WorkInputForm
+                        submitLabel="他機対応開始"
+                        onSubmit={onSubmit}
+                        buttonClassName="bg-green-400 hover:bg-green-500 text-black"
+                    />
                 </div>
             </div>
 

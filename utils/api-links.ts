@@ -93,6 +93,13 @@ const apiLinks = {
     completeWorkSessionOtherMachineSupport: `${meidoxApiUrl}/WorkSessionOtherMachineSupport/Complete`,
     getWorkSessionOtherMachineSupportByWsId: `${meidoxApiUrl}/WorkSessionOtherMachineSupport/WorkSession`,
   },
+  workSessionQualityCheck: {
+    create: `${meidoxApiUrl}/WorkSessionQualityCheck`,
+    getWorkSessionQualityCheckById: `${meidoxApiUrl}/WorkSessionQualityCheck`,
+    updateWorkSessionQualityCheckRemark: `${meidoxApiUrl}/WorkSessionQualityCheck/Remark`,
+    completeWorkSessionQualityCheck: `${meidoxApiUrl}/WorkSessionQualityCheck/Complete`,
+    getWorkSessionQualityCheckByWsId: `${meidoxApiUrl}/WorkSessionQualityCheck/WorkSession`,
+  },
 };
 
 export default apiLinks;

@@ -28,6 +28,8 @@ const protectedPaths = [
   "/normal-production/other-stop-progress",
   "/normal-production/equipment-repair",
   "/normal-production/equipment-repair-progress",
+  "/normal-production/other-machine-support",
+  "/normal-production/other-machine-support-progress",
 ];
 const authPages = ["/login", "/register"];
 

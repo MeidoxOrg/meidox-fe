@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { FormField } from "@/components/ui/form-field"
@@ -8,110 +8,90 @@ import { TimePicker } from "@/components/ui/time-picker"
 import { TimerDisplay } from "@/components/ui/timer-display"
 import { PageLayout } from "@/components/layout/page-layout"
 import { Textarea } from "@/components/ui/textarea"
+import { WorkSessionCommonLayout } from "@/components/common/WorkSessionProgress"
+import { localStorageService } from "@/helper/localstorage"
+import { WORKSESSION_ORTHER_STOP_ID } from "@/utils/constants"
+import workSessionOtherStopServies from "@/services/work-session-other-stop"
+import { WorkSessionOtherStop } from "@/model/work-session-other-stop"
+import { getEndTimeFromStart } from "@/utils/time-utils"
 
 export default function OtherStopProgress() {
     const router = useRouter()
+
     const [formData, setFormData] = useState({
-        productCode: "",
+        productNumber: "",
         lotNumber: "",
         materialNumber: "",
-        goodCount: "44",
-        canNumber: "1236",
-        unmannedTime: "",
-        startDate: "2025-09-20",
-        startHour: "18",
-        startMinute: "13",
-        endDate: "2025-09-20",
-        endHour: "18",
-        endMinute: "13",
-        notes: "",
-        lotCompleted: false,
-        oilType: "1"
+        startDate: "",
+        startHour: "",
+        startMinute: "",
+        endDate: "",
+        endHour: "",
+        endMinute: "",
+        remark: "",
     })
 
-    const [numpadTarget, setNumpadTarget] = useState<null | "goodCount" | "canNumber" | "unmannedTime">(null)
+    const workSessionOrtherStopId = localStorageService.get(WORKSESSION_ORTHER_STOP_ID, '');
 
-    const handleMoldChangeCompleted = () => router.push("/home")
+    const getWorkSessionOrtherStopById = useCallback(async () => {
+        await workSessionOtherStopServies.getWorkSessionOtherStopId(workSessionOrtherStopId).then((res) => {
+            handleSetValueDefault(res.workSessionOtherStop)
+        }).catch((error) => { })
+
+    }, [])
+
+    const handleSetValueDefault = (data: WorkSessionOtherStop) => {
+        setFormData((prev) => ({ ...prev, productNumber: data.productNumber }))
+        setFormData((prev) => ({ ...prev, lotNumber: data.lotNumber }))
+        setFormData((prev) => ({ ...prev, materialNumber: data.materialNumber }))
+        setFormData((prev) => ({ ...prev, startDate: data.dateStart }))
+        setFormData((prev) => ({ ...prev, startHour: data.timeStart.split(":")[0] }))
+        setFormData((prev) => ({ ...prev, startMinute: data.timeStart.split(":")[1] }))
+        setFormData((prev) => ({ ...prev, endDate: data.dateStart }))
+        setFormData((prev) => ({ ...prev, endHour: getEndTimeFromStart(data.timeStart).endHour }))
+        setFormData((prev) => ({ ...prev, endMinute: getEndTimeFromStart(data.timeStart).endMinute }))
+    }
+
+    const handle4SCompleted = async () => {
+        try {
+            const now = new Date()
+            const currentDate = now.toISOString().split("T")[0]
+            const currentTime = now.toTimeString().slice(0, 5)
+
+            if (formData.remark) {
+                await workSessionOtherStopServies.updateWorkSessionOtherStopRemark(workSessionOrtherStopId, formData.remark);
+            }
+
+            await workSessionOtherStopServies.completeWorkSessionOtherStop({
+                dateComplete: currentDate,
+                timeComplete: currentTime,
+                id: workSessionOrtherStopId
+            });
+
+            router.push("/home")
+
+        } catch (error) {
+
+        }
+    }
+
+    useEffect(() => { getWorkSessionOrtherStopById() }, [getWorkSessionOrtherStopById])
 
     return (
         <PageLayout
             title="その他停止中"
             rightContent={<span className="bg-green-200 px-4 py-1 rounded-md">18:13:46</span>}
         >
-            <div className="max-w-7xl mx-auto bg-sky-100 p-6 rounded-md">
-                {/* Responsive grid: 1 col mobile, 2 col tablet, 3 col desktop */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {/* Left column */}
-                    <div className="flex flex-col space-y-6">
-                        <FormField
-                            label="品番"
-                            value={formData.productCode}
-                            onChange={(value) => setFormData((p) => ({ ...p, productCode: value }))}
-                        />
-                        <FormField
-                            label="ロット№"
-                            value={formData.lotNumber}
-                            onChange={(value) => setFormData((p) => ({ ...p, lotNumber: value }))}
-                        />
-                        <FormField
-                            label="材料№"
-                            value={formData.materialNumber}
-                            onChange={(value) => setFormData((p) => ({ ...p, materialNumber: value }))}
-                        />
-                    </div>
-
-                    {/* Middle column */}
-                    <div className="flex flex-col space-y-6">
-                        <div>
-                            <label className="block font-medium mb-2">
-                                その他停止開始時間</label>
-                            <TimePicker
-                                date={formData.startDate}
-                                hour={formData.startHour}
-                                minute={formData.startMinute}
-                                onDateChange={(date) => setFormData((p) => ({ ...p, startDate: date }))}
-                                onHourChange={(hour) => setFormData((p) => ({ ...p, startHour: hour }))}
-                                onMinuteChange={(minute) => setFormData((p) => ({ ...p, startMinute: minute }))}
-                                className="w-full"
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block font-medium mb-2">その他停止終了時間</label>
-                            <TimePicker
-                                date={formData.endDate}
-                                hour={formData.endHour}
-                                minute={formData.endMinute}
-                                onDateChange={(date) => setFormData((p) => ({ ...p, endDate: date }))}
-                                onHourChange={(hour) => setFormData((p) => ({ ...p, endHour: hour }))}
-                                onMinuteChange={(minute) => setFormData((p) => ({ ...p, endMinute: minute }))}
-                                className="w-full"
-                            />
-                        </div>
-
-                        {/* 備考 */}
-                        <div>
-                            <label className="block font-medium mb-2">備考</label>
-                            <Textarea
-                                value={formData.notes}
-                                onChange={(e) => setFormData((p) => ({ ...p, notes: e.target.value }))}
-                                placeholder="備考入力　入力の際は↓の□を押す"
-                                className="h-24 border-2 border-gray-300 rounded-md w-full"
-                            />
-                        </div>
-                    </div>
-
-                    {/* Right column */}
-                    <div className="flex flex-col space-y-6 md:mt-[60%]">
-                        <TimerDisplay timerId="unmanned-timer" autoStart={true} />
-                        <Button
-                            className="bg-amber-900 text-white p-4 rounded-lg text-center text-xl font-bold w-full"
-                            onClick={handleMoldChangeCompleted}
-                        >
-                            その他停止終了
-                        </Button>
-                    </div>
-                </div>
+            <div className="max-w-7xl mx-auto">
+                <WorkSessionCommonLayout
+                    formData={formData}
+                    setFormData={setFormData}
+                    onComplete={handle4SCompleted}
+                    startLabel="その他停止開始時間"
+                    endLabel="その他停止終了時間"
+                    completeButtonLabel="その他停止終了"
+                    timerId="other-stop-timer"
+                />
             </div>
         </PageLayout>
     )

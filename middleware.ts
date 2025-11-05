@@ -26,6 +26,8 @@ const protectedPaths = [
   "/normal-production/sorting-progress",
   "/normal-production/other-stop",
   "/normal-production/other-stop-progress",
+  "/normal-production/equipment-repair",
+  "/normal-production/equipment-repair-progress",
 ];
 const authPages = ["/login", "/register"];
 

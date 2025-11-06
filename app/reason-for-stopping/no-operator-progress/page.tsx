@@ -90,7 +90,7 @@ export default function NoOperator() {
                     onComplete={handleNoKanbanCompleted}
                     startLabel="作業者なし開始時間"
                     endLabel="作業者なし終了時間"
-                    completeButtonLabel="休憩作業者なし終了終了"
+                    completeButtonLabel="作業者なし終了"
                     timerId="reason-for-stop-no-operater-timer"
                 />
             </div>

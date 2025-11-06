@@ -462,28 +462,32 @@ export default function DailySummaryPage() {
         }, 0)
     }
 
-    const calculateTotalReasonForStoppingBreakStartDurationMinutes = (
-        setups: ReasonForStoppingBreakStartByWsId[] = []
+    const calculateTotalDurationMinutes = <
+        T extends {
+            dateStart?: string | null
+            timeStart?: string | null
+            dateComplete?: string | null
+            timeComplete?: string | null
+        }
+    >(
+        items: T[] = []
     ): number => {
-        if (!Array.isArray(setups) || setups.length === 0) return 0
+        if (!Array.isArray(items) || items.length === 0) return 0
 
-        return setups.reduce((sum, item) => {
-            if (!item.dateStart || !item.timeStart || !item.dateComplete || !item.timeComplete) {
-                return sum // bỏ qua nếu thiếu dữ liệu
-            }
+        return items.reduce((sum, item) => {
+            const { dateStart, timeStart, dateComplete, timeComplete } = item
+            if (!dateStart || !timeStart || !dateComplete || !timeComplete) return sum
 
-            const start = new Date(`${item.dateStart}T${item.timeStart}`)
-            const end = new Date(`${item.dateComplete}T${item.timeComplete}`)
+            const start = new Date(`${dateStart}T${timeStart}`)
+            const end = new Date(`${dateComplete}T${timeComplete}`)
 
-            // xử lý nếu qua ngày (VD: setup từ 23:50 → 00:10 hôm sau)
-            if (end < start) {
-                end.setDate(end.getDate() + 1)
-            }
+            if (end < start) end.setDate(end.getDate() + 1)
 
             const diffMinutes = Math.round((end.getTime() - start.getTime()) / 60000)
             return sum + diffMinutes
         }, 0)
     }
+
 
     useEffect(() => {
         getDataWorkSessionSetupByWsId()
@@ -1191,7 +1195,7 @@ export default function DailySummaryPage() {
                     {/* Table 2: meetings and breaks */}
                     <div className="border border-gray-300 rounded-md mb-4 p-2 bg-rose-50">
                         <div className="grid grid-cols-4 gap-2 text-sm">
-                            <SummaryItem label="休憩" value={`${calculateTotalReasonForStoppingBreakStartDurationMinutes(dataReasonForStoppingBreakStart)}分`} />
+                            <SummaryItem label="休憩" value={`${calculateTotalDurationMinutes(dataReasonForStoppingBreakStart)}分`} />
                             <SummaryItem label="ミーティング" value="X分" />
                             <SummaryItem label="計画保全" value="X分" />
                             <SummaryItem label="4S（昼休憩後）" value="X分" />

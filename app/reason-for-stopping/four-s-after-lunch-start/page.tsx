@@ -1,69 +1,48 @@
 "use client"
-
-import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { FormField } from "@/components/ui/form-field"
 import { PageLayout } from "@/components/layout/page-layout"
+import { WorkInputForm } from "@/components/common/WorkInputForm"
+import { WorkInputFormValues } from "@/model/custom"
+import { localStorageService } from "@/helper/localstorage"
+import { REASON_FOR_STOPPING_FOUR_S_AFTER_LUNCH_START_ID, WORKSESSION_ID } from "@/utils/constants"
+import reasonForStoppingFourSAfterLunchStartServies from "@/services/reason-for-stopping-four-s-after-lunchStart​"
 
 export default function FourSAfterLunchStart() {
     const router = useRouter()
-    const [formData, setFormData] = useState({
-        productCode: "",
-        lotNumber: "",
-        materialNumber: "",
-        kanbanData: "",
-        materialData: "",
-    })
 
-    const handleStartFourSAfterLunchStart = () => {
-        router.push("/reason-for-stopping/four-s-after-lunch-progress")
+    const onSubmit = async (data: WorkInputFormValues) => {
+        try {
+            const now = new Date()
+            const currentDate = now.toISOString().split("T")[0]
+            const currentTime = now.toTimeString().slice(0, 5)
+            const workSessionId = localStorageService.get<string>(WORKSESSION_ID, "")
+
+            const response = await reasonForStoppingFourSAfterLunchStartServies.createReasonForStoppingFourSAfterLunchStart({
+                dateStart: currentDate,
+                timeStart: currentTime,
+                lotNumber: data.lotNumber,
+                materialNumber: data.materialNumber,
+                productNumber: data.productCode,
+                workSessionId: workSessionId
+            })
+
+            if (response.id) {
+                localStorageService.set<String>(REASON_FOR_STOPPING_FOUR_S_AFTER_LUNCH_START_ID, response.id)
+                router.push("/reason-for-stopping/four-s-after-lunch-progress")
+            }
+        } catch (error) {
+
+        }
     }
-
     return (
         <PageLayout title="4S（昼休憩後）開始">
             <div className="max-w-7xl mx-auto bg-sky-100 p-6 rounded-md min-h-[calc(100vh-160px)] flex items-center justify-center">
                 <div className="w-full max-w-lg">
-                    <div className="flex flex-col space-y-6">
-                        <FormField
-                            label="品番（かんばん無い場合手入力も可）"
-                            value={formData.productCode}
-                            onChange={(value) =>
-                                setFormData((prev) => ({ ...prev, productCode: value }))
-                            }
-                            placeholder=""
-                            className="w-full"
-                        />
-
-                        <FormField
-                            label="ロット№"
-                            value={formData.lotNumber}
-                            onChange={(value) =>
-                                setFormData((prev) => ({ ...prev, lotNumber: value }))
-                            }
-                            placeholder=""
-                            className="w-full"
-                        />
-
-                        <FormField
-                            label="材料№"
-                            value={formData.materialNumber}
-                            onChange={(value) =>
-                                setFormData((prev) => ({ ...prev, materialNumber: value }))
-                            }
-                            placeholder=""
-                            className="w-full"
-                        />
-
-                        <div className="pt-4">
-                            <Button
-                                onClick={handleStartFourSAfterLunchStart}
-                                className="bg-green-400 hover:bg-green-500 text-black py-3 w-full text-lg font-bold rounded-md"
-                            >
-                                4S（昼休憩後）開始
-                            </Button>
-                        </div>
-                    </div>
+                    <WorkInputForm
+                        submitLabel="4S（昼休憩後）開始"
+                        onSubmit={onSubmit}
+                        buttonClassName="bg-green-400 hover:bg-green-500 text-black"
+                    />
                 </div>
             </div>
 

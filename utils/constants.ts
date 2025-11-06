@@ -27,3 +27,5 @@ export const REASON_FOR_STOPPING_PLANNED_MAINTENANCE_ID =
   "reasonForStoppingPlannedMaintenanceId";
 export const REASON_FOR_STOPPING_NO_OPERATER_ID =
   "reasonForStoppingNoOperatereId";
+export const REASON_FOR_STOPPING_FOUR_S_AFTER_LUNCH_START_ID =
+  "reasonForStoppingFourSAfterLunchStartId";

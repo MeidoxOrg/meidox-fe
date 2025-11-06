@@ -36,6 +36,7 @@ const protectedPaths = [
   "/reason-for-stopping/meeting-start",
   "/reason-for-stopping/no-kanban-start",
   "/reason-for-stopping/material-mold-shortage",
+  "/reason-for-stopping/planned-maintenance",
 ];
 const authPages = ["/login", "/register"];
 

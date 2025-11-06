@@ -37,7 +37,7 @@ export default function Dashboard() {
         { label: "かんばんなし", disable: false, route: "/reason-for-stopping/no-kanban-start" },
         { label: "ミーティング", disable: false, route: "/reason-for-stopping/meeting-start" },
         { label: "材料・金型\n欠品", disable: false, route: "/reason-for-stopping/material-mold-shortage" },
-        { label: "計画保全", disable: true, route: "/reason-for-stopping/planned-maintenance" },
+        { label: "計画保全", disable: false, route: "/reason-for-stopping/planned-maintenance" },
         { label: "作業者なし", disable: true, route: "/reason-for-stopping/no-operator" },
         { label: "4S\n(昼休憩後)", disable: true, route: "/reason-for-stopping/four-s-after-lunch-start" },
         { label: "その他\n計画停止", disable: true, route: "/reason-for-stopping/other-planned-stop-start" },

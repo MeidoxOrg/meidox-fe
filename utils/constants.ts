@@ -25,3 +25,5 @@ export const WORKSESSION_MATERIAL_MOLDSHORTAGE_ID =
   "reasonForStoppingMaterialMoldShortageId";
 export const REASON_FOR_STOPPING_PLANNED_MAINTENANCE_ID =
   "reasonForStoppingPlannedMaintenanceId";
+export const REASON_FOR_STOPPING_NO_OPERATER_ID =
+  "reasonForStoppingNoOperatereId";

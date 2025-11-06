@@ -114,6 +114,13 @@ const apiLinks = {
     completeReasonForStoppingNoKanbanStart: `${meidoxApiUrl}/ReasonForStoppingNoKanbanStart/Complete`,
     getReasonForStoppingNoKanbanStartByWsId: `${meidoxApiUrl}/ReasonForStoppingNoKanbanStart/WorkSession`,
   },
+  reasonForStoppingMeetingStart: {
+    create: `${meidoxApiUrl}/ReasonForStoppingMeetingStart`,
+    getReasonForStoppingMeetingStartById: `${meidoxApiUrl}/ReasonForStoppingMeetingStart`,
+    updateReasonForStoppingMeetingStartRemark: `${meidoxApiUrl}/ReasonForStoppingMeetingStart/Remark`,
+    completeReasonForStoppingMeetingStart: `${meidoxApiUrl}/ReasonForStoppingMeetingStart/Complete`,
+    getReasonForStoppingMeetingStartByWsId: `${meidoxApiUrl}/ReasonForStoppingMeetingStart/WorkSession`,
+  },
 };
 
 export default apiLinks;

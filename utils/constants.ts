@@ -23,3 +23,5 @@ export const REASON_FOR_STOPPING_MEETING_START =
   "reasonForStoppingMeetingStartId";
 export const WORKSESSION_MATERIAL_MOLDSHORTAGE_ID =
   "reasonForStoppingMaterialMoldShortageId";
+export const REASON_FOR_STOPPING_PLANNED_MAINTENANCE_ID =
+  "reasonForStoppingPlannedMaintenanceId";

@@ -29,7 +29,7 @@ export default function NoOperatorStart() {
 
             if (response.id) {
                 localStorageService.set<String>(REASON_FOR_STOPPING_NO_OPERATER_ID, response.id)
-                router.push("/reason-for-stopping/break-progress")
+                router.push("/reason-for-stopping/no-operator-progress")
             }
         } catch (error) {
 

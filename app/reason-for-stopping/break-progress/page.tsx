@@ -46,7 +46,7 @@ export default function BreakProgress() {
         setFormData((prev) => ({ ...prev, endMinute: getEndTimeFromStart(data.timeStart).endMinute }))
     }
 
-    const handle4SCompleted = async () => {
+    const handleNoKanbanCompleted = async () => {
         try {
             const now = new Date()
             const currentDate = now.toISOString().split("T")[0]
@@ -79,7 +79,7 @@ export default function BreakProgress() {
                 <WorkSessionCommonLayout
                     formData={formData}
                     setFormData={setFormData}
-                    onComplete={handle4SCompleted}
+                    onComplete={handleNoKanbanCompleted}
                     startLabel="休憩開始時間"
                     endLabel="休憩終了時間"
                     completeButtonLabel="休憩終了"

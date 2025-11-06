@@ -40,6 +40,8 @@ import reasonForStoppingMeetingStartServies from "@/services/reason-for-stopping
 import { ReasonForStoppingMeetingStartByWsId } from "@/model/reason-for-stopping-meeting-start"
 import reasonForStoppingMaterialMoldShortageServies from "@/services/reason-for-stopping-material-mold-shortage"
 import { ReasonForStoppingMaterialMoldShortageByWsId } from "@/model/reason-for-stopping-material-mold-shortage"
+import reasonForStoppingPlannedMaintenanceServies from "@/services/reason-for-stopping-planned-maintenance"
+import { ReasonForStoppingPlannedMaintenanceByWsId } from "@/model/reason-for-stopping-planned-maintenance"
 
 
 export default function DailySummaryPage() {
@@ -67,6 +69,7 @@ export default function DailySummaryPage() {
     const [dataReasonForStoppingNoKanbanStart, setDataReasonForStoppingNoKanbanStart] = useState<ReasonForStoppingNoKanbanStartByWsId[]>([])
     const [dataReasonForStoppingMeetingStart, setDataReasonForStoppingMeetingStart] = useState<ReasonForStoppingMeetingStartByWsId[]>([])
     const [dataReasonForStoppingMaterialMoldShortage, setDataReasonForStoppingMaterialMoldShortage] = useState<ReasonForStoppingMaterialMoldShortageByWsId[]>([])
+    const [dataReasonForStoppingPlannedMaintenance, setDataReasonForStoppingPlannedMaintenance] = useState<ReasonForStoppingPlannedMaintenanceByWsId[]>([])
 
 
     const getDataWorkSessionSetupByWsId = useCallback(async () => {
@@ -220,6 +223,15 @@ export default function DailySummaryPage() {
         try {
             const response = await reasonForStoppingMaterialMoldShortageServies.getReasonForStoppingMaterialMoldShortageByWsId(workSessionId);
             setDataReasonForStoppingMaterialMoldShortage(response.reasonForStoppingMaterialMoldShortages);
+        } catch (error) {
+
+        }
+    }, [])
+
+    const getDataReasonForStoppingPlannedMaintenanced = useCallback(async () => {
+        try {
+            const response = await reasonForStoppingPlannedMaintenanceServies.getReasonForStoppingPlannedMaintenanceByWsId(workSessionId);
+            setDataReasonForStoppingPlannedMaintenance(response.reasonForStoppingPlannedMaintenances);
         } catch (error) {
 
         }
@@ -543,13 +555,15 @@ export default function DailySummaryPage() {
         getDataReasonForStoppingNoKanbanStartId()
         getDataReasonForStoppingMeetingStartId()
         getDataReasonForStoppingMaterialMoldShortageId()
+        getDataReasonForStoppingPlannedMaintenanced()
 
     }, [getDataWorkSessionSetupByWsId, getDataWorkSessionProductionByWsId, getWorkSessionById,
         getDataWorkSessionMoldChangeByWsId, getDataWorkSessionMaterialChangeByWsId,
         getDataWorkSessionAdjustmentBeginByWsId, getDataWorkSession4SByWsId, getDataWorkSessionProductionPrepCheckByWsId,
         getDataWorkSessionSortingByWsId, getDataWorkSessionOrtherStopByWsId, getDataWorkSessionEquipmentRepairByWsId,
         getDataWorkSessionOrtherMachinesSupportByWsId, getDataWorkSessionQuanlityCheckByWsId, getDataReasonForStoppingBreakStartId,
-        getDataReasonForStoppingNoKanbanStartId, getDataReasonForStoppingMeetingStartId, getDataReasonForStoppingMaterialMoldShortageId])
+        getDataReasonForStoppingNoKanbanStartId, getDataReasonForStoppingMeetingStartId, getDataReasonForStoppingMaterialMoldShortageId,
+        getDataReasonForStoppingPlannedMaintenanced])
 
     return (
         <div className="flex flex-col h-screen bg-gray-100">
@@ -1335,6 +1349,53 @@ export default function DailySummaryPage() {
                         )
                     })}
 
+                    {/* SHOW CARD REASON_STOP_PLANNED_MAINTENANCE */}
+
+                    {dataReasonForStoppingPlannedMaintenance.map((item, idx) => {
+                        const start = new Date(`${item.dateStart}T${item.timeStart}`)
+                        const end = new Date(`${item.dateComplete}T${item.timeComplete}`)
+                        const diffMinutes = Math.round((end.getTime() - start.getTime()) / 60000) // tính phút
+
+                        return (
+                            <>
+                                {/* Card 1: 段取り開始 */}
+                                <Card key={`${idx}-start`} className="p-3 mb-3 bg-gray-100 rounded-md shadow-sm">
+                                    <div className="grid grid-cols-3 gap-x-6 gap-y-1 text-[13px] leading-tight text-gray-800">
+                                        <p>{formatDateToJapanese(item.dateStart)}</p>
+                                        <p>{formatTimeToJapanese(item.timeStart)}</p>
+                                        <p className="text-right">{item.productNumber}</p>
+
+                                        <p>{session?.user?.username}</p>
+                                        <p>計画保全開始</p>
+                                        <p className="text-right">{item.lotNumber}</p>
+
+                                        <p className="col-span-3 mt-1 text-right">{item.materialNumber}</p>
+                                    </div>
+                                </Card>
+
+                                {/* Card 2: 段取り完了 */}
+                                {item.timeComplete !== null && <Card key={`${idx}-end`} className="p-3 mb-3 bg-gray-100 rounded-md shadow-sm">
+                                    <div className="grid grid-cols-3 gap-x-6 gap-y-1 text-[13px] leading-tight text-gray-800">
+                                        <p>{formatDateToJapanese(item.dateStart)}</p>
+                                        <p>{formatTimeToJapanese(item?.timeComplete ?? "")}</p>
+                                        <p className="text-right">{item.productNumber}</p>
+
+                                        <p>{session?.user?.username}</p>
+                                        <p>計画保全終了</p>
+                                        <p className="text-right">{item.lotNumber}</p>
+
+                                        <p className="col-span-3 mt-1 text-right">
+                                            {diffMinutes}分
+                                        </p>
+                                        <p className="col-span-3 mt-1 text-right">
+                                            {item.materialNumber}
+                                        </p>
+                                    </div>
+                                </Card>}
+                            </>
+                        )
+                    })}
+
                 </div>
 
                 {/* RIGHT SIDE */}
@@ -1377,7 +1438,7 @@ export default function DailySummaryPage() {
                         <div className="grid grid-cols-4 gap-2 text-sm">
                             <SummaryItem label="休憩" value={`${calculateTotalDurationMinutes(dataReasonForStoppingBreakStart)}分`} />
                             <SummaryItem label="ミーティング" value={`${calculateTotalDurationMinutes(dataReasonForStoppingMeetingStart)}分`} />
-                            <SummaryItem label="計画保全" value="X分" />
+                            <SummaryItem label="計画保全" value={`${calculateTotalDurationMinutes(dataReasonForStoppingPlannedMaintenance)}分`} />
                             <SummaryItem label="4S（昼休憩後）" value="X分" />
 
                             <SummaryItem label="かんばんなし" value={`${calculateTotalDurationMinutes(dataReasonForStoppingNoKanbanStart)}分`} />

@@ -32,6 +32,7 @@ const protectedPaths = [
   "/normal-production/other-machine-support-progress",
   "/normal-production/quality-check",
   "/normal-production/quality-check-progress",
+  "/reason-for-stopping/break-start",
 ];
 const authPages = ["/login", "/register"];
 

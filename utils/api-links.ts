@@ -135,6 +135,13 @@ const apiLinks = {
     completeReasonForStoppingPlannedMaintenance: `${meidoxApiUrl}/ReasonForStoppingPlannedMaintenance/Complete`,
     getReasonForStoppingPlannedMaintenanceByWsId: `${meidoxApiUrl}/ReasonForStoppingPlannedMaintenance/WorkSession`,
   },
+  reasonForStoppingNoOperator: {
+    create: `${meidoxApiUrl}/ReasonForStoppingNoOperator`,
+    getReasonForStoppingNoOperatorById: `${meidoxApiUrl}/ReasonForStoppingNoOperator`,
+    updateReasonForStoppingNoOperatorRemark: `${meidoxApiUrl}/ReasonForStoppingNoOperator/Remark`,
+    completeReasonForStoppingNoOperator: `${meidoxApiUrl}/ReasonForStoppingNoOperator/Complete`,
+    getReasonForStoppingNoOperatorByWsId: `${meidoxApiUrl}/ReasonForStoppingNoOperator/WorkSession`,
+  },
 };
 
 export default apiLinks;

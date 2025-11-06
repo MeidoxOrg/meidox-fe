@@ -35,7 +35,7 @@ export default function Dashboard() {
     const rightSideButtons = [
         { label: "休憩", disable: false, route: "/reason-for-stopping/break-start" },
         { label: "かんばんなし", disable: false, route: "/reason-for-stopping/no-kanban-start" },
-        { label: "ミーティング", disable: true, route: "/reason-for-stopping/meeting-start" },
+        { label: "ミーティング", disable: false, route: "/reason-for-stopping/meeting-start" },
         { label: "材料・金型\n欠品", disable: true, route: "/reason-for-stopping/material-mold-shortage" },
         { label: "計画保全", disable: true, route: "/reason-for-stopping/planned-maintenance" },
         { label: "作業者なし", disable: true, route: "/reason-for-stopping/no-operator" },

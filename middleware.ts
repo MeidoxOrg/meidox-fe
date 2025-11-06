@@ -33,6 +33,8 @@ const protectedPaths = [
   "/normal-production/quality-check",
   "/normal-production/quality-check-progress",
   "/reason-for-stopping/break-start",
+  "/reason-for-stopping/meeting-start",
+  "/reason-for-stopping/no-kanban-start",
 ];
 const authPages = ["/login", "/register"];
 

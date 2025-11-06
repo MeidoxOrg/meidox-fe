@@ -19,3 +19,5 @@ export const WORKSESSION_QUANLITY_CHECK_ID = "workSessionQuanlityCheckId";
 export const REASON_FOR_STOPPING_BREAK_START = "reasonForStoppingBreakStartId";
 export const REASON_FOR_STOPPING_NO_KANBAN_START =
   "reasonForStoppingNokanbanStartId";
+export const REASON_FOR_STOPPING_MEETING_START =
+  "reasonForStoppingMeetingStartId";

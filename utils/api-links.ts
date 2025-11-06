@@ -128,6 +128,13 @@ const apiLinks = {
     completeReasonForStoppingMaterialMoldShortage: `${meidoxApiUrl}/ReasonForStoppingMaterialMoldShortage/Complete`,
     getReasonForStoppingMaterialMoldShortageByWsId: `${meidoxApiUrl}/ReasonForStoppingMaterialMoldShortage/WorkSession`,
   },
+  reasonForStoppingPlannedMaintenance: {
+    create: `${meidoxApiUrl}/ReasonForStoppingPlannedMaintenance`,
+    getReasonForStoppingPlannedMaintenanceById: `${meidoxApiUrl}/ReasonForStoppingPlannedMaintenance`,
+    updateReasonForStoppingPlannedMaintenanceRemark: `${meidoxApiUrl}/ReasonForStoppingPlannedMaintenance/Remark`,
+    completeReasonForStoppingPlannedMaintenance: `${meidoxApiUrl}/ReasonForStoppingPlannedMaintenance/Complete`,
+    getReasonForStoppingPlannedMaintenanceByWsId: `${meidoxApiUrl}/ReasonForStoppingPlannedMaintenance/WorkSession`,
+  },
 };
 
 export default apiLinks;

@@ -121,6 +121,13 @@ const apiLinks = {
     completeReasonForStoppingMeetingStart: `${meidoxApiUrl}/ReasonForStoppingMeetingStart/Complete`,
     getReasonForStoppingMeetingStartByWsId: `${meidoxApiUrl}/ReasonForStoppingMeetingStart/WorkSession`,
   },
+  reasonForStoppingMaterialMoldShortage: {
+    create: `${meidoxApiUrl}/ReasonForStoppingMaterialMoldShortage`,
+    getReasonForStoppingMaterialMoldShortageById: `${meidoxApiUrl}/ReasonForStoppingMaterialMoldShortage`,
+    updateReasonForStoppingMaterialMoldShortageRemark: `${meidoxApiUrl}/ReasonForStoppingMaterialMoldShortage/Remark`,
+    completeReasonForStoppingMaterialMoldShortage: `${meidoxApiUrl}/ReasonForStoppingMaterialMoldShortage/Complete`,
+    getReasonForStoppingMaterialMoldShortageByWsId: `${meidoxApiUrl}/ReasonForStoppingMaterialMoldShortage/WorkSession`,
+  },
 };
 
 export default apiLinks;

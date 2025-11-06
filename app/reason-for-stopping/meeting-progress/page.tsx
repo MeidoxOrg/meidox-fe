@@ -10,8 +10,6 @@ import reasonForStoppingMeetingStartServies from "@/services/reason-for-stopping
 import { ReasonForStoppingMeetingStart } from "@/model/reason-for-stopping-meeting-start"
 import { getEndTimeFromStart } from "@/utils/time-utils"
 
-
-
 export default function MeetingProgress() {
     const router = useRouter()
 

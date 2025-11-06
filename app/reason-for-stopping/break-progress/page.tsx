@@ -10,8 +10,6 @@ import reasonForStoppingBreakStartServies from "@/services/reason-for-stopping-b
 import { ReasonForStoppingBreakStart } from "@/model/reason-for-stopping-break-start"
 import { getEndTimeFromStart } from "@/utils/time-utils"
 
-
-
 export default function BreakProgress() {
     const router = useRouter()
     const [formData, setFormData] = useState({

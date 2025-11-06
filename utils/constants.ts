@@ -17,3 +17,5 @@ export const WORKSESSION_ORTHER_MACHINES_SUPPORT_ID =
   "workSessionOtherMachineSupportId";
 export const WORKSESSION_QUANLITY_CHECK_ID = "workSessionQuanlityCheckId";
 export const REASON_FOR_STOPPING_BREAK_START = "reasonForStoppingBreakStartId";
+export const REASON_FOR_STOPPING_NO_KANBAN_START =
+  "reasonForStoppingNokanbanStartId";

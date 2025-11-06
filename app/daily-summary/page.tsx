@@ -34,6 +34,8 @@ import workSessionQualityCheckServies from "@/services/work-session-quality-chec
 import { WorkSessionQualityCheckByWsId } from "@/model/work-session-quality-check"
 import reasonForStoppingBreakStartServies from "@/services/reason-for-stopping-break-start"
 import { ReasonForStoppingBreakStartByWsId } from "@/model/reason-for-stopping-break-start"
+import reasonForStoppingNoKanbanStartServies from "@/services/reason-for-stopping-no-kanban"
+import { ReasonForStoppingNoKanbanStartByWsId } from "@/model/reason-for-stopping-no-kanban"
 
 
 export default function DailySummaryPage() {
@@ -58,6 +60,7 @@ export default function DailySummaryPage() {
     const [dataWorkSesionOrtherMachinesSupport, setDataWorkSesionOrtherMachinesSupport] = useState<WorkSessionOtherMachineSupportByWsId[]>([])
     const [dataWorkSesionQuanlityCheck, setDataWorkSesionQuanlityCheck] = useState<WorkSessionQualityCheckByWsId[]>([])
     const [dataReasonForStoppingBreakStart, setDataReasonForStoppingBreakStart] = useState<ReasonForStoppingBreakStartByWsId[]>([])
+    const [dataReasonForStoppingNoKanbanStart, setDataReasonForStoppingNoKanbanStart] = useState<ReasonForStoppingNoKanbanStartByWsId[]>([])
 
 
     const getDataWorkSessionSetupByWsId = useCallback(async () => {
@@ -184,6 +187,15 @@ export default function DailySummaryPage() {
         try {
             const response = await reasonForStoppingBreakStartServies.getReasonForStoppingBreakStartByWsId(workSessionId);
             setDataReasonForStoppingBreakStart(response.reasonForStoppingBreakStarts);
+        } catch (error) {
+
+        }
+    }, [])
+
+    const getDataReasonForStoppingNoKanbanStartId = useCallback(async () => {
+        try {
+            const response = await reasonForStoppingNoKanbanStartServies.getReasonForStoppingNoKanbanStartByWsId(workSessionId);
+            setDataReasonForStoppingNoKanbanStart(response.reasonForStoppingNoKanbanStarts);
         } catch (error) {
 
         }
@@ -504,12 +516,14 @@ export default function DailySummaryPage() {
         getDataWorkSessionOrtherMachinesSupportByWsId()
         getDataWorkSessionQuanlityCheckByWsId()
         getDataReasonForStoppingBreakStartId()
+        getDataReasonForStoppingNoKanbanStartId()
 
     }, [getDataWorkSessionSetupByWsId, getDataWorkSessionProductionByWsId, getWorkSessionById,
         getDataWorkSessionMoldChangeByWsId, getDataWorkSessionMaterialChangeByWsId,
         getDataWorkSessionAdjustmentBeginByWsId, getDataWorkSession4SByWsId, getDataWorkSessionProductionPrepCheckByWsId,
         getDataWorkSessionSortingByWsId, getDataWorkSessionOrtherStopByWsId, getDataWorkSessionEquipmentRepairByWsId,
-        getDataWorkSessionOrtherMachinesSupportByWsId, getDataWorkSessionQuanlityCheckByWsId, getDataReasonForStoppingBreakStartId])
+        getDataWorkSessionOrtherMachinesSupportByWsId, getDataWorkSessionQuanlityCheckByWsId, getDataReasonForStoppingBreakStartId,
+        getDataReasonForStoppingNoKanbanStartId])
 
     return (
         <div className="flex flex-col h-screen bg-gray-100">
@@ -1155,6 +1169,53 @@ export default function DailySummaryPage() {
                         )
                     })}
 
+                    {/* SHOW CARD REASON_FOR_STOPPING_NOKANBAN_START */}
+
+                    {dataReasonForStoppingNoKanbanStart.map((item, idx) => {
+                        const start = new Date(`${item.dateStart}T${item.timeStart}`)
+                        const end = new Date(`${item.dateComplete}T${item.timeComplete}`)
+                        const diffMinutes = Math.round((end.getTime() - start.getTime()) / 60000) // tính phút
+
+                        return (
+                            <>
+                                {/* Card 1: 段取り開始 */}
+                                <Card key={`${idx}-start`} className="p-3 mb-3 bg-gray-100 rounded-md shadow-sm">
+                                    <div className="grid grid-cols-3 gap-x-6 gap-y-1 text-[13px] leading-tight text-gray-800">
+                                        <p>{formatDateToJapanese(item.dateStart)}</p>
+                                        <p>{formatTimeToJapanese(item.timeStart)}</p>
+                                        <p className="text-right">{item.productNumber}</p>
+
+                                        <p>{session?.user?.username}</p>
+                                        <p>かんばんなし開始</p>
+                                        <p className="text-right">{item.lotNumber}</p>
+
+                                        <p className="col-span-3 mt-1 text-right">{item.materialNumber}</p>
+                                    </div>
+                                </Card>
+
+                                {/* Card 2: 段取り完了 */}
+                                {item.timeComplete !== null && <Card key={`${idx}-end`} className="p-3 mb-3 bg-gray-100 rounded-md shadow-sm">
+                                    <div className="grid grid-cols-3 gap-x-6 gap-y-1 text-[13px] leading-tight text-gray-800">
+                                        <p>{formatDateToJapanese(item.dateStart)}</p>
+                                        <p>{formatTimeToJapanese(item?.timeComplete ?? "")}</p>
+                                        <p className="text-right">{item.productNumber}</p>
+
+                                        <p>{session?.user?.username}</p>
+                                        <p>かんばんなし終了</p>
+                                        <p className="text-right">{item.lotNumber}</p>
+
+                                        <p className="col-span-3 mt-1 text-right">
+                                            {diffMinutes}分
+                                        </p>
+                                        <p className="col-span-3 mt-1 text-right">
+                                            {item.materialNumber}
+                                        </p>
+                                    </div>
+                                </Card>}
+                            </>
+                        )
+                    })}
+
                 </div>
 
                 {/* RIGHT SIDE */}
@@ -1200,7 +1261,7 @@ export default function DailySummaryPage() {
                             <SummaryItem label="計画保全" value="X分" />
                             <SummaryItem label="4S（昼休憩後）" value="X分" />
 
-                            <SummaryItem label="かんばんなし" value="X分" />
+                            <SummaryItem label="かんばんなし" value={`${calculateTotalDurationMinutes(dataReasonForStoppingNoKanbanStart)}分`} />
                             <SummaryItem label="材料・金型欠品" value="X分" />
                             <SummaryItem label="作業者なし" value="X分" />
                             <SummaryItem label="その他停止" value="X分" />

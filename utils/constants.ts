@@ -21,3 +21,5 @@ export const REASON_FOR_STOPPING_NO_KANBAN_START =
   "reasonForStoppingNokanbanStartId";
 export const REASON_FOR_STOPPING_MEETING_START =
   "reasonForStoppingMeetingStartId";
+export const WORKSESSION_MATERIAL_MOLDSHORTAGE_ID =
+  "reasonForStoppingMaterialMoldShortageId";

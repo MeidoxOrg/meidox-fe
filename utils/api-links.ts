@@ -142,6 +142,13 @@ const apiLinks = {
     completeReasonForStoppingNoOperator: `${meidoxApiUrl}/ReasonForStoppingNoOperator/Complete`,
     getReasonForStoppingNoOperatorByWsId: `${meidoxApiUrl}/ReasonForStoppingNoOperator/WorkSession`,
   },
+  reasonForStoppingFourSAfterLunchStart: {
+    create: `${meidoxApiUrl}/ReasonForStoppingFourSAfterLunchStart`,
+    getReasonForStoppingFourSAfterLunchStartById: `${meidoxApiUrl}/ReasonForStoppingFourSAfterLunchStart`,
+    updateReasonForStoppingFourSAfterLunchStartRemark: `${meidoxApiUrl}/ReasonForStoppingFourSAfterLunchStart/Remark`,
+    completeReasonForStoppingFourSAfterLunchStart: `${meidoxApiUrl}/ReasonForStoppingFourSAfterLunchStart/Complete`,
+    getReasonForStoppingFourSAfterLunchStartByWsId: `${meidoxApiUrl}/ReasonForStoppingFourSAfterLunchStart/WorkSession`,
+  },
 };
 
 export default apiLinks;

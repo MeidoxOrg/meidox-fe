@@ -32,6 +32,8 @@ import workSessionOtherMachineSupportServies from "@/services/work-session-other
 import { WorkSessionOtherMachineSupportByWsId } from "@/model/work-session-other-machine-support"
 import workSessionQualityCheckServies from "@/services/work-session-quality-check"
 import { WorkSessionQualityCheckByWsId } from "@/model/work-session-quality-check"
+import reasonForStoppingBreakStartServies from "@/services/reason-for-stopping-break-start"
+import { ReasonForStoppingBreakStartByWsId } from "@/model/reason-for-stopping-break-start"
 
 
 export default function DailySummaryPage() {
@@ -55,6 +57,7 @@ export default function DailySummaryPage() {
     const [dataWorkSesionEquipmentRepair, setDataWorkSesionEquipmentRepair] = useState<WorkSessionEquipmentRepairByWsId[]>([])
     const [dataWorkSesionOrtherMachinesSupport, setDataWorkSesionOrtherMachinesSupport] = useState<WorkSessionOtherMachineSupportByWsId[]>([])
     const [dataWorkSesionQuanlityCheck, setDataWorkSesionQuanlityCheck] = useState<WorkSessionQualityCheckByWsId[]>([])
+    const [dataReasonForStoppingBreakStart, setDataReasonForStoppingBreakStart] = useState<ReasonForStoppingBreakStartByWsId[]>([])
 
 
     const getDataWorkSessionSetupByWsId = useCallback(async () => {
@@ -172,6 +175,15 @@ export default function DailySummaryPage() {
         try {
             const response = await workSessionOtherMachineSupportServies.getWorkSessionOtherMachineSupportByWsId(workSessionId);
             setDataWorkSesionQuanlityCheck(response.workSessionOtherMachineSupports);
+        } catch (error) {
+
+        }
+    }, [])
+
+    const getDataReasonForStoppingBreakStartId = useCallback(async () => {
+        try {
+            const response = await reasonForStoppingBreakStartServies.getReasonForStoppingBreakStartByWsId(workSessionId);
+            setDataReasonForStoppingBreakStart(response.reasonForStoppingBreakStarts);
         } catch (error) {
 
         }
@@ -450,6 +462,29 @@ export default function DailySummaryPage() {
         }, 0)
     }
 
+    const calculateTotalReasonForStoppingBreakStartDurationMinutes = (
+        setups: ReasonForStoppingBreakStartByWsId[] = []
+    ): number => {
+        if (!Array.isArray(setups) || setups.length === 0) return 0
+
+        return setups.reduce((sum, item) => {
+            if (!item.dateStart || !item.timeStart || !item.dateComplete || !item.timeComplete) {
+                return sum // bỏ qua nếu thiếu dữ liệu
+            }
+
+            const start = new Date(`${item.dateStart}T${item.timeStart}`)
+            const end = new Date(`${item.dateComplete}T${item.timeComplete}`)
+
+            // xử lý nếu qua ngày (VD: setup từ 23:50 → 00:10 hôm sau)
+            if (end < start) {
+                end.setDate(end.getDate() + 1)
+            }
+
+            const diffMinutes = Math.round((end.getTime() - start.getTime()) / 60000)
+            return sum + diffMinutes
+        }, 0)
+    }
+
     useEffect(() => {
         getDataWorkSessionSetupByWsId()
         getDataWorkSessionProductionByWsId()
@@ -464,12 +499,13 @@ export default function DailySummaryPage() {
         getDataWorkSessionEquipmentRepairByWsId()
         getDataWorkSessionOrtherMachinesSupportByWsId()
         getDataWorkSessionQuanlityCheckByWsId()
+        getDataReasonForStoppingBreakStartId()
 
     }, [getDataWorkSessionSetupByWsId, getDataWorkSessionProductionByWsId, getWorkSessionById,
         getDataWorkSessionMoldChangeByWsId, getDataWorkSessionMaterialChangeByWsId,
         getDataWorkSessionAdjustmentBeginByWsId, getDataWorkSession4SByWsId, getDataWorkSessionProductionPrepCheckByWsId,
         getDataWorkSessionSortingByWsId, getDataWorkSessionOrtherStopByWsId, getDataWorkSessionEquipmentRepairByWsId,
-        getDataWorkSessionOrtherMachinesSupportByWsId, getDataWorkSessionQuanlityCheckByWsId])
+        getDataWorkSessionOrtherMachinesSupportByWsId, getDataWorkSessionQuanlityCheckByWsId, getDataReasonForStoppingBreakStartId])
 
     return (
         <div className="flex flex-col h-screen bg-gray-100">
@@ -1068,6 +1104,53 @@ export default function DailySummaryPage() {
                         )
                     })}
 
+                    {/* SHOW CARD REASON_FOR_STOPPING_BREAK_START */}
+
+                    {dataReasonForStoppingBreakStart.map((item, idx) => {
+                        const start = new Date(`${item.dateStart}T${item.timeStart}`)
+                        const end = new Date(`${item.dateComplete}T${item.timeComplete}`)
+                        const diffMinutes = Math.round((end.getTime() - start.getTime()) / 60000) // tính phút
+
+                        return (
+                            <>
+                                {/* Card 1: 段取り開始 */}
+                                <Card key={`${idx}-start`} className="p-3 mb-3 bg-gray-100 rounded-md shadow-sm">
+                                    <div className="grid grid-cols-3 gap-x-6 gap-y-1 text-[13px] leading-tight text-gray-800">
+                                        <p>{formatDateToJapanese(item.dateStart)}</p>
+                                        <p>{formatTimeToJapanese(item.timeStart)}</p>
+                                        <p className="text-right">{item.productNumber}</p>
+
+                                        <p>{session?.user?.username}</p>
+                                        <p>休憩開始</p>
+                                        <p className="text-right">{item.lotNumber}</p>
+
+                                        <p className="col-span-3 mt-1 text-right">{item.materialNumber}</p>
+                                    </div>
+                                </Card>
+
+                                {/* Card 2: 段取り完了 */}
+                                {item.timeComplete !== null && <Card key={`${idx}-end`} className="p-3 mb-3 bg-gray-100 rounded-md shadow-sm">
+                                    <div className="grid grid-cols-3 gap-x-6 gap-y-1 text-[13px] leading-tight text-gray-800">
+                                        <p>{formatDateToJapanese(item.dateStart)}</p>
+                                        <p>{formatTimeToJapanese(item?.timeComplete ?? "")}</p>
+                                        <p className="text-right">{item.productNumber}</p>
+
+                                        <p>{session?.user?.username}</p>
+                                        <p>休憩終了</p>
+                                        <p className="text-right">{item.lotNumber}</p>
+
+                                        <p className="col-span-3 mt-1 text-right">
+                                            {diffMinutes}分
+                                        </p>
+                                        <p className="col-span-3 mt-1 text-right">
+                                            {item.materialNumber}
+                                        </p>
+                                    </div>
+                                </Card>}
+                            </>
+                        )
+                    })}
+
                 </div>
 
                 {/* RIGHT SIDE */}
@@ -1108,7 +1191,7 @@ export default function DailySummaryPage() {
                     {/* Table 2: meetings and breaks */}
                     <div className="border border-gray-300 rounded-md mb-4 p-2 bg-rose-50">
                         <div className="grid grid-cols-4 gap-2 text-sm">
-                            <SummaryItem label="休憩" value="X分" />
+                            <SummaryItem label="休憩" value={`${calculateTotalReasonForStoppingBreakStartDurationMinutes(dataReasonForStoppingBreakStart)}分`} />
                             <SummaryItem label="ミーティング" value="X分" />
                             <SummaryItem label="計画保全" value="X分" />
                             <SummaryItem label="4S（昼休憩後）" value="X分" />

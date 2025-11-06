@@ -100,6 +100,13 @@ const apiLinks = {
     completeWorkSessionQualityCheck: `${meidoxApiUrl}/WorkSessionQualityCheck/Complete`,
     getWorkSessionQualityCheckByWsId: `${meidoxApiUrl}/WorkSessionQualityCheck/WorkSession`,
   },
+  reasonForStoppingBreakStart: {
+    create: `${meidoxApiUrl}/ReasonForStoppingBreakStart`,
+    getReasonForStoppingBreakStartById: `${meidoxApiUrl}/ReasonForStoppingBreakStart`,
+    updateReasonForStoppingBreakStartRemark: `${meidoxApiUrl}/ReasonForStoppingBreakStart/Remark`,
+    completeReasonForStoppingBreakStart: `${meidoxApiUrl}/ReasonForStoppingBreakStart/Complete`,
+    getReasonForStoppingBreakStartByWsId: `${meidoxApiUrl}/ReasonForStoppingBreakStart/WorkSession`,
+  },
 };
 
 export default apiLinks;

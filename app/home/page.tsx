@@ -33,7 +33,7 @@ export default function Dashboard() {
     ]
 
     const rightSideButtons = [
-        { label: "休憩", disable: true, route: "/reason-for-stopping/break-start" },
+        { label: "休憩", disable: false, route: "/reason-for-stopping/break-start" },
         { label: "かんばんなし", disable: true, route: "/reason-for-stopping/no-kanban-start" },
         { label: "ミーティング", disable: true, route: "/reason-for-stopping/meeting-start" },
         { label: "材料・金型\n欠品", disable: true, route: "/reason-for-stopping/material-mold-shortage" },

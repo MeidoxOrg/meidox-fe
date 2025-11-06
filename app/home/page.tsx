@@ -40,7 +40,7 @@ export default function Dashboard() {
         { label: "計画保全", disable: false, route: "/reason-for-stopping/planned-maintenance" },
         { label: "作業者なし", disable: false, route: "/reason-for-stopping/no-operator" },
         { label: "4S\n(昼休憩後)", disable: false, route: "/reason-for-stopping/four-s-after-lunch-start" },
-        { label: "その他\n計画停止", disable: true, route: "/reason-for-stopping/other-planned-stop-start" },
+        { label: "その他\n計画停止", disable: false, route: "/reason-for-stopping/other-planned-stop-start" },
     ]
 
     const topButtons = [

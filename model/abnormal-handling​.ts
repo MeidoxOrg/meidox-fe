@@ -19,11 +19,12 @@ export interface WorkSessionAbnormalHandling {
   dateComplete: string | null;
   timeComplete: string | null;
   status: number;
-  fuelAmount: string;
+  abnormalProductPieces: string;
+  abnormalProductKg: string;
 }
 
 export interface WorkSessionAbnormalHandlingResponse {
-  workSessionAbnormalHandling: WorkSessionAbnormalHandling;
+  abnormalHandling: WorkSessionAbnormalHandling;
 }
 
 export interface CompleteWorkSessionAbnormalHandling {
@@ -44,9 +45,10 @@ export interface WorkSessionAbnormalHandlingByWsId {
   dateComplete: string | null;
   timeComplete: string | null;
   status: number;
-  fuelAmount: string;
+  abnormalProductPieces: string;
+  abnormalProductKg: string;
 }
 
 export interface WorkSessionAbnormalHandlingListResponse {
-  workSessionAbnormalHandlings: WorkSessionAbnormalHandlingByWsId[];
+  abnormalHandling: WorkSessionAbnormalHandlingByWsId[];
 }

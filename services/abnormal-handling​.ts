@@ -26,7 +26,7 @@ const getWorkSessionAbnormalHandlingId = async (
   const response = await httpClient.get<WorkSessionAbnormalHandlingResponse>({
     url: `${apiLinks.workSessionAbnormalHandling.getAbnormalHandlingById}/${workSessionAbnormalHandlingId}`,
   });
-
+  console.log(response.data);
   return response.data;
 };
 

@@ -100,6 +100,13 @@ const apiLinks = {
     completeWorkSessionQualityCheck: `${meidoxApiUrl}/WorkSessionQualityCheck/Complete`,
     getWorkSessionQualityCheckByWsId: `${meidoxApiUrl}/WorkSessionQualityCheck/WorkSession`,
   },
+  workSessionRefueling: {
+    create: `${meidoxApiUrl}/WorkSessionRefueling`,
+    getWorkSessionRefuelingById: `${meidoxApiUrl}/WorkSessionRefueling`,
+    updateWorkSessionRefuelingRemark: `${meidoxApiUrl}/WorkSessionRefueling/Remark`,
+    completeWorkSessionRefueling: `${meidoxApiUrl}/WorkSessionRefueling/Complete`,
+    getWorkSessionRefuelingByWsId: `${meidoxApiUrl}/WorkSessionRefueling/WorkSession`,
+  },
   reasonForStoppingBreakStart: {
     create: `${meidoxApiUrl}/ReasonForStoppingBreakStart`,
     getReasonForStoppingBreakStartById: `${meidoxApiUrl}/ReasonForStoppingBreakStart`,

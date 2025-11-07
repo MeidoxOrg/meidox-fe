@@ -40,6 +40,7 @@ const protectedPaths = [
   "/reason-for-stopping/no-operator",
   "/reason-for-stopping/four-s-after-lunch-start",
   "/reason-for-stopping/other-planned-stop-start",
+  "/normal-production/refuel",
 ];
 const authPages = ["/login", "/register"];
 

@@ -31,3 +31,4 @@ export const REASON_FOR_STOPPING_FOUR_S_AFTER_LUNCH_START_ID =
   "reasonForStoppingFourSAfterLunchStartId";
 export const REASON_FOR_STOPPING_OTHER_PLANNED_STOP_START_ID =
   "reasonForStoppingOtherPlannedStopStartId";
+export const WORKSESSION_REFUELING_ID = "workSessionRefuelingId";

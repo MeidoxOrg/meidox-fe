@@ -106,6 +106,7 @@ const apiLinks = {
     updateWorkSessionRefuelingRemark: `${meidoxApiUrl}/WorkSessionRefueling/Remark`,
     completeWorkSessionRefueling: `${meidoxApiUrl}/WorkSessionRefueling/Complete`,
     getWorkSessionRefuelingByWsId: `${meidoxApiUrl}/WorkSessionRefueling/WorkSession`,
+    updateFuelAmount: `${meidoxApiUrl}/WorkSessionRefueling/FuelAmount`,
   },
   reasonForStoppingBreakStart: {
     create: `${meidoxApiUrl}/ReasonForStoppingBreakStart`,

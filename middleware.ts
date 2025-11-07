@@ -41,6 +41,8 @@ const protectedPaths = [
   "/reason-for-stopping/four-s-after-lunch-start",
   "/reason-for-stopping/other-planned-stop-start",
   "/normal-production/refuel",
+  "/abnormal-handling",
+  "/abnormal-handling-progress",
 ];
 const authPages = ["/login", "/register"];
 

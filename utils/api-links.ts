@@ -164,6 +164,15 @@ const apiLinks = {
     completeReasonForStoppingOtherPlannedStopStart: `${meidoxApiUrl}/ReasonForStoppingOtherPlannedStopStart/Complete`,
     getReasonForStoppingOtherPlannedStopStartByWsId: `${meidoxApiUrl}/ReasonForStoppingOtherPlannedStopStart/WorkSession`,
   },
+  workSessionAbnormalHandling: {
+    create: `${meidoxApiUrl}/AbnormalHandling`,
+    getAbnormalHandlingById: `${meidoxApiUrl}/AbnormalHandling`,
+    updateAbnormalHandlingRemark: `${meidoxApiUrl}/AbnormalHandling/Remark`,
+    completeAbnormalHandling: `${meidoxApiUrl}/AbnormalHandling/Complete`,
+    getAbnormalHandlingByWsId: `${meidoxApiUrl}/AbnormalHandling/WorkSession`,
+    updateAbnormalProductPiecesHandling: `${meidoxApiUrl}/AbnormalHandling/AbnormalProductPieces`,
+    updateAbnormalProductKgHandling: `${meidoxApiUrl}/AbnormalHandling/AbnormalProductKg`,
+  },
 };
 
 export default apiLinks;

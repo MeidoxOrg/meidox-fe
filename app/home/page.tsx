@@ -26,7 +26,7 @@ export default function Dashboard() {
         { label: "他機対応", color: "bg-blue-500 hover:bg-blue-600", disable: false, route: "/normal-production/other-machine-support" },
         { label: "品質チェック", color: "bg-blue-500 hover:bg-blue-600", disable: false, route: "/normal-production/quality-check" },
         { label: "", color: "invisible", route: "#" },
-        { label: "異常処置", color: "bg-red-500 hover:bg-red-600", disable: true, route: "/abnormal-handling" },
+        { label: "異常処置", color: "bg-red-500 hover:bg-red-600", disable: false, route: "/abnormal-handling" },
         { label: "設備故障\n設備修理", color: "bg-red-500 hover:bg-red-600", disable: false, route: "/normal-production/equipment-repair" },
         { label: "無人運転\n(昼休憩)", color: "bg-green-600 hover:bg-green-700", disable: true, route: "/unmanned-lunch" },
         { label: "無人運転\n(残業)", color: "bg-green-600 hover:bg-green-700", disable: true, route: "/unmanned-operation-overtime" },

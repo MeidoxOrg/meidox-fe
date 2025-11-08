@@ -195,6 +195,16 @@ const apiLinks = {
     getUnmannedOperationOvertimeById: `${meidoxApiUrl}/UnmannedOperationOvertime`,
     getUnmannedOperationOvertimeByWsId: `${meidoxApiUrl}/UnmannedOperationOvertime/WorkSession`,
   },
+  OperationEnd: {
+    operationEnd: `${meidoxApiUrl}/OperationEnd`,
+    completeOperationEnd: `${meidoxApiUrl}/OperationEnd/Complete`,
+    setRemarkOperationEnd: `${meidoxApiUrl}/OperationEnd/Remark`,
+    setDisposableItemsPieces: `${meidoxApiUrl}/OperationEnd/DisposableItemsPieces`,
+    setDisposableItemsKg: `${meidoxApiUrl}/OperationEnd/DisposableItemsKg`,
+    setFallenItemsPieces: `${meidoxApiUrl}/OperationEnd/FallenItemsPieces`,
+    setFallenItemsKg: `${meidoxApiUrl}/OperationEnd/FallenItemsKg`,
+    getOperationEndsByWsId: `${meidoxApiUrl}/OperationEnd/WorkSession`,
+  },
 };
 
 export default apiLinks;

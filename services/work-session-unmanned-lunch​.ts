@@ -116,7 +116,7 @@ const updateUnmannedTime = async (
   quantiy: Number
 ): Promise<PostAPIResponse> => {
   const response = await httpClient.put<PostAPIResponse>({
-    url: apiLinks.workSessionUnmannedLunch.updateUnmannedLunchRemark,
+    url: apiLinks.workSessionUnmannedLunch.udpateUnmannedTime,
     data: {
       id: workSessionUnmannedLunchId,
       quantity: quantiy,

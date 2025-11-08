@@ -55,11 +55,13 @@ export function TimePicker({
             selected={date ? new Date(date) : undefined}
             onSelect={(d) => {
               if (d) {
-                onDateChange(d.toISOString().split("T")[0])
+                const formattedDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`
+                onDateChange(formattedDate)
                 setOpen(false)
               }
             }}
           />
+
         </PopoverContent>
       </Popover>
 

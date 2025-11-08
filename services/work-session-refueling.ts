@@ -81,6 +81,21 @@ const updateFuelAmount = async (
   return response.data;
 };
 
+const updateOilType = async (
+  workSessionRefuelId: String,
+  oilType: String
+): Promise<PostAPIResponse> => {
+  const response = await httpClient.put<PostAPIResponse>({
+    url: apiLinks.workSessionRefueling.setOilType,
+    data: {
+      id: workSessionRefuelId,
+      oilType: oilType,
+    },
+  });
+
+  return response.data;
+};
+
 const workSessionRefuelingServies = {
   createWorkSessionRefueling,
   getWorkSessionRefuelingId,
@@ -88,6 +103,7 @@ const workSessionRefuelingServies = {
   completeWorkSessionRefueling,
   getWorkSessionRefuelingByWsId,
   updateFuelAmount,
+  updateOilType,
 };
 
 export default workSessionRefuelingServies;

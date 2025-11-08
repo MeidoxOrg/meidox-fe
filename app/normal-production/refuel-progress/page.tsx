@@ -37,12 +37,14 @@ export default function RefuelProgress() {
         fuelAmount: "",
         fuelType: "",
         remark: "",
+        oilType: "1"
+
     })
 
     const [numpadTarget, setNumpadTarget] = useState<null | "fuelAmount">(null)
 
     const [errors, setErrors] = useState({
-        fuelAmount: "",
+        fuelAmount: ""
     })
 
     const getWorkSessionRefuelById = useCallback(async () => {
@@ -84,6 +86,8 @@ export default function RefuelProgress() {
             await workSessionRefuelingServies.updateWorkSessionRefuelingRemark(workSessionRefuelId, formData.remark);
         }
 
+        await workSessionRefuelingServies.updateOilType(workSessionRefuelId, formData.oilType);
+
         await workSessionRefuelingServies.completeWorkSessionRefueling({
             id: workSessionRefuelId,
             dateComplete: currentDate,
@@ -98,6 +102,17 @@ export default function RefuelProgress() {
             const response = await workSessionRefuelingServies.updateFuelAmount(workSessionRefuelId, parseInt(value));
             if (response.id) {
                 setErrors((prev) => ({ ...prev, fuelAmount: "" }))
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const hanldeUpdateOilType = async (value: string) => {
+        try {
+            const response = await workSessionRefuelingServies.updateOilType(workSessionRefuelId, value);
+            if (response.id) {
+
             }
         } catch (error) {
             console.log(error);
@@ -162,8 +177,11 @@ export default function RefuelProgress() {
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">油種</label>
                             <Select
-                                value={formData.fuelType}
-                                onValueChange={(value) => setFormData((prev) => ({ ...prev, shift: value }))}
+                                value={formData.oilType}
+                                onValueChange={(value) => {
+                                    hanldeUpdateOilType(value)
+                                    setFormData((prev) => ({ ...prev, oilType: value }))
+                                }}
                             >
                                 <SelectTrigger className="w-full border-2 border-amber-800 bg-white">
                                     <SelectValue />

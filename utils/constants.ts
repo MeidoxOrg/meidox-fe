@@ -34,3 +34,5 @@ export const REASON_FOR_STOPPING_OTHER_PLANNED_STOP_START_ID =
 export const WORKSESSION_REFUELING_ID = "workSessionRefuelingId";
 export const WORKSESSION_ABNORMAL_HANDLING_ID = "workSessionAbnormalHandlingId";
 export const WORKSESSION_UNMANNED_LUNCH_ID = "workSessionUnmannedLunchId";
+export const WORKSESSION_UNMANNED_OPERATION_OVER_TIME_ID =
+  "workSessionUnmannedOperationOvertimeId";

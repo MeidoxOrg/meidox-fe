@@ -131,7 +131,7 @@ const updateUnmannedTime = async (
   return response.data;
 };
 
-const UnmannedOperationOvertimesServies = {
+const unmannedOperationOvertimesServies = {
   createUnmannedOperationOvertimes,
   getUnmannedOperationOvertimesId,
   updateUnmannedOperationOvertimesRemark,
@@ -143,4 +143,4 @@ const UnmannedOperationOvertimesServies = {
   updateUnmannedTime,
 };
 
-export default UnmannedOperationOvertimesServies;
+export default unmannedOperationOvertimesServies;

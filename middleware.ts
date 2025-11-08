@@ -45,6 +45,7 @@ const protectedPaths = [
   "/abnormal-handling-progress",
   "/unmanned-lunch",
   "/unmanned-operation-overtime",
+  "/operation-end",
 ];
 const authPages = ["/login", "/register"];
 

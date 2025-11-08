@@ -36,3 +36,4 @@ export const WORKSESSION_ABNORMAL_HANDLING_ID = "workSessionAbnormalHandlingId";
 export const WORKSESSION_UNMANNED_LUNCH_ID = "workSessionUnmannedLunchId";
 export const WORKSESSION_UNMANNED_OPERATION_OVER_TIME_ID =
   "workSessionUnmannedOperationOvertimeId";
+export const OPERATION_END = "operationEndId";

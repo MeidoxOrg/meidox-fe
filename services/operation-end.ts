@@ -126,7 +126,7 @@ const updateFallenItemsPieces = async (
   return response.data;
 };
 
-const OperationEndServies = {
+const operationEndServies = {
   createOperationEnd,
   getOperationEndId,
   updateOperationEndRemark,
@@ -138,4 +138,4 @@ const OperationEndServies = {
   updateFallenItemsPieces,
 };
 
-export default OperationEndServies;
+export default operationEndServies;

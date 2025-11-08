@@ -5,13 +5,16 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import workSessionServices from "@/services/work-session"
 import { localStorageService } from "@/helper/localstorage"
-import { WORKSESSION_ID } from "@/utils/constants"
+import { OPERATION_END, WORKSESSION_ID } from "@/utils/constants"
 import { WorkSessionModel } from "@/model/work-session"
+import operationEndServies from "@/services/operation-end"
 
 export default function Dashboard() {
     const router = useRouter()
     const [workSessionData, setWorkSessionData] = useState<WorkSessionModel>();
     const [showMessage, setShowMessage] = useState(true)
+    const workSessionId = localStorageService.get<string>(WORKSESSION_ID, "")
+
 
     const mainGridButtons = [
         { label: "段取り", color: "bg-blue-500 hover:bg-blue-600", disable: false, route: "/normal-production/setup-start" },
@@ -61,6 +64,26 @@ export default function Dashboard() {
         }
     }, [])
 
+    const handleOperationEnd = async () => {
+        try {
+            const res = await operationEndServies.createOperationEnd({
+                dateStart: "2001-12-31",
+                lotNumber: "default",
+                materialNumber: "default",
+                productNumber: "default",
+                timeStart: "01:01",
+                workSessionId: workSessionId
+            })
+
+            if (res.id) {
+                localStorageService.set<String>(OPERATION_END, res.id)
+                router.push("/operation-end")
+            }
+        } catch (error) {
+
+        }
+    }
+
     useEffect(() => {
         getWorkSessionById()
     }, [getWorkSessionById])
@@ -98,7 +121,7 @@ export default function Dashboard() {
                     {/* Right small buttons */}
                     <div className="grid grid-cols-2 gap-3 w-full md:w-80">
                         <Button className="h-20 text-sm font-bold rounded-lg bg-yellow-300 text-black"
-                            onClick={() => router.push("/operation-end")} >作業終了</Button>
+                            onClick={() => handleOperationEnd()} >作業終了</Button>
 
                         <Button className="h-20 text-sm font-bold rounded-lg bg-amber-800 text-white"
                             onClick={() => router.push("/data-correction")} disabled>編集画面へ</Button>

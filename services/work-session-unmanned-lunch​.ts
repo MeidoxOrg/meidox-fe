@@ -96,21 +96,6 @@ const updateLotEnd = async (
   return response.data;
 };
 
-const updateNumberOfGood = async (
-  workSessionUnmannedLunchId: String,
-  lotEnd: Boolean
-): Promise<PostAPIResponse> => {
-  const response = await httpClient.put<PostAPIResponse>({
-    url: apiLinks.workSessionUnmannedLunch.updateLotEndUnmannedLunch,
-    data: {
-      id: workSessionUnmannedLunchId,
-      lotEnd: lotEnd,
-    },
-  });
-
-  return response.data;
-};
-
 const updateNumberOfGoodProducts = async (
   workSessionUnmannedLunchId: String,
   quantiy: Number
@@ -149,7 +134,6 @@ const workSessionUnmannedLunchServies = {
   endWorkSessionUnmannedLunch,
   updateLotEnd,
   updateCanNo,
-  updateNumberOfGood,
   updateNumberOfGoodProducts,
   updateUnmannedTime,
 };

@@ -26,7 +26,13 @@ export function NumpadModal({
         if (open) setInputValue(initialValue || "")
     }, [open, initialValue])
 
-    const handleInput = (num: string) => setInputValue((prev) => prev + num)
+    const handleInput = (num: string) => {
+        if (num === "MAX") {
+            setInputValue((prev) => prev + 10)
+        } else {
+            setInputValue((prev) => prev + num)
+        }
+    }
     const handleClear = () => setInputValue("")
 
     return (

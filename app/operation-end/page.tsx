@@ -1,101 +1,163 @@
 "use client"
 
-import { useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { PageLayout } from "@/components/layout/page-layout"
 import { Textarea } from "@/components/ui/textarea"
 import { TimePicker } from "@/components/ui/time-picker"
-import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { NumpadModal } from "@/components/ui/numpad-modal"
+import operationEndServies from "@/services/operation-end"
+import { localStorageService } from "@/helper/localstorage"
+import { OPERATION_END_ID } from "@/utils/constants"
+import { getEndTimeFromStart } from "@/utils/time-utils"
+import { OperationEnd } from "@/model/operation-end"
 
-function NumpadModal({
-    open,
-    onClose,
-    onConfirm,
-    initialValue = "",
-}: {
-    open: boolean
-    onClose: () => void
-    onConfirm: (value: string) => void
-    initialValue?: string
-}) {
-    const [inputValue, setInputValue] = useState(initialValue)
 
-    const handleInput = (num: string) => setInputValue((prev) => prev + num)
-    const handleClear = () => setInputValue("")
-
-    return (
-        <Dialog open={open} onOpenChange={onClose}>
-            <DialogContent className="max-w-xs">
-                <div className="text-center font-bold text-lg mb-4">数字入力</div>
-
-                {/* Display */}
-                <div className="border rounded-md p-2 text-xl text-center bg-gray-100 mb-4 h-12 flex items-center justify-center">
-                    {inputValue || "0"}
-                </div>
-
-                {/* Numpad */}
-                <div className="grid grid-cols-3 gap-4 mb-4 justify-items-center">
-                    {["7", "8", "9", "4", "5", "6", "1", "2", "3", "0"].map((num) => (
-                        <button
-                            key={num}
-                            onClick={() => handleInput(num)}
-                            className="w-16 h-16 rounded-full bg-amber-900 text-white text-2xl font-bold flex items-center justify-center"
-                        >
-                            {num}
-                        </button>
-                    ))}
-                </div>
-
-                {/* Clear */}
-                <button
-                    onClick={handleClear}
-                    className="w-full bg-green-400 text-black py-2 rounded-md font-bold"
-                >
-                    クリア
-                </button>
-
-                {/* Action */}
-                <div className="flex justify-between mt-4">
-                    <Button variant="outline" onClick={onClose}>
-                        キャンセル
-                    </Button>
-                    <Button
-                        className="bg-amber-800 text-white"
-                        onClick={() => {
-                            onConfirm(inputValue || "0")
-                            onClose()
-                        }}
-                    >
-                        OK
-                    </Button>
-                </div>
-            </DialogContent>
-        </Dialog>
-    )
-}
-
-export default function OperationEnd() {
+export default function OperationEndPage() {
     const router = useRouter()
+    const operationEndId = localStorageService.get<string>(OPERATION_END_ID, '');
+
     const [formData, setFormData] = useState({
-        startDate: "2001/12/31",
-        startHour: "07",
-        startMinute: "00",
-        endDate: "2025/09/20",
-        endHour: "14",
-        endMinute: "58",
-        wastePieces: "",
-        wasteKg: "",
-        dropPieces: "",
-        dropKg: "",
-        notes: "",
+        productNumber: "",
+        lotNumber: "",
+        materialNumber: "",
+        startDate: "",
+        startHour: "",
+        startMinute: "",
+        endDate: "",
+        endHour: "",
+        endMinute: "",
+        disposableItemsPieces: "",
+        disposableItemsKg: "",
+        remark: "",
+        fallenItemsPieces: "",
+        fallenItemsKg: "",
     })
 
+    const now = new Date()
+    const currentDate = now.toISOString().split("T")[0]
+    const currentTime = now.toTimeString().slice(0, 5)
+
     const [numpadTarget, setNumpadTarget] = useState<
-        null | "wastePieces" | "wasteKg" | "dropPieces" | "dropKg"
+        null | "disposableItemsPieces" | "disposableItemsKg" | "fallenItemsPieces" | "fallenItemsKg"
     >(null)
 
-    const handleFinish = () => router.push("/home")
+    const [errors, setErrors] = useState({
+        disposableItemsPieces: "",
+        disposableItemsKg: "",
+        fallenItemsPieces: "",
+        fallenItemsKg: ""
+    })
+
+
+    const getOperationEndId = useCallback(async () => {
+
+        await operationEndServies.getOperationEndId(operationEndId).then((res) => {
+            handleSetValueDefault(res.operationEnd)
+
+        }).catch((error) => { })
+
+    }, [])
+
+    const handleSetValueDefault = (data: OperationEnd) => {
+        setFormData((prev) => ({ ...prev, productNumber: data?.productNumber }))
+        setFormData((prev) => ({ ...prev, lotNumber: data?.lotNumber }))
+        setFormData((prev) => ({ ...prev, materialNumber: data?.materialNumber }))
+        setFormData((prev) => ({ ...prev, startDate: data?.dateStart }))
+        setFormData((prev) => ({ ...prev, startHour: data?.timeStart.split(":")[0] }))
+        setFormData((prev) => ({ ...prev, startMinute: data?.timeStart.split(":")[1] }))
+        setFormData((prev) => ({ ...prev, endDate: currentDate }))
+        setFormData((prev) => ({ ...prev, endHour: getEndTimeFromStart(currentTime).endHour }))
+        setFormData((prev) => ({ ...prev, endMinute: getEndTimeFromStart(currentTime).endMinute }))
+    }
+
+    const handleComplete = async () => {
+        let newErrors = { disposableItemsPieces: "", disposableItemsKg: "", fallenItemsPieces: "", fallenItemsKg: "" }
+        let hasError = false
+
+        if (!formData.disposableItemsPieces) {
+            newErrors.disposableItemsPieces = "廃棄品（個）を入力してください。"
+            hasError = true
+        }
+
+        if (!formData.disposableItemsKg) {
+            newErrors.disposableItemsKg = "廃棄品（kg）を入力してください。"
+            hasError = true
+        }
+
+        if (!formData.fallenItemsPieces) {
+            newErrors.fallenItemsPieces = "落下品（個）を入力してください。"
+            hasError = true
+        }
+
+        if (!formData.fallenItemsKg) {
+            newErrors.fallenItemsKg = "落下品（kg）を入力してください。"
+            hasError = true
+        }
+
+        setErrors(newErrors)
+
+        if (hasError) return
+
+        if (formData.remark) {
+            await operationEndServies.updateOperationEndRemark(operationEndId, formData.remark);
+        }
+
+        await operationEndServies.completeOperationEnd({
+            id: operationEndId,
+            dateComplete: currentDate,
+            timeComplete: currentTime
+        })
+
+        router.push("/home")
+    }
+
+    const handleUpdateDisposableItemsPieces = async (value: string) => {
+        try {
+            const response = await operationEndServies.updateDisposableItemsPieces(operationEndId, parseInt(value));
+            if (response.id) {
+                setErrors((prev) => ({ ...prev, disposableItemsPieces: "" }))
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const handleUpdateDisposableItemsKg = async (value: string) => {
+        try {
+            const response = await operationEndServies.updateDisposableItemsKg(operationEndId, parseInt(value));
+            if (response.id) {
+                setErrors((prev) => ({ ...prev, disposableItemsKg: "" }))
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const handleUpdateFallenItemsPieces = async (value: string) => {
+        try {
+            const response = await operationEndServies.updateFallenItemsPieces(operationEndId, parseInt(value));
+            if (response.id) {
+                setErrors((prev) => ({ ...prev, fallenItemsPieces: "" }))
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const handleUpdateFallenItemsKg = async (value: string) => {
+        try {
+            const response = await operationEndServies.updateFallenItemsKg(operationEndId, parseInt(value));
+            if (response.id) {
+                setErrors((prev) => ({ ...prev, fallenItemsKg: "" }))
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    useEffect(() => { getOperationEndId() }, [getOperationEndId])
 
     return (
         <PageLayout title="">
@@ -111,7 +173,11 @@ export default function OperationEnd() {
                                 date={formData.startDate}
                                 hour={formData.startHour}
                                 minute={formData.startMinute}
-                                onDateChange={(date) => setFormData((p) => ({ ...p, startDate: date }))}
+                                onDateChange={(date) => {
+                                    console.log(date);
+                                    debugger
+                                    setFormData((p) => ({ ...p, startDate: date }))
+                                }}
                                 onHourChange={(hour) => setFormData((p) => ({ ...p, startHour: hour }))}
                                 onMinuteChange={(minute) => setFormData((p) => ({ ...p, startMinute: minute }))}
                             />
@@ -133,10 +199,10 @@ export default function OperationEnd() {
                     {/* Right column: Number inputs */}
                     <div className="flex flex-col space-y-4">
                         {[
-                            { label: "捨て打ち品（個）", key: "wastePieces", color: "bg-[#eecbcb]" },
-                            { label: "捨て打ち品（kg）", key: "wasteKg", color: "bg-[#eecbcb]" },
-                            { label: "落下品（個）", key: "dropPieces", color: "bg-[#e6c989]" },
-                            { label: "落下品（kg）", key: "dropKg", color: "bg-[#e6c989]" },
+                            { label: "捨て打ち品（個）", key: "disposableItemsPieces", color: "bg-[#eecbcb]" },
+                            { label: "捨て打ち品（kg）", key: "disposableItemsKg", color: "bg-[#eecbcb]" },
+                            { label: "落下品（個）", key: "fallenItemsPieces", color: "bg-[#e6c989]" },
+                            { label: "落下品（kg）", key: "fallenItemsKg", color: "bg-[#e6c989]" },
                         ].map((item) => (
                             <div key={item.key}>
                                 <label className="block mb-2 font-medium">{item.label}</label>
@@ -153,6 +219,12 @@ export default function OperationEnd() {
                                         ⌨️
                                     </Button>
                                 </div>
+
+                                {errors[item.key as keyof typeof errors] && (
+                                    <p className="text-red-600 text-sm mt-1">
+                                        {errors[item.key as keyof typeof errors]}
+                                    </p>
+                                )}
                             </div>
                         ))}
                     </div>
@@ -162,8 +234,8 @@ export default function OperationEnd() {
                 <div className="mt-6">
                     <label className="block font-medium mb-2">備考</label>
                     <Textarea
-                        value={formData.notes}
-                        onChange={(e) => setFormData((p) => ({ ...p, notes: e.target.value }))}
+                        value={formData.remark}
+                        onChange={(e) => setFormData((p) => ({ ...p, remark: e.target.value }))}
                         placeholder="備考入力　入力の際は↓の□を押す"
                         className="h-24 border-2 border-gray-300 rounded-md w-full"
                     />
@@ -173,26 +245,55 @@ export default function OperationEnd() {
                 <div className="mt-8 text-center">
                     <Button
                         className="bg-[#fcbc9e] text-black px-12 py-4 rounded-lg text-xl font-bold"
-                        onClick={handleFinish}
+                        onClick={handleComplete}
                     >
                         作業終了
                     </Button>
                 </div>
             </div>
 
-            {/* Numpad Modal */}
             <NumpadModal
                 open={!!numpadTarget}
                 onClose={() => setNumpadTarget(null)}
+                title={
+                    numpadTarget === "disposableItemsPieces"
+                        ? "廃棄品（個）入力"
+                        : numpadTarget === "disposableItemsKg"
+                            ? "廃棄品（kg）入力"
+                            : numpadTarget === "fallenItemsPieces"
+                                ? "落下品（個）入力"
+                                : numpadTarget === "fallenItemsKg"
+                                    ? "落下品（kg）入力"
+                                    : "数字入力"
+                }
                 initialValue={
-                    numpadTarget ? formData[numpadTarget].replace(/[^0-9]/g, "") : ""
+                    numpadTarget === "disposableItemsPieces"
+                        ? formData.disposableItemsPieces
+                        : numpadTarget === "disposableItemsKg"
+                            ? formData.disposableItemsKg
+                            : numpadTarget === "fallenItemsPieces"
+                                ? formData.fallenItemsPieces
+                                : numpadTarget === "fallenItemsKg"
+                                    ? formData.fallenItemsKg
+                                    : ""
                 }
                 onConfirm={(val) => {
-                    if (numpadTarget) {
-                        setFormData((p) => ({ ...p, [numpadTarget]: val }))
+                    if (numpadTarget === "disposableItemsPieces") {
+                        setFormData((prev) => ({ ...prev, disposableItemsPieces: val }))
+                        handleUpdateDisposableItemsPieces(val)
+                    } else if (numpadTarget === "disposableItemsKg") {
+                        setFormData((prev) => ({ ...prev, disposableItemsKg: val }))
+                        handleUpdateDisposableItemsKg(val)
+                    } else if (numpadTarget === "fallenItemsPieces") {
+                        setFormData((prev) => ({ ...prev, fallenItemsPieces: val }))
+                        handleUpdateFallenItemsPieces(val)
+                    } else if (numpadTarget === "fallenItemsKg") {
+                        setFormData((prev) => ({ ...prev, fallenItemsKg: val }))
+                        handleUpdateFallenItemsKg(val)
                     }
                 }}
             />
+
         </PageLayout>
     )
 }

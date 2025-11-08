@@ -83,13 +83,13 @@ const updateDisposableItemsPieces = async (
 
 const updateDisposableItemsKg = async (
   operationEndId: String,
-  lotEnd: Boolean
+  quantity: Number
 ): Promise<PostAPIResponse> => {
   const response = await httpClient.put<PostAPIResponse>({
     url: apiLinks.OperationEnd.setDisposableItemsKg,
     data: {
       id: operationEndId,
-      lotEnd: lotEnd,
+      quantity: quantity,
     },
   });
 

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import workSessionServices from "@/services/work-session"
 import { localStorageService } from "@/helper/localstorage"
-import { OPERATION_END, WORKSESSION_ID } from "@/utils/constants"
+import { OPERATION_END_ID, WORKSESSION_ID } from "@/utils/constants"
 import { WorkSessionModel } from "@/model/work-session"
 import operationEndServies from "@/services/operation-end"
 
@@ -76,7 +76,7 @@ export default function Dashboard() {
             })
 
             if (res.id) {
-                localStorageService.set<String>(OPERATION_END, res.id)
+                localStorageService.set<String>(OPERATION_END_ID, res.id)
                 router.push("/operation-end")
             }
         } catch (error) {

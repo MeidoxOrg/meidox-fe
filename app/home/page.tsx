@@ -28,7 +28,7 @@ export default function Dashboard() {
         { label: "", color: "invisible", route: "#" },
         { label: "異常処置", color: "bg-red-500 hover:bg-red-600", disable: false, route: "/abnormal-handling" },
         { label: "設備故障\n設備修理", color: "bg-red-500 hover:bg-red-600", disable: false, route: "/normal-production/equipment-repair" },
-        { label: "無人運転\n(昼休憩)", color: "bg-green-600 hover:bg-green-700", disable: true, route: "/unmanned-lunch" },
+        { label: "無人運転\n(昼休憩)", color: "bg-green-600 hover:bg-green-700", disable: false, route: "/unmanned-lunch" },
         { label: "無人運転\n(残業)", color: "bg-green-600 hover:bg-green-700", disable: true, route: "/unmanned-operation-overtime" },
     ]
 
@@ -98,7 +98,7 @@ export default function Dashboard() {
                     {/* Right small buttons */}
                     <div className="grid grid-cols-2 gap-3 w-full md:w-80">
                         <Button className="h-20 text-sm font-bold rounded-lg bg-yellow-300 text-black"
-                            onClick={() => router.push("/operation-end")} disabled>作業終了</Button>
+                            onClick={() => router.push("/operation-end")} >作業終了</Button>
 
                         <Button className="h-20 text-sm font-bold rounded-lg bg-amber-800 text-white"
                             onClick={() => router.push("/data-correction")} disabled>編集画面へ</Button>

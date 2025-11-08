@@ -173,6 +173,18 @@ const apiLinks = {
     updateAbnormalProductPiecesHandling: `${meidoxApiUrl}/AbnormalHandling/AbnormalProductPieces`,
     updateAbnormalProductKgHandling: `${meidoxApiUrl}/AbnormalHandling/AbnormalProductKg`,
   },
+  workSessionUnmannedLunch: {
+    create: `${meidoxApiUrl}/UnmannedLunch`,
+    getUnmannedLunchById: `${meidoxApiUrl}/UnmannedLunch`,
+    updateUnmannedLunchRemark: `${meidoxApiUrl}/UnmannedLunch/Remark`,
+    completeUnmannedLunch: `${meidoxApiUrl}/UnmannedLunch/Complete`,
+    getUnmannedLunchByWsId: `${meidoxApiUrl}/UnmannedLunch/WorkSession`,
+    updateEndAutoOperationUnmannedLunch: `${meidoxApiUrl}/UnmannedLunch/EndAutoOperation`,
+    updateCanNoUnmannedLunch: `${meidoxApiUrl}/UnmannedLunch/CanNo`,
+    updateLotEndUnmannedLunch: `${meidoxApiUrl}/UnmannedLunch/LotEnd`,
+    udpateNumberOfGoodProducts: `${meidoxApiUrl}/UnmannedLunch/NumberOfGoodProducts`,
+    udpateUnmannedTime: `${meidoxApiUrl}/UnmannedLunch/UnmannedTime`,
+  },
 };
 
 export default apiLinks;

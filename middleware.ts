@@ -43,6 +43,7 @@ const protectedPaths = [
   "/normal-production/refuel",
   "/abnormal-handling",
   "/abnormal-handling-progress",
+  "/unmanned-lunch",
 ];
 const authPages = ["/login", "/register"];
 

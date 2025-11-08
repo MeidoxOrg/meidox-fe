@@ -26,7 +26,7 @@ export interface UnmannedOperationOvertime {
 }
 
 export interface UnmannedOperationOvertimeResponse {
-  unmannedLunch: UnmannedOperationOvertime;
+  unmannedOperationOvertime: UnmannedOperationOvertime;
 }
 
 export interface EndUnmannedOperationOvertime {
@@ -54,5 +54,5 @@ export interface UnmannedOperationOvertimeByWsId {
 }
 
 export interface UnmannedOperationOvertimeListResponse {
-  unmannedLunchs: UnmannedOperationOvertimeByWsId[];
+  unmannedOperationOvertimes: UnmannedOperationOvertimeByWsId[];
 }

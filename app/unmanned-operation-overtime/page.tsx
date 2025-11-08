@@ -29,7 +29,7 @@ export default function UnmannedOperationOvertime() {
 
             if (response.id) {
                 localStorageService.set<String>(WORKSESSION_UNMANNED_OPERATION_OVER_TIME_ID, response.id)
-                router.push("/unmanned-lunch-progress")
+                router.push("/unmanned-operation-overtime-progress")
             }
         } catch (error) {
 

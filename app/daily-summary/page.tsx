@@ -58,6 +58,8 @@ import type { ReasonForStoppingFourSAfterLunchStartByWsId } from "@/model/reason
 import type { ReasonForStoppingOtherPlannedStopStartByWsId } from "@/model/reason-for-stopping-other-planned-stop-start"
 import { WorkSessionCardList } from "@/components/common/WorkSessionCardList"
 import { calculateTotalDurationMinutes } from "@/components/common/CalculateDuration"
+import workSessionAbnormalHandlingServies from "@/services/abnormal-handling​"
+import { WorkSessionAbnormalHandlingByWsId } from "@/model/abnormal-handling​"
 
 export default function DailySummaryPage() {
     const [selectedDate] = useState("2025年8月28日")
@@ -88,6 +90,7 @@ export default function DailySummaryPage() {
     const [dataReasonForStoppingNoOperator, setDataReasonForStoppingNoOperator] = useState<ReasonForStoppingNoOperatorByWsId[]>([])
     const [dataReasonForStoppingFourSAfterLunchStart, setDataReasonForStoppingFourSAfterLunchStart] = useState<ReasonForStoppingFourSAfterLunchStartByWsId[]>([])
     const [dataReasonForStoppingOtherPlannedStopStart, setDataReasonForStoppingOtherPlannedStopStart] = useState<ReasonForStoppingOtherPlannedStopStartByWsId[]>([])
+    const [dataReasonAbnormalHandling, setDataReasonAbnormalHandling] = useState<WorkSessionAbnormalHandlingByWsId[]>([])
 
     /** ─── 🧩 Common fetcher ───────────────────────────────────────────────── */
     const fetchData = useCallback(async () => {
@@ -95,7 +98,7 @@ export default function DailySummaryPage() {
             const [
                 ws, setup, prod, mold, material, adjust, fourS, prep, sorting, otherStop,
                 repair, otherMachine, quality, breakStart, noKanban, meeting, shortage,
-                maintenance, noOp, fourSAfter, otherPlanned,
+                maintenance, noOp, fourSAfter, otherPlanned, abnormalHandling
             ] = await Promise.all([
                 workSessionServices.getWorkSessionById(workSessionId),
                 workSessionServices.getWorkSessionSetupByWsId(workSessionId),
@@ -118,6 +121,7 @@ export default function DailySummaryPage() {
                 reasonForStoppingNoOperatorServies.getReasonForStoppingNoOperatorByWsId(workSessionId),
                 reasonForStoppingFourSAfterLunchStartServies.getReasonForStoppingFourSAfterLunchStartByWsId(workSessionId),
                 reasonForStoppingOtherPlannedStopStartServies.getReasonForStoppingOtherPlannedStopStartByWsId(workSessionId),
+                workSessionAbnormalHandlingServies.getWorkSessionAbnormalHandlingByWsId(workSessionId),
             ])
 
             setWorkSessionData(ws.workSession)
@@ -141,6 +145,7 @@ export default function DailySummaryPage() {
             setDataReasonForStoppingNoOperator(noOp.reasonForStoppingNoOperators)
             setDataReasonForStoppingFourSAfterLunchStart(fourSAfter.reasonForStoppingFourSAfterLunchStarts)
             setDataReasonForStoppingOtherPlannedStopStart(otherPlanned.reasonForStoppingOtherPlannedStopStarts)
+            setDataReasonAbnormalHandling(abnormalHandling.abnormalHandlings)
         } catch (err) {
             console.error("データ取得失敗:", err)
         }
@@ -210,6 +215,7 @@ export default function DailySummaryPage() {
                     <WorkSessionCardList data={dataReasonForStoppingNoOperator} startLabel="作業者なし開始" endLabel="作業者なし終了" />
                     <WorkSessionCardList data={dataReasonForStoppingFourSAfterLunchStart} startLabel="４Ｓ（昼休憩後）開始" endLabel="４Ｓ（昼休憩後）終了" />
                     <WorkSessionCardList data={dataReasonForStoppingOtherPlannedStopStart} startLabel="その他計画停止開始" endLabel="その他計画停止終了" />
+                    <WorkSessionCardList data={dataReasonAbnormalHandling} startLabel="異常処置開始" endLabel="異常処置終了" />
                 </div>
 
                 {/* RIGHT */}
@@ -233,6 +239,7 @@ export default function DailySummaryPage() {
                             <SummaryItem label="材料交換" value={`${calculateTotalDurationMinutes(dataWorkSessionMaterialChange)}分`} />
                             <SummaryItem label="調整" value={`${calculateTotalDurationMinutes(dataWorkSessionAdjustmentBegin)}分`} />
                             <SummaryItem label="設備故障" value={`${calculateTotalDurationMinutes(dataWorkSesionEquipmentRepair)}分`} />
+                            <SummaryItem label="異常処置" value={`${calculateTotalDurationMinutes(dataReasonAbnormalHandling)}分`} />
                             <SummaryItem label="生産準備" value={`${calculateTotalDurationMinutes(dataWorkSessionProductionPrepCheck)}分`} />
                             <SummaryItem label="他機対応" value={`${calculateTotalDurationMinutes(dataWorkSesionOrtherMachinesSupport)}分`} />
                             <SummaryItem label="品質チェック" value={`${calculateTotalDurationMinutes(dataWorkSesionQuanlityCheck)}分`} />

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { PageLayout } from "@/components/layout/page-layout"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { NumpadModal } from "@/components/ui/numpad-modal"
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 
 export default function OperationEnd() {
     const router = useRouter()
@@ -29,9 +30,42 @@ export default function OperationEnd() {
         abnormalProductKg: ""
     })
 
+    const [openConfirmNumberOfGoodProduct, setOpenConfirmNumberOfGoodProduct] = useState(false)
+    const [openConfirmCanNumber, setOpenConfirmCanNumber] = useState(false)
+    const [openAbnormalItems, setOpenAbnormalItems] = useState(false)
+
+
     const [numpadTarget, setNumpadTarget] = useState<null | "numberOfGoodProducts" | "canNumber" | "abnormalProductPieces" | "abnormalProductKg">(null)
 
-    const handleFinish = () => router.push("/home")
+    const handleFinish = async () => {
+        try {
+            console.log('done numberofgoood');
+            setOpenConfirmNumberOfGoodProduct(false)
+            // router.push("/home") 
+        } catch (error) {
+            console.error("Lỗi:", error)
+        }
+    }
+
+    const handleFinishCanNumber = async () => {
+        try {
+            console.log('done cannumber');
+            setOpenConfirmCanNumber(false)
+            // router.push("/home") 
+        } catch (error) {
+            console.error("Lỗi:", error)
+        }
+    }
+
+    const handleFinishAbnormalItems = async () => {
+        try {
+            console.log('done AbnormalItems');
+            setOpenAbnormalItems(false)
+            // router.push("/home") 
+        } catch (error) {
+            console.error("Lỗi:", error)
+        }
+    }
 
     const handleRenderComponent = () => {
         switch (formData.optionEdit) {
@@ -55,7 +89,34 @@ export default function OperationEnd() {
                             ⌨
                         </Button>
                     </div>
+
+                    <AlertDialog open={openConfirmNumberOfGoodProduct} onOpenChange={setOpenConfirmNumberOfGoodProduct}>
+                        <AlertDialogTrigger asChild>
+                            <Button
+                                className="bg-[#299fde] text-white px-12 py-4 rounded-lg text-xl font-bold"
+                            >
+                                修正する
+                            </Button>
+                        </AlertDialogTrigger>
+
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle></AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    {`良品数を個から${formData.numberOfGoodProduct}個に変更します。
+                                    よろしいですか？`}
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>戻る</AlertDialogCancel>
+                                <AlertDialogAction onClick={handleFinish}>
+                                    変更する
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
                 </>
+
             case "canNumber":
                 return <>
                     <div className="bg-[#eecbcb] p-4 rounded-lg border-2 border-gray-400 flex-1 mt-5">
@@ -76,6 +137,32 @@ export default function OperationEnd() {
                             ⌨
                         </Button>
                     </div>
+
+                    <AlertDialog open={openConfirmCanNumber} onOpenChange={setOpenConfirmCanNumber}>
+                        <AlertDialogTrigger asChild>
+                            <Button
+                                className="bg-[#299fde] text-white px-12 py-4 rounded-lg text-xl font-bold"
+                            >
+                                修正する
+                            </Button>
+                        </AlertDialogTrigger>
+
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle></AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    {`J缶№をから${formData.canNumber}に変更します。よろしいですか？`}
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>戻る</AlertDialogCancel>
+                                <AlertDialogAction onClick={handleFinishCanNumber}>
+                                    変更する
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+
                 </>
             case "abnormalProductPieces":
                 return <>
@@ -111,6 +198,34 @@ export default function OperationEnd() {
                             ⌨
                         </Button>
                     </div>
+
+                    <AlertDialog open={openAbnormalItems} onOpenChange={setOpenAbnormalItems}>
+                        <AlertDialogTrigger asChild>
+                            <Button
+                                className="bg-[#299fde] text-white px-12 py-4 rounded-lg text-xl font-bold"
+                            >
+                                修正する
+                            </Button>
+                        </AlertDialogTrigger>
+
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle></AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    {`異常品個数を個から${formData.abnormalProductPieces}個に、
+                                    異常品重量をkgから${formData.abnormalProductKg}kgに変更します。
+                                    よろしいですか？`}
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>戻る</AlertDialogCancel>
+                                <AlertDialogAction onClick={handleFinishAbnormalItems}>
+                                    変更する
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+
                 </>
             default:
                 return ""
@@ -180,45 +295,32 @@ export default function OperationEnd() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {/* Left column: */}
                     <div className="flex flex-col space-y-6 mt-4">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                            {/* Field group 1 */}
+                        {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                             <div>日付：</div>
                             <div>品番：</div>
 
-                            {/* Field group 2 */}
                             <div>日時：</div>
                             <div>ロット№：</div>
 
-                            {/* Field group 3 */}
                             <div>名前: </div>
                             <div>良品数：</div>
 
-                            {/* Field group 4 */}
                             <div>状態: </div>
                             <div>缶№：</div>
 
-                            {/* Field cuối */}
                             <div className="sm:col-span-2">所要時間：</div>
                         </div>
 
-                        {/* Button 編集 */}
                         <div className="flex justify-end">
                             <button className="bg-[#3d3427] text-white px-6 py-2 rounded-md">
                                 編集
                             </button>
-                        </div>
+                        </div> */}
                     </div>
 
                     {/* Right column: Number inputs */}
                     <div className="flex flex-col space-y-4">
                         {handleRenderComponent()}
-                        <Button
-                            className="bg-[#299fde] text-white px-12 py-4 rounded-lg text-xl font-bold"
-                            onClick={handleFinish}
-                        >
-                            修正する
-                        </Button>
-
                     </div>
                 </div>
             </div>

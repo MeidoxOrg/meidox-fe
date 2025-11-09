@@ -37,22 +37,20 @@ export default function OperationEnd() {
         abnormalProductKg: ""
     })
 
+    const [errors, setErrors] = useState({
+        numberOfGoodProduct: "",
+        canNumber: "",
+        abnormalProductPieces: "",
+        abnormalProductKg: ""
+    })
+
     const [openConfirmNumberOfGoodProduct, setOpenConfirmNumberOfGoodProduct] = useState(false)
     const [openConfirmCanNumber, setOpenConfirmCanNumber] = useState(false)
     const [openAbnormalItems, setOpenAbnormalItems] = useState(false)
     const workSessionId = localStorageService.get<string>(WORKSESSION_ID, "")
-    const [dataWorkSessionProduction, setDataWorkSessionProduction] = useState<WorkSessionProductionByWsId[]>([])
 
     const [numpadTarget, setNumpadTarget] = useState<null | "numberOfGoodProducts" | "canNumber" | "abnormalProductPieces" | "abnormalProductKg">(null)
 
-    const getWorkSessionProduction = async () => {
-        try {
-            const response = await workSessionProduction.getWorkSessionProductionByWsId(workSessionId);
-            setDataWorkSessionProduction(response.workSessionProductions);
-        } catch (error) {
-
-        }
-    }
     const handleFinish = async () => {
         try {
             const response = await workSessionProduction.getWorkSessionProductionByWsId(workSessionId);
@@ -61,6 +59,7 @@ export default function OperationEnd() {
                 const res = workSessionProduction.updateNumberOfGoodProduct(latestCompleted.id, parseInt(formData.numberOfGoodProduct))
                 if ((await res).id) {
                     toast.success("情報が正常に更新されました！")
+                    setErrors((prev) => ({ ...prev, numberOfGoodProduct: "" }))
                 }
             } else {
                 toast.error("該当する情報が見つからなかったため、更新できませんでした。")
@@ -79,6 +78,7 @@ export default function OperationEnd() {
                 const res = workSessionProduction.updateCanNumber(latestCompleted.id, formData.canNumber)
                 if ((await res).id) {
                     toast.success("情報が正常に更新されました！")
+                    setErrors((prev) => ({ ...prev, canNumber: "" }))
                 }
             } else {
                 toast.error("該当する情報が見つからなかったため、更新できませんでした。")
@@ -98,6 +98,7 @@ export default function OperationEnd() {
                 const resKg = workSessionAbnormalHandlingServies.updateAbnormalProductKgHandling(latestCompleted.id, parseInt(formData.abnormalProductKg))
                 if ((await resPieces).id && (await resKg).id) {
                     toast.success("情報が正常に更新されました！")
+                    setErrors((prev) => ({ ...prev, abnormalProductPieces: "", abnormalProductKg: "" }))
                 }
             } else {
                 toast.error("該当する情報が見つからなかったため、更新できませんでした。")
@@ -130,16 +131,26 @@ export default function OperationEnd() {
                             ⌨
                         </Button>
                     </div>
+                    {errors.numberOfGoodProduct && (
+                        <p className="text-red-600 text-sm mt-1">{errors.numberOfGoodProduct}</p>
+                    )}
+
+                    <Button
+                        className="bg-[#299fde] text-white px-12 py-4 rounded-lg text-xl font-bold"
+                        onClick={() => {
+                            let hasError = false
+                            if (!formData.numberOfGoodProduct) {
+                                setErrors((prev) => ({ ...prev, numberOfGoodProduct: "良品数を入力してください。" }))
+                                hasError = true
+                            }
+                            if (hasError) return
+                            setOpenConfirmNumberOfGoodProduct(true)
+                        }}
+                    >
+                        修正する
+                    </Button>
 
                     <AlertDialog open={openConfirmNumberOfGoodProduct} onOpenChange={setOpenConfirmNumberOfGoodProduct}>
-                        <AlertDialogTrigger asChild>
-                            <Button
-                                className="bg-[#299fde] text-white px-12 py-4 rounded-lg text-xl font-bold"
-                            >
-                                修正する
-                            </Button>
-                        </AlertDialogTrigger>
-
                         <AlertDialogContent>
                             <AlertDialogHeader>
                                 <AlertDialogTitle></AlertDialogTitle>
@@ -178,16 +189,26 @@ export default function OperationEnd() {
                             ⌨
                         </Button>
                     </div>
+                    {errors.canNumber && (
+                        <p className="text-red-600 text-sm mt-1">{errors.canNumber}</p>
+                    )}
+
+                    <Button
+                        className="bg-[#299fde] text-white px-12 py-4 rounded-lg text-xl font-bold"
+                        onClick={() => {
+                            let hasError = false
+                            if (!formData.canNumber) {
+                                setErrors((prev) => ({ ...prev, canNumber: "J缶№を入力してください。" }))
+                                hasError = true
+                            }
+                            if (hasError) return
+                            setOpenConfirmCanNumber(true)
+                        }}
+                    >
+                        修正する
+                    </Button>
 
                     <AlertDialog open={openConfirmCanNumber} onOpenChange={setOpenConfirmCanNumber}>
-                        <AlertDialogTrigger asChild>
-                            <Button
-                                className="bg-[#299fde] text-white px-12 py-4 rounded-lg text-xl font-bold"
-                            >
-                                修正する
-                            </Button>
-                        </AlertDialogTrigger>
-
                         <AlertDialogContent>
                             <AlertDialogHeader>
                                 <AlertDialogTitle></AlertDialogTitle>
@@ -226,6 +247,9 @@ export default function OperationEnd() {
                             ⌨
                         </Button>
                     </div>
+                    {errors.abnormalProductPieces && (
+                        <p className="text-red-600 text-sm mt-1">{errors.abnormalProductPieces}</p>
+                    )}
 
                     <label className="block text-sm font-medium text-black mb-2">異常品重量</label>
                     <div className="flex items-center gap-2">
@@ -240,15 +264,30 @@ export default function OperationEnd() {
                         </Button>
                     </div>
 
-                    <AlertDialog open={openAbnormalItems} onOpenChange={setOpenAbnormalItems}>
-                        <AlertDialogTrigger asChild>
-                            <Button
-                                className="bg-[#299fde] text-white px-12 py-4 rounded-lg text-xl font-bold"
-                            >
-                                修正する
-                            </Button>
-                        </AlertDialogTrigger>
+                    {errors.abnormalProductKg && (
+                        <p className="text-red-600 text-sm mt-1">{errors.abnormalProductKg}</p>
+                    )}
 
+                    <Button
+                        className="bg-[#299fde] text-white px-12 py-4 rounded-lg text-xl font-bold"
+                        onClick={() => {
+                            let hasError = false
+                            if (!formData.abnormalProductPieces) {
+                                setErrors((prev) => ({ ...prev, abnormalProductPieces: "異常品（個）を入力してください。", }))
+                                hasError = true
+                            }
+                            if (!formData.abnormalProductKg) {
+                                setErrors((prev) => ({ ...prev, abnormalProductKg: "異常品（kg）を入力してください。" }))
+                                hasError = true
+                            }
+                            if (hasError) return
+                            setOpenAbnormalItems(true)
+                        }}
+                    >
+                        修正する
+                    </Button>
+
+                    <AlertDialog open={openAbnormalItems} onOpenChange={setOpenAbnormalItems}>
                         <AlertDialogContent>
                             <AlertDialogHeader>
                                 <AlertDialogTitle></AlertDialogTitle>
@@ -272,7 +311,6 @@ export default function OperationEnd() {
                 return ""
         }
     }
-
 
     return (
         <PageLayout title="">

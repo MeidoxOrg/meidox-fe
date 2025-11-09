@@ -124,7 +124,7 @@ export default function Dashboard() {
                             onClick={() => handleOperationEnd()} >作業終了</Button>
 
                         <Button className="h-20 text-sm font-bold rounded-lg bg-amber-800 text-white"
-                            onClick={() => router.push("/data-correction")} disabled>編集画面へ</Button>
+                            onClick={() => router.push("/data-correction")}>編集画面へ</Button>
                     </div>
                 </div>
 

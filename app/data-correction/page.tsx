@@ -4,105 +4,118 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { PageLayout } from "@/components/layout/page-layout"
-import { Textarea } from "@/components/ui/textarea"
-import { TimePicker } from "@/components/ui/time-picker"
-import { Dialog, DialogContent } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-
-function NumpadModal({
-    open,
-    onClose,
-    onConfirm,
-    initialValue = "",
-}: {
-    open: boolean
-    onClose: () => void
-    onConfirm: (value: string) => void
-    initialValue?: string
-}) {
-    const [inputValue, setInputValue] = useState(initialValue)
-
-    const handleInput = (num: string) => setInputValue((prev) => prev + num)
-    const handleClear = () => setInputValue("")
-
-    return (
-        <Dialog open={open} onOpenChange={onClose}>
-            <DialogContent className="max-w-xs">
-                <div className="text-center font-bold text-lg mb-4">数字入力</div>
-
-                {/* Display */}
-                <div className="border rounded-md p-2 text-xl text-center bg-gray-100 mb-4 h-12 flex items-center justify-center">
-                    {inputValue || ""}
-                </div>
-
-                {/* Numpad */}
-                <div className="grid grid-cols-3 gap-4 mb-4 justify-items-center">
-                    {["7", "8", "9", "4", "5", "6", "1", "2", "3", "0"].map((num) => (
-                        <button
-                            key={num}
-                            onClick={() => handleInput(num)}
-                            className="w-16 h-16 rounded-full bg-amber-900 text-white text-2xl font-bold flex items-center justify-center"
-                        >
-                            {num}
-                        </button>
-                    ))}
-                </div>
-
-                {/* Clear */}
-                <button
-                    onClick={handleClear}
-                    className="w-full bg-green-400 text-black py-2 rounded-md font-bold"
-                >
-                    クリア
-                </button>
-
-                {/* Action */}
-                <div className="flex justify-between mt-4">
-                    <Button variant="outline" onClick={onClose}>
-                        キャンセル
-                    </Button>
-                    <Button
-                        className="bg-amber-800 text-white"
-                        onClick={() => {
-                            onConfirm(inputValue || "")
-                            onClose()
-                        }}
-                    >
-                        OK
-                    </Button>
-                </div>
-            </DialogContent>
-        </Dialog>
-    )
-}
+import { NumpadModal } from "@/components/ui/numpad-modal"
 
 export default function OperationEnd() {
     const router = useRouter()
     const [formData, setFormData] = useState({
-        startDate: "2001/12/31",
-        startHour: "07",
-        startMinute: "00",
-        endDate: "2025/09/20",
-        endHour: "14",
-        endMinute: "58",
-        wastePieces: "",
-        wasteKg: "",
-        dropPieces: "",
-        dropKg: "",
-        notes: "",
-        shift: "黄",
-        machineNumber: "CHT11",
-        unitQuantity: "良品数",
-        adjustmentItems: "",
-
+        productNumber: "",
+        lotNumber: "",
+        materialNumber: "",
+        startDate: "",
+        startHour: "",
+        startMinute: "",
+        endDate: "",
+        endHour: "",
+        endMinute: "",
+        remark: "",
+        shift: "",
+        machineNumber: "",
+        optionEdit: "numberOfGoodProduct",
+        numberOfGoodProduct: "",
+        canNumber: "",
+        abnormalProductPieces: "",
+        abnormalProductKg: ""
     })
 
-    const [numpadTarget, setNumpadTarget] = useState<
-        null | "items"
-    >(null)
+    const [numpadTarget, setNumpadTarget] = useState<null | "numberOfGoodProducts" | "canNumber" | "abnormalProductPieces" | "abnormalProductKg">(null)
 
     const handleFinish = () => router.push("/home")
+
+    const handleRenderComponent = () => {
+        switch (formData.optionEdit) {
+            case "numberOfGoodProduct":
+                return <>
+                    <div className="bg-[#eecbcb] p-4 rounded-lg border-2 border-gray-400 flex-1 mt-5">
+                        <p className="text-sm">品番：</p>
+                        <p className="text-sm">ロット№：</p>
+                        <p className="font-bold text-sm">良品数：個</p>
+                    </div>
+
+                    <label className="block text-sm font-medium text-black mb-2">良品数</label>
+                    <div className="flex items-center gap-2">
+                        <div className="flex-1 bg-green-200 border-2 border-amber-800 rounded-md px-3 py-3 text-center font-medium">
+                            {formData.numberOfGoodProduct ? `${formData.numberOfGoodProduct} 個` : "入力はこちら→"}
+                        </div>
+                        <Button
+                            onClick={() => setNumpadTarget("numberOfGoodProducts")}
+                            className="bg-amber-800 hover:bg-amber-900 text-white p-3 rounded-md"
+                        >
+                            ⌨
+                        </Button>
+                    </div>
+                </>
+            case "canNumber":
+                return <>
+                    <div className="bg-[#eecbcb] p-4 rounded-lg border-2 border-gray-400 flex-1 mt-5">
+                        <p className="text-sm">品番：</p>
+                        <p className="text-sm">ロット№：</p>
+                        <p className="font-bold text-sm">J缶№:</p>
+                    </div>
+
+                    <label className="block text-sm font-medium text-black mb-2">J缶№</label>
+                    <div className="flex items-center gap-2">
+                        <div className="flex-1 bg-green-200 border-2 border-amber-800 rounded-md px-3 py-3 text-center font-medium">
+                            {formData.canNumber ? `${formData.canNumber}` : "入力はこちら→"}
+                        </div>
+                        <Button
+                            onClick={() => setNumpadTarget("canNumber")}
+                            className="bg-amber-800 hover:bg-amber-900 text-white p-3 rounded-md"
+                        >
+                            ⌨
+                        </Button>
+                    </div>
+                </>
+            case "abnormalProductPieces":
+                return <>
+                    <div className="bg-[#eecbcb] p-4 rounded-lg border-2 border-gray-400 flex-1 mt-5">
+                        <p className="text-sm">品番：</p>
+                        <p className="text-sm">ロット№：</p>
+                        <p className="font-bold text-sm">異常品個数: 個</p>
+                        <p className="font-bold text-sm">異常品重量: kg</p>
+                    </div>
+
+                    <label className="block text-sm font-medium text-black mb-2">異常品個数</label>
+                    <div className="flex items-center gap-2">
+                        <div className="flex-1 bg-green-200 border-2 border-amber-800 rounded-md px-3 py-3 text-center font-medium">
+                            {formData.abnormalProductPieces ? `${formData.abnormalProductPieces}個` : "入力はこちら→"}
+                        </div>
+                        <Button
+                            onClick={() => setNumpadTarget("abnormalProductPieces")}
+                            className="bg-amber-800 hover:bg-amber-900 text-white p-3 rounded-md"
+                        >
+                            ⌨
+                        </Button>
+                    </div>
+
+                    <label className="block text-sm font-medium text-black mb-2">異常品重量</label>
+                    <div className="flex items-center gap-2">
+                        <div className="flex-1 bg-green-200 border-2 border-amber-800 rounded-md px-3 py-3 text-center font-medium">
+                            {formData.abnormalProductKg ? `${formData.abnormalProductKg}kg` : "入力はこちら→"}
+                        </div>
+                        <Button
+                            onClick={() => setNumpadTarget("abnormalProductKg")}
+                            className="bg-amber-800 hover:bg-amber-900 text-white p-3 rounded-md"
+                        >
+                            ⌨
+                        </Button>
+                    </div>
+                </>
+            default:
+                return ""
+        }
+    }
 
     return (
         <PageLayout title="">
@@ -149,16 +162,16 @@ export default function OperationEnd() {
 
                     <div>
                         <Select
-                            value={formData.unitQuantity}
-                            onValueChange={(value) => setFormData((prev) => ({ ...prev, unitQuantity: value }))}
+                            value={formData.optionEdit}
+                            onValueChange={(value) => setFormData((prev) => ({ ...prev, optionEdit: value }))}
                         >
                             <SelectTrigger className="w-full border-2 border-amber-800 bg-white">
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent className="bg-amber-800 text-white">
-                                <SelectItem value="良品数" className="hover:bg-amber-700">良品数</SelectItem>
-                                <SelectItem value="J缶№" className="hover:bg-amber-700">J缶№</SelectItem>
-                                <SelectItem value="異常品個数・重量" className="hover:bg-amber-700">異常品個数・重量</SelectItem>
+                                <SelectItem value="numberOfGoodProduct" className="hover:bg-amber-700">良品数</SelectItem>
+                                <SelectItem value="canNumber" className="hover:bg-amber-700">J缶№</SelectItem>
+                                <SelectItem value="abnormalProductPieces" className="hover:bg-amber-700">異常品個数・重量</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
@@ -198,27 +211,7 @@ export default function OperationEnd() {
 
                     {/* Right column: Number inputs */}
                     <div className="flex flex-col space-y-4">
-
-                        <div className="bg-[#eecbcb] p-4 rounded-lg border-2 border-gray-400 flex-1 mt-5">
-                            <p className="text-sm">品番：</p>
-                            <p className="text-sm">ロット№：</p>
-                            <p className="font-bold text-sm">良品数：個</p>
-                        </div>
-
-
-                        <label className="block text-sm font-medium text-black mb-2">良品数</label>
-                        <div className="flex items-center gap-2">
-                            <div className="flex-1 bg-green-200 border-2 border-amber-800 rounded-md px-3 py-3 text-center font-medium">
-                                {formData.adjustmentItems ? `${formData.adjustmentItems} 個` : "入力はこちら→"}
-                            </div>
-                            <Button
-                                onClick={() => setNumpadTarget("items")}
-                                className="bg-amber-800 hover:bg-amber-900 text-white p-3 rounded-md"
-                            >
-                                ⌨
-                            </Button>
-                        </div>
-
+                        {handleRenderComponent()}
                         <Button
                             className="bg-[#299fde] text-white px-12 py-4 rounded-lg text-xl font-bold"
                             onClick={handleFinish}
@@ -230,21 +223,48 @@ export default function OperationEnd() {
                 </div>
             </div>
 
-            {/* Numpad Modal */}
             <NumpadModal
                 open={!!numpadTarget}
                 onClose={() => setNumpadTarget(null)}
+                title={
+                    numpadTarget === "numberOfGoodProducts"
+                        ? "良品数（個）入力"
+                        : numpadTarget === "canNumber"
+                            ? "J缶№入力"
+                            : numpadTarget === "abnormalProductPieces"
+                                ? "異常品（個）入力"
+                                : numpadTarget === "abnormalProductKg"
+                                    ? "異常品（kg）入力"
+                                    : "数字入力"
+                }
                 initialValue={
-                    numpadTarget === "items"
-                        ? formData.adjustmentItems
-                        : ""
+                    numpadTarget === "numberOfGoodProducts"
+                        ? formData.numberOfGoodProduct
+                        : numpadTarget === "canNumber"
+                            ? formData.canNumber
+                            : numpadTarget === "abnormalProductPieces"
+                                ? formData.abnormalProductPieces
+                                : numpadTarget === "abnormalProductKg"
+                                    ? formData.abnormalProductKg
+                                    : ""
                 }
                 onConfirm={(val) => {
-                    if (numpadTarget === "items") {
-                        setFormData((prev) => ({ ...prev, adjustmentItems: val }))
+                    if (numpadTarget === "numberOfGoodProducts") {
+                        setFormData((prev) => ({ ...prev, numberOfGoodProduct: val }))
+                        // handleUpdateNumberOfGoodProducts(val)
+                    } else if (numpadTarget === "canNumber") {
+                        setFormData((prev) => ({ ...prev, canNumber: val }))
+                        // handleUpdateCanNumber(val)
+                    } else if (numpadTarget === "abnormalProductPieces") {
+                        setFormData((prev) => ({ ...prev, abnormalProductPieces: val }))
+                        // handleUpdateAbnormalProductPieces(val)
+                    } else if (numpadTarget === "abnormalProductKg") {
+                        setFormData((prev) => ({ ...prev, abnormalProductKg: val }))
+                        // handleUpdateAbnormalProductKg(val)
                     }
                 }}
             />
+
         </PageLayout>
     )
 }

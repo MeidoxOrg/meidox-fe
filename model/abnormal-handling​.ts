@@ -50,5 +50,5 @@ export interface WorkSessionAbnormalHandlingByWsId {
 }
 
 export interface WorkSessionAbnormalHandlingListResponse {
-  abnormalHandling: WorkSessionAbnormalHandlingByWsId[];
+  abnormalHandlings: WorkSessionAbnormalHandlingByWsId[];
 }

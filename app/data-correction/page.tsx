@@ -11,8 +11,9 @@ import workSessionProduction from "@/services/work-session-production"
 import { WORKSESSION_ID } from "@/utils/constants"
 import { localStorageService } from "@/helper/localstorage"
 import { WorkSessionProductionByWsId } from "@/model/work-session-production"
-import { getLatestCompletedSession } from "@/utils/function"
+import { getLatestCompletedAbnormalHandling, getLatestCompletedSession } from "@/utils/function"
 import { toast } from "sonner"
+import workSessionAbnormalHandlingServies from "@/services/abnormal-handling​"
 
 export default function OperationEnd() {
     const router = useRouter()
@@ -56,12 +57,14 @@ export default function OperationEnd() {
         try {
             const response = await workSessionProduction.getWorkSessionProductionByWsId(workSessionId);
             const latestCompleted = getLatestCompletedSession(response.workSessionProductions)
-            console.log(latestCompleted);
-            // if (latestCompleted) {
-            //     workSessionProduction.updateNumberOfGoodProduct(latestCompleted.id, parseInt(formData.numberOfGoodProduct))
-            // } else {
-
-            // }
+            if (latestCompleted) {
+                const res = workSessionProduction.updateNumberOfGoodProduct(latestCompleted.id, parseInt(formData.numberOfGoodProduct))
+                if ((await res).id) {
+                    toast.success("情報が正常に更新されました！")
+                }
+            } else {
+                toast.error("該当する情報が見つからなかったため、更新できませんでした。")
+            }
             setOpenConfirmNumberOfGoodProduct(false)
         } catch (error) {
             console.error("Lỗi:", error)
@@ -70,9 +73,17 @@ export default function OperationEnd() {
 
     const handleFinishCanNumber = async () => {
         try {
-            console.log('done cannumber');
+            const response = await workSessionProduction.getWorkSessionProductionByWsId(workSessionId);
+            const latestCompleted = getLatestCompletedSession(response.workSessionProductions)
+            if (latestCompleted) {
+                const res = workSessionProduction.updateCanNumber(latestCompleted.id, formData.canNumber)
+                if ((await res).id) {
+                    toast.success("情報が正常に更新されました！")
+                }
+            } else {
+                toast.error("該当する情報が見つからなかったため、更新できませんでした。")
+            }
             setOpenConfirmCanNumber(false)
-            // router.push("/home") 
         } catch (error) {
             console.error("Lỗi:", error)
         }
@@ -80,9 +91,18 @@ export default function OperationEnd() {
 
     const handleFinishAbnormalItems = async () => {
         try {
-            console.log('done AbnormalItems');
+            const response = await workSessionAbnormalHandlingServies.getWorkSessionAbnormalHandlingByWsId(workSessionId);
+            const latestCompleted = getLatestCompletedAbnormalHandling(response.abnormalHandlings)
+            if (latestCompleted) {
+                const resPieces = workSessionAbnormalHandlingServies.updateAbnormalProductPiecesHandling(latestCompleted.id, parseInt(formData.abnormalProductPieces))
+                const resKg = workSessionAbnormalHandlingServies.updateAbnormalProductKgHandling(latestCompleted.id, parseInt(formData.abnormalProductKg))
+                if ((await resPieces).id && (await resKg).id) {
+                    toast.success("情報が正常に更新されました！")
+                }
+            } else {
+                toast.error("該当する情報が見つからなかったため、更新できませんでした。")
+            }
             setOpenAbnormalItems(false)
-            // router.push("/home") 
         } catch (error) {
             console.error("Lỗi:", error)
         }
@@ -136,10 +156,6 @@ export default function OperationEnd() {
                             </AlertDialogFooter>
                         </AlertDialogContent>
                     </AlertDialog>
-
-                    <Button onClick={() => toast("Event has been created")}>
-                        Show Toast
-                    </Button>
                 </>
 
             case "canNumber":

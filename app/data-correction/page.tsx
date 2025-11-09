@@ -7,6 +7,12 @@ import { PageLayout } from "@/components/layout/page-layout"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { NumpadModal } from "@/components/ui/numpad-modal"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+import workSessionProduction from "@/services/work-session-production"
+import { WORKSESSION_ID } from "@/utils/constants"
+import { localStorageService } from "@/helper/localstorage"
+import { WorkSessionProductionByWsId } from "@/model/work-session-production"
+import { getLatestCompletedSession } from "@/utils/function"
+import { toast } from "sonner"
 
 export default function OperationEnd() {
     const router = useRouter()
@@ -33,15 +39,30 @@ export default function OperationEnd() {
     const [openConfirmNumberOfGoodProduct, setOpenConfirmNumberOfGoodProduct] = useState(false)
     const [openConfirmCanNumber, setOpenConfirmCanNumber] = useState(false)
     const [openAbnormalItems, setOpenAbnormalItems] = useState(false)
-
+    const workSessionId = localStorageService.get<string>(WORKSESSION_ID, "")
+    const [dataWorkSessionProduction, setDataWorkSessionProduction] = useState<WorkSessionProductionByWsId[]>([])
 
     const [numpadTarget, setNumpadTarget] = useState<null | "numberOfGoodProducts" | "canNumber" | "abnormalProductPieces" | "abnormalProductKg">(null)
 
+    const getWorkSessionProduction = async () => {
+        try {
+            const response = await workSessionProduction.getWorkSessionProductionByWsId(workSessionId);
+            setDataWorkSessionProduction(response.workSessionProductions);
+        } catch (error) {
+
+        }
+    }
     const handleFinish = async () => {
         try {
-            console.log('done numberofgoood');
+            const response = await workSessionProduction.getWorkSessionProductionByWsId(workSessionId);
+            const latestCompleted = getLatestCompletedSession(response.workSessionProductions)
+            console.log(latestCompleted);
+            // if (latestCompleted) {
+            //     workSessionProduction.updateNumberOfGoodProduct(latestCompleted.id, parseInt(formData.numberOfGoodProduct))
+            // } else {
+
+            // }
             setOpenConfirmNumberOfGoodProduct(false)
-            // router.push("/home") 
         } catch (error) {
             console.error("Lỗi:", error)
         }
@@ -115,6 +136,10 @@ export default function OperationEnd() {
                             </AlertDialogFooter>
                         </AlertDialogContent>
                     </AlertDialog>
+
+                    <Button onClick={() => toast("Event has been created")}>
+                        Show Toast
+                    </Button>
                 </>
 
             case "canNumber":
@@ -231,6 +256,7 @@ export default function OperationEnd() {
                 return ""
         }
     }
+
 
     return (
         <PageLayout title="">

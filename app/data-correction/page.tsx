@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { PageLayout } from "@/components/layout/page-layout"
@@ -10,18 +10,23 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import workSessionProduction from "@/services/work-session-production"
 import { WORKSESSION_ID } from "@/utils/constants"
 import { localStorageService } from "@/helper/localstorage"
-import { WorkSessionProductionByWsId } from "@/model/work-session-production"
 import { getLatestCompletedAbnormalHandling, getLatestCompletedSession } from "@/utils/function"
 import { toast } from "sonner"
 import workSessionAbnormalHandlingServies from "@/services/abnormal-handling​"
+import { WorkShift } from "@/model/work-shift"
+import { Machine } from "@/model/machines"
+import workShiftServices from "@/services/work-shift"
+import machinesServices from "@/services/machines"
 
 export default function OperationEnd() {
-    const router = useRouter()
+    const now = new Date()
+    const currentDate = now.toISOString().split("T")[0]
+
     const [formData, setFormData] = useState({
         productNumber: "",
         lotNumber: "",
         materialNumber: "",
-        startDate: "",
+        startDate: currentDate,
         startHour: "",
         startMinute: "",
         endDate: "",
@@ -47,7 +52,12 @@ export default function OperationEnd() {
     const [openConfirmNumberOfGoodProduct, setOpenConfirmNumberOfGoodProduct] = useState(false)
     const [openConfirmCanNumber, setOpenConfirmCanNumber] = useState(false)
     const [openAbnormalItems, setOpenAbnormalItems] = useState(false)
+    const [workShiftData, setWorkShiftData] = useState<WorkShift[]>([]);
+    const [machineData, setMachinesData] = useState<Machine[]>([]);
+
     const workSessionId = localStorageService.get<string>(WORKSESSION_ID, "")
+
+
 
     const [numpadTarget, setNumpadTarget] = useState<null | "numberOfGoodProducts" | "canNumber" | "abnormalProductPieces" | "abnormalProductKg">(null)
 
@@ -312,6 +322,29 @@ export default function OperationEnd() {
         }
     }
 
+    const getWorkShitfData = useCallback(async () => {
+        await workShiftServices.getWorkShiftData().then((res) => {
+            setWorkShiftData(res.workShifts.data);
+            setFormData((prev) => ({ ...prev, shift: res.workShifts.data[0].id }))
+        }).catch((error) => {
+            console.log(error);
+        });;
+    }, [])
+
+    const getMachinesData = useCallback(async () => {
+        await machinesServices.getMachinesData().then((res) => {
+            setMachinesData(res.machines.data);
+            setFormData((prev) => ({ ...prev, machineNumber: res.machines.data[0].id }))
+        }).catch((error) => {
+            console.log(error);
+        });;
+    }, [])
+
+    useEffect(() => {
+        getWorkShitfData();
+        getMachinesData();
+    }, [getWorkShitfData, getMachinesData])
+
     return (
         <PageLayout title="">
             <div className="max-w-5xl mx-auto bg-sky-100 p-6 rounded-md">
@@ -319,8 +352,8 @@ export default function OperationEnd() {
                     <div>
                         <input
                             type="date"
-                            // value={formData.date}
-                            onChange={(e) => setFormData((prev) => ({ ...prev, date: e.target.value }))}
+                            value={formData.startDate}
+                            onChange={(e) => setFormData((prev) => ({ ...prev, startDate: e.target.value }))}
                             className="border-2 border-amber-800 rounded-md px-3 py-2 w-full bg-white"
                         />
                     </div>
@@ -333,8 +366,11 @@ export default function OperationEnd() {
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent className="bg-amber-800 text-white">
-                                <SelectItem value="黄" className="hover:bg-amber-700">黄</SelectItem>
-                                <SelectItem value="白" className="hover:bg-amber-700">白</SelectItem>
+                                {workShiftData.length > 0 && workShiftData.map((item) =>
+                                    <SelectItem
+                                        key={item.id}
+                                        value={item.id}>{item.name}</SelectItem>
+                                )}
                             </SelectContent>
                         </Select>
                     </div>
@@ -348,9 +384,10 @@ export default function OperationEnd() {
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent className="bg-amber-800 text-white">
-                                <SelectItem value="CHT11" className="hover:bg-amber-700">CHT11</SelectItem>
-                                <SelectItem value="CHT12" className="hover:bg-amber-700">CHT12</SelectItem>
-                                <SelectItem value="CHT13" className="hover:bg-amber-700">CHT13</SelectItem>
+                                {machineData.length > 0 && machineData.map((item) =>
+                                    <SelectItem key={item.id} value={item.id}>{item.machineNumber}</SelectItem>
+
+                                )}
                             </SelectContent>
                         </Select>
                     </div>

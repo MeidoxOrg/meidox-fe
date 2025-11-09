@@ -48,13 +48,14 @@ import reasonForStoppingFourSAfterLunchStartServies from "@/services/reason-for-
 import { ReasonForStoppingFourSAfterLunchStartByWsId } from "@/model/reason-for-stopping-four-s-after-lunchStart​"
 import reasonForStoppingOtherPlannedStopStartServies from "@/services/reason-for-stopping-other-planned-stop-start"
 import { ReasonForStoppingOtherPlannedStopStartByWsId } from "@/model/reason-for-stopping-other-planned-stop-start"
-
+import { useRouter } from "next/navigation"
 
 export default function DailySummaryPage() {
     const [selectedDate] = useState("2025年8月28日")
     const [shift] = useState("黄")
     const [machine] = useState("CPH35")
     const { data: session } = useSession()
+    const router = useRouter();
 
     const workSessionId = localStorageService.get<string>(WORKSESSION_ID, "")
 
@@ -620,7 +621,7 @@ export default function DailySummaryPage() {
                     <Input value={selectedDate} readOnly className="w-36 text-center" />
                     <Input value={shift} readOnly className="w-12 text-center" />
                     <Input value={machine} readOnly className="w-20 text-center" />
-                    <Button variant="ghost" size="icon">
+                    <Button variant="ghost" size="icon" onClick={() => router.push("/")}>
                         <Home className="text-amber-800" />
                     </Button>
                 </div>

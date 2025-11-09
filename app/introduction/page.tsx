@@ -38,11 +38,11 @@ export default function ProductionReportPage() {
                     </div>
 
                     {/* Row 2 */}
-                    {/* <button
-                        disabled
+                    <button
+                        onClick={() => router.push("/data-correction")}
                         className="bg-[#4b3b2b] hover:bg-[#3b2e20] text-white text-xl px-12 py-6 rounded-md shadow-lg transition-all">
                         良品数・J缶No・異常品個数<br />編集
-                    </button> */}
+                    </button>
                 </div>
             </div>
         </div>

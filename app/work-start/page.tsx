@@ -23,6 +23,7 @@ import { useSession } from "next-auth/react"
 import workSessionServices from "@/services/work-session"
 import { localStorageService } from "@/helper/localstorage"
 import { WORKSESSION_ID } from "@/utils/constants"
+import { TimeOnlyPicker } from "@/components/ui/time-only-picker"
 
 function WorkStartHeader() {
     const router = useRouter()
@@ -144,55 +145,26 @@ export default function WorkStartPage() {
                             />
 
                             {/* 🕐 Hour + Minute */}
-                            <div>
-                                <div className="flex gap-2 mt-2">
-                                    <FormField
-                                        control={form.control}
-                                        name="hour"
-                                        rules={{ required: "時を選択してください。" }}
-                                        render={({ field }) => (
-                                            <FormItem className="flex-1">
-                                                <FormControl>
-                                                    <select
-                                                        {...field}
-                                                        className="border-2 border-amber-800 rounded-md px-2 py-1 w-full bg-white"
-                                                    >
-                                                        {Array.from({ length: 24 }).map((_, i) => (
-                                                            <option key={i} value={i.toString().padStart(2, "0")}>
-                                                                {i.toString().padStart(2, "0")}
-                                                            </option>
-                                                        ))}
-                                                    </select>
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <span className="self-end pb-2">:</span>
-                                    <FormField
-                                        control={form.control}
-                                        name="minute"
-                                        rules={{ required: "分を選択してください。" }}
-                                        render={({ field }) => (
-                                            <FormItem className="flex-1">
-                                                <FormControl>
-                                                    <select
-                                                        {...field}
-                                                        className="border-2 border-amber-800 rounded-md px-2 py-1 w-full bg-white"
-                                                    >
-                                                        {Array.from({ length: 60 }).map((_, i) => (
-                                                            <option key={i} value={i.toString().padStart(2, "0")}>
-                                                                {i.toString().padStart(2, "0")}
-                                                            </option>
-                                                        ))}
-                                                    </select>
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
-                            </div>
+                            <FormField
+                                control={form.control}
+                                name="hour"
+                                rules={{ required: "時を選択してください。" }}
+                                render={() => (
+                                    <FormItem>
+                                        {/* <FormLabel>🕐 時間</FormLabel> */}
+                                        <FormControl>
+                                            <TimeOnlyPicker
+                                                hour={form.watch("hour")}
+                                                minute={form.watch("minute")}
+                                                onHourChange={(val) => form.setValue("hour", val, { shouldValidate: true })}
+                                                onMinuteChange={(val) => form.setValue("minute", val, { shouldValidate: true })}
+                                                className="mt-2"
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
                             {/* 🔧 Shift */}
                             <FormField
@@ -207,16 +179,21 @@ export default function WorkStartPage() {
                                                 <SelectTrigger className="w-full border-2 border-amber-800 bg-white">
                                                     <SelectValue />
                                                 </SelectTrigger>
-
-                                                <SelectContent className="bg-amber-800 text-white">
-                                                    {workShiftData.length > 0 && workShiftData.map((item) =>
-                                                        <SelectItem
-                                                            key={item.id}
-                                                            value={item.id}>{item.name}</SelectItem>
-                                                    )}
+                                                <SelectContent className="bg-white border border-[#ffe097] text-black">
+                                                    {workShiftData.length > 0 &&
+                                                        workShiftData.map((item) => (
+                                                            <SelectItem
+                                                                key={item.id}
+                                                                value={item.id}
+                                                                className="data-[state=checked]:bg-[#ffe097] hover:bg-[#ffe097] hover:text-black focus:bg-[#ffe097] focus:text-black text-black"
+                                                            >
+                                                                {item.name}
+                                                            </SelectItem>
+                                                        ))}
                                                 </SelectContent>
                                             </Select>
                                         </FormControl>
+
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -235,9 +212,11 @@ export default function WorkStartPage() {
                                                 <SelectTrigger className="w-full border-2 border-amber-800 bg-white">
                                                     <SelectValue />
                                                 </SelectTrigger>
-                                                <SelectContent className="bg-amber-800 text-white">
+                                                <SelectContent className="bg-white border border-[#ffe097] text-black">
                                                     {machineData.length > 0 && machineData.map((item) =>
-                                                        <SelectItem key={item.id} value={item.id}>{item.machineNumber}</SelectItem>
+                                                        <SelectItem key={item.id} value={item.id}
+                                                            className="data-[state=checked]:bg-[#ffe097] hover:bg-[#ffe097] hover:text-black focus:bg-[#ffe097] focus:text-black text-black"
+                                                        >{item.machineNumber}</SelectItem>
 
                                                     )}
                                                 </SelectContent>

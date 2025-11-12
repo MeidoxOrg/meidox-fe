@@ -71,9 +71,10 @@ export function TimePicker({
           <SelectTrigger className="w-full sm:w-20 border-2 border-amber-800 bg-white">
             <SelectValue placeholder="HH" />
           </SelectTrigger>
-          <SelectContent className="bg-amber-800 text-white">
+          <SelectContent className="bg-white border border-[#ffe097] text-black">
             {hours.map((h) => (
-              <SelectItem key={h} value={h} className="hover:bg-amber-700">
+              <SelectItem key={h} value={h} className="data-[state=checked]:bg-[#ffe097] hover:bg-[#ffe097] hover:text-black focus:bg-[#ffe097] focus:text-black text-black"
+              >
                 {h}
               </SelectItem>
             ))}
@@ -86,9 +87,10 @@ export function TimePicker({
           <SelectTrigger className="w-full sm:w-20 border-2 border-amber-800 bg-white">
             <SelectValue placeholder="MM" />
           </SelectTrigger>
-          <SelectContent className="bg-amber-800 text-white">
+          <SelectContent className="bg-white border border-[#ffe097] text-black">
             {minutes.map((m) => (
-              <SelectItem key={m} value={m} className="hover:bg-amber-700">
+              <SelectItem key={m} value={m} className="data-[state=checked]:bg-[#ffe097] hover:bg-[#ffe097] hover:text-black focus:bg-[#ffe097] focus:text-black text-black"
+              >
                 {m}
               </SelectItem>
             ))}

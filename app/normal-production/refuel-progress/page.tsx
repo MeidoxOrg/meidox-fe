@@ -186,8 +186,9 @@ export default function RefuelProgress() {
                                 <SelectTrigger className="w-full border-2 border-amber-800 bg-white">
                                     <SelectValue />
                                 </SelectTrigger>
-                                <SelectContent className="bg-amber-800 text-white">
-                                    <SelectItem value="1" className="hover:bg-amber-700">1</SelectItem>
+                                <SelectContent className="bg-white border border-[#ffe097] text-black">
+                                    <SelectItem value="1" className="data-[state=checked]:bg-[#ffe097] hover:bg-[#ffe097] hover:text-black focus:bg-[#ffe097] focus:text-black text-black"
+                                    >1</SelectItem>
 
                                 </SelectContent>
                             </Select>

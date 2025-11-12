@@ -364,11 +364,13 @@ export default function OperationEnd() {
                             <SelectTrigger className="w-full border-2 border-amber-800 bg-white">
                                 <SelectValue />
                             </SelectTrigger>
-                            <SelectContent className="bg-amber-800 text-white">
+                            <SelectContent className="bg-white border border-[#ffe097] text-black">
                                 {workShiftData.length > 0 && workShiftData.map((item) =>
                                     <SelectItem
                                         key={item.id}
-                                        value={item.id}>{item.name}</SelectItem>
+                                        value={item.id}
+                                        className="data-[state=checked]:bg-[#ffe097] hover:bg-[#ffe097] hover:text-black focus:bg-[#ffe097] focus:text-black text-black"
+                                    >{item.name}</SelectItem>
                                 )}
                             </SelectContent>
                         </Select>
@@ -382,9 +384,11 @@ export default function OperationEnd() {
                             <SelectTrigger className="w-full border-2 border-amber-800 bg-white">
                                 <SelectValue />
                             </SelectTrigger>
-                            <SelectContent className="bg-amber-800 text-white">
+                            <SelectContent className="bg-white border border-[#ffe097] text-black">
                                 {machineData.length > 0 && machineData.map((item) =>
-                                    <SelectItem key={item.id} value={item.id}>{item.machineNumber}</SelectItem>
+                                    <SelectItem key={item.id} value={item.id}
+                                        className="data-[state=checked]:bg-[#ffe097] hover:bg-[#ffe097] hover:text-black focus:bg-[#ffe097] focus:text-black text-black"
+                                    >{item.machineNumber}</SelectItem>
 
                                 )}
                             </SelectContent>
@@ -399,10 +403,13 @@ export default function OperationEnd() {
                             <SelectTrigger className="w-full border-2 border-amber-800 bg-white">
                                 <SelectValue />
                             </SelectTrigger>
-                            <SelectContent className="bg-amber-800 text-white">
-                                <SelectItem value="numberOfGoodProduct" className="hover:bg-amber-700">良品数</SelectItem>
-                                <SelectItem value="canNumber" className="hover:bg-amber-700">J缶№</SelectItem>
-                                <SelectItem value="abnormalProductPieces" className="hover:bg-amber-700">異常品個数・重量</SelectItem>
+                            <SelectContent className="bg-white border border-[#ffe097] text-black">
+                                <SelectItem value="numberOfGoodProduct" className="data-[state=checked]:bg-[#ffe097] hover:bg-[#ffe097] hover:text-black focus:bg-[#ffe097] focus:text-black text-black"
+                                >良品数</SelectItem>
+                                <SelectItem value="canNumber" className="data-[state=checked]:bg-[#ffe097] hover:bg-[#ffe097] hover:text-black focus:bg-[#ffe097] focus:text-black text-black"
+                                >J缶№</SelectItem>
+                                <SelectItem value="abnormalProductPieces" className="data-[state=checked]:bg-[#ffe097] hover:bg-[#ffe097] hover:text-black focus:bg-[#ffe097] focus:text-black text-black"
+                                >異常品個数・重量</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>

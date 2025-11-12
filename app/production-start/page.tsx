@@ -36,14 +36,10 @@ export default function SetupStartPage() {
     const handleScanKanban = (value: string) => {
         setKanbanData(value)
 
-        // ロット№
-        const rawLot = value.substring(5, 15).trim()
-        const lotValue =
-            rawLot.length >= 10
-                ? `${rawLot.substring(0, 6)}-${rawLot.substring(6, 10)}`
-                : rawLot
+        // ロット№ (6文字目から10文字)
+        const lotValue = value.substring(5, 10).trim()
 
-        // 品番
+        // 品番 (22文字目から空白まで)
         const after21 = value.substring(21)
         const spaceIndex = after21.indexOf(" ")
         const productValue =
@@ -98,7 +94,7 @@ export default function SetupStartPage() {
                     setIsScanningKanban={setIsScanningKanban}
                     setIsScanningMaterialData={setIsScanningMaterialData}
                     submitLabel="生産開始"
-                />
+                    showScanQR={true} />
             </div>
         </PageLayout>
     )

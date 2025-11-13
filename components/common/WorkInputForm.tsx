@@ -4,7 +4,9 @@ import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { WorkInputFormValues } from "@/model/custom"
+import { SetupFormValuesGlobal, WorkInputFormValues } from "@/model/custom"
+import { localStorageService } from "@/helper/localstorage"
+import { PRODUCT_INFO } from "@/utils/constants"
 
 interface WorkInputFormProps {
     submitLabel?: string
@@ -29,12 +31,17 @@ export function WorkInputForm({
     placeholders,
     buttonClassName = "bg-green-400 hover:bg-green-500 text-black",
 }: WorkInputFormProps) {
+    const productManufactured = localStorageService.get<SetupFormValuesGlobal>(PRODUCT_INFO, {
+        productNumber: "",
+        lotNumber: "",
+        materialNumber: ""
+    });
 
     const form = useForm<WorkInputFormValues>({
         defaultValues: {
-            productCode: "",
-            lotNumber: "",
-            materialNumber: "",
+            productCode: productManufactured.productNumber,
+            lotNumber: productManufactured.lotNumber,
+            materialNumber: productManufactured.materialNumber,
         },
     })
 

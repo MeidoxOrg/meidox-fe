@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { NumpadModal } from "@/components/ui/numpad-modal"
 import workSessionProduction from "@/services/work-session-production"
 import { localStorageService } from "@/helper/localstorage"
-import { WORKSESSION_PRODUCTION_ID } from "@/utils/constants"
+import { PRODUCT_INFO, WORKSESSION_PRODUCTION_ID } from "@/utils/constants"
 import { WorkSessionProduction } from "@/model/work-session-production"
 import { getEndTimeFromStart } from "@/utils/time-utils"
 
@@ -94,6 +94,8 @@ export default function ProductionStartProgress() {
             dateComplete: currentDate,
             timeComplete: currentTime
         })
+
+        localStorageService.remove(PRODUCT_INFO);
 
         router.push("/home")
     }

@@ -10,7 +10,6 @@ import { PRODUCT_INFO, WORKSESSION_ID, WORKSESSION_SETUP_ID } from "@/utils/cons
 import SetupFormLayout from "@/components/common/SetupFormLayout"
 import { SetupFormValuesGlobal } from "@/model/custom"
 
-
 type SetupFormValues = {
   productNumber: string
   lotNumber: string
@@ -26,12 +25,17 @@ export default function SetupStartPage() {
   const workSessionId = localStorageService.get<string>(WORKSESSION_ID, "")
   const [showScanQR, setShowScanQR] = useState<boolean>(true)
 
+  const productManufactured = localStorageService.get<SetupFormValuesGlobal>(PRODUCT_INFO, {
+    productNumber: "",
+    lotNumber: "",
+    materialNumber: ""
+  });
 
   const form = useForm<SetupFormValues>({
     defaultValues: {
-      productNumber: "",
-      lotNumber: "",
-      materialNumber: "",
+      productNumber: productManufactured.productNumber,
+      lotNumber: productManufactured.lotNumber,
+      materialNumber: productManufactured.materialNumber,
     },
   })
 

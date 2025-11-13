@@ -34,6 +34,7 @@ export default function AdjustmentBegins() {
 
         }
     }
+
     return (
         <PageLayout title="調整開始">
             <div className="max-w-7xl mx-auto bg-sky-100 p-6 rounded-md min-h-[calc(100vh-160px)] flex items-center justify-center">

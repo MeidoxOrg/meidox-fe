@@ -9,8 +9,9 @@ import { useForm } from "react-hook-form"
 import { useState } from "react"
 import { Scanner } from "@yudiel/react-qr-scanner"
 import { localStorageService } from "@/helper/localstorage"
-import { WORKSESSION_ID, WORKSESSION_MATERIAL_CHANGE_ID } from "@/utils/constants"
+import { PRODUCT_INFO, WORKSESSION_ID, WORKSESSION_MATERIAL_CHANGE_ID } from "@/utils/constants"
 import workSessionMaterialChangeServies from "@/services/work-session-material-change"
+import { SetupFormValuesGlobal } from "@/model/custom"
 
 type MaterialChangeForm = {
     productCode: string
@@ -23,10 +24,15 @@ export default function MaterialChange() {
     const [isScanningMaterialData, setIsScanningMaterialData] = useState(false)
     const [materialData, setMaterialData] = useState("")
 
+    const productManufactured = localStorageService.get<SetupFormValuesGlobal>(PRODUCT_INFO, {
+        productNumber: "",
+        lotNumber: "",
+        materialNumber: ""
+    });
     const form = useForm<MaterialChangeForm>({
         defaultValues: {
-            productCode: "",
-            lotNumber: "",
+            productCode: productManufactured.productNumber,
+            lotNumber: productManufactured.lotNumber,
             materialNumber: "",
         },
     })

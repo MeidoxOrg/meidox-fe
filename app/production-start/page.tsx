@@ -6,8 +6,9 @@ import { PageLayout } from "@/components/layout/page-layout"
 import SetupFormLayout from "@/components/common/SetupFormLayout"
 import { useForm } from "react-hook-form"
 import { localStorageService } from "@/helper/localstorage"
-import { WORKSESSION_ID, WORKSESSION_PRODUCTION_ID } from "@/utils/constants"
+import { PRODUCT_INFO, WORKSESSION_ID, WORKSESSION_PRODUCTION_ID } from "@/utils/constants"
 import workSessionProduction from "@/services/work-session-production"
+import { SetupFormValuesGlobal } from "@/model/custom"
 
 type SetupFormValues = {
     productNumber: string
@@ -22,11 +23,17 @@ export default function SetupStartPage() {
     const [isScanningKanban, setIsScanningKanban] = useState(false)
     const [isScanningMaterialData, setIsScanningMaterialData] = useState(false)
 
+    const productManufactured = localStorageService.get<SetupFormValuesGlobal>(PRODUCT_INFO, {
+        productNumber: "",
+        lotNumber: "",
+        materialNumber: ""
+    });
+
     const form = useForm<SetupFormValues>({
         defaultValues: {
-            productNumber: "",
-            lotNumber: "",
-            materialNumber: "",
+            productNumber: productManufactured.productNumber,
+            lotNumber: productManufactured.lotNumber,
+            materialNumber: productManufactured.materialNumber,
         },
     })
 
@@ -72,6 +79,12 @@ export default function SetupStartPage() {
             });
 
             if (response.id != null) {
+                handleUpdateProductInfoGlobal({
+                    lotNumber: data.lotNumber,
+                    materialNumber: data.materialNumber,
+                    productNumber: data.productNumber
+                })
+
                 localStorageService.set<string>(WORKSESSION_PRODUCTION_ID, response.id)
                 router.push("/production-start-progress")
             }
@@ -79,6 +92,11 @@ export default function SetupStartPage() {
             console.log(error);
         }
     }
+
+    const handleUpdateProductInfoGlobal = async (value: SetupFormValuesGlobal) => {
+        await localStorageService.set<SetupFormValuesGlobal>(PRODUCT_INFO, value)
+    }
+
     return (
         <PageLayout title="生産中">
             <div className="max-w-7xl mx-auto bg-sky-100 p-6 rounded-md min-h-[calc(100vh-160px)]">

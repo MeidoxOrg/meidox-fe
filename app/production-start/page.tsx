@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { PageLayout } from "@/components/layout/page-layout"
 import SetupFormLayout from "@/components/common/SetupFormLayout"
@@ -22,6 +22,8 @@ export default function SetupStartPage() {
     const [materialData, setMaterialData] = useState("")
     const [isScanningKanban, setIsScanningKanban] = useState(false)
     const [isScanningMaterialData, setIsScanningMaterialData] = useState(false)
+    const [showScanQR, setShowScanQR] = useState<boolean>(true)
+    const workSessionId = localStorageService.get<string>(WORKSESSION_ID, "")
 
     const productManufactured = localStorageService.get<SetupFormValuesGlobal>(PRODUCT_INFO, {
         productNumber: "",
@@ -96,6 +98,27 @@ export default function SetupStartPage() {
     const handleUpdateProductInfoGlobal = async (value: SetupFormValuesGlobal) => {
         await localStorageService.set<SetupFormValuesGlobal>(PRODUCT_INFO, value)
     }
+
+    const getDataWorkSessionProductionByWsId = useCallback(async () => {
+        try {
+            const response = await workSessionProduction.getWorkSessionProductionByWsId(workSessionId);
+            const setups = response?.workSessionProductions ?? [];
+
+            const activeSetup = setups.find((item) => item.status !== 2);
+            if (!activeSetup) return;
+            setShowScanQR(false)
+            setValue("productNumber", activeSetup.productNumber || "");
+            setValue("lotNumber", activeSetup.lotNumber || "");
+            setValue("materialNumber", activeSetup.materialNumber || "");
+
+        } catch (error) {
+            console.error("Failed to load WorkSessionSetup:", error);
+        }
+    }, [])
+
+    useEffect(() => {
+        getDataWorkSessionProductionByWsId()
+    }, [getDataWorkSessionProductionByWsId])
 
     return (
         <PageLayout title="生産中">

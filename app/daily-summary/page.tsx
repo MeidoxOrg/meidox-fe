@@ -60,6 +60,9 @@ import { WorkSessionCardList } from "@/components/common/WorkSessionCardList"
 import { calculateTotalDurationMinutes } from "@/components/common/CalculateDuration"
 import workSessionAbnormalHandlingServies from "@/services/abnormal-handling​"
 import { WorkSessionAbnormalHandlingByWsId } from "@/model/abnormal-handling​"
+import { diffMinutes, getEarliestSetupStart, getLatestComplete, sumAbnormalProductPieces, sumNumberOfGoodProducts } from "@/utils/function"
+import operationEndServies from "@/services/operation-end"
+import { OperationEndByWsId } from "@/model/operation-end"
 
 export default function DailySummaryPage() {
     const [selectedDate] = useState("2025年8月28日")
@@ -91,6 +94,7 @@ export default function DailySummaryPage() {
     const [dataReasonForStoppingFourSAfterLunchStart, setDataReasonForStoppingFourSAfterLunchStart] = useState<ReasonForStoppingFourSAfterLunchStartByWsId[]>([])
     const [dataReasonForStoppingOtherPlannedStopStart, setDataReasonForStoppingOtherPlannedStopStart] = useState<ReasonForStoppingOtherPlannedStopStartByWsId[]>([])
     const [dataReasonAbnormalHandling, setDataReasonAbnormalHandling] = useState<WorkSessionAbnormalHandlingByWsId[]>([])
+    const [dataOperationEnd, setDataOperationEnd] = useState<OperationEndByWsId[]>([])
 
     /** ─── 🧩 Common fetcher ───────────────────────────────────────────────── */
     const fetchData = useCallback(async () => {
@@ -98,7 +102,7 @@ export default function DailySummaryPage() {
             const [
                 ws, setup, prod, mold, material, adjust, fourS, prep, sorting, otherStop,
                 repair, otherMachine, quality, breakStart, noKanban, meeting, shortage,
-                maintenance, noOp, fourSAfter, otherPlanned, abnormalHandling
+                maintenance, noOp, fourSAfter, otherPlanned, abnormalHandling, operationEndRes
             ] = await Promise.all([
                 workSessionServices.getWorkSessionById(workSessionId),
                 workSessionServices.getWorkSessionSetupByWsId(workSessionId),
@@ -122,6 +126,7 @@ export default function DailySummaryPage() {
                 reasonForStoppingFourSAfterLunchStartServies.getReasonForStoppingFourSAfterLunchStartByWsId(workSessionId),
                 reasonForStoppingOtherPlannedStopStartServies.getReasonForStoppingOtherPlannedStopStartByWsId(workSessionId),
                 workSessionAbnormalHandlingServies.getWorkSessionAbnormalHandlingByWsId(workSessionId),
+                operationEndServies.getOperationEndByWsId(workSessionId)
             ])
 
             setWorkSessionData(ws.workSession)
@@ -146,6 +151,7 @@ export default function DailySummaryPage() {
             setDataReasonForStoppingFourSAfterLunchStart(fourSAfter.reasonForStoppingFourSAfterLunchStarts)
             setDataReasonForStoppingOtherPlannedStopStart(otherPlanned.reasonForStoppingOtherPlannedStopStarts)
             setDataReasonAbnormalHandling(abnormalHandling.abnormalHandlings)
+            setDataOperationEnd(operationEndRes.operationEnds)
         } catch (err) {
             console.error("データ取得失敗:", err)
         }
@@ -155,14 +161,83 @@ export default function DailySummaryPage() {
         fetchData()
     }, [fetchData])
 
-    /** ─── 🧮 Helper Summary ──────────────────────────────────────────────── */
     const calculateStandardProcessingQuantity = (list: WorkSessionProductionByWsId[]) =>
         list.reduce((sum, x) => sum + (x.numberOfGoodProduct || 0), 0)
 
     const calculateDefectQuantity = (list: WorkSessionSetupByWs[]) =>
         list.reduce((sum, x) => sum + (x.adjustmentItemUnit || 0), 0)
 
-    /** ─── 🧱 UI ──────────────────────────────────────────────────────────── */
+    const calcOperatingTime = () => {
+        const startTime = getEarliestSetupStart(dataWorkSessionSetup);
+        const endTime = getLatestComplete(dataOperationEnd)
+        return diffMinutes(startTime?.timeStart, endTime?.timeComplete ?? "");
+    }
+
+    const calculateLoadTime = () => {
+        const dataYellow = [
+            dataReasonForStoppingBreakStart,
+            dataReasonForStoppingMeetingStart,
+            dataReasonForStoppingPlannedMaintenance,
+            dataReasonForStoppingFourSAfterLunchStart,
+            dataReasonForStoppingNoKanbanStart,
+            dataReasonForStoppingMaterialMoldShortage,
+            dataReasonForStoppingNoOperator,
+            dataReasonForStoppingOtherPlannedStopStart,
+        ];
+
+        const sum = dataYellow.reduce(
+            (acc, cur) => acc + calculateTotalDurationMinutes(cur),
+            0
+        );
+        const finalResult = calcOperatingTime() - sum;
+        console.log(calcOperatingTime());
+        return finalResult;
+    };
+
+    const calculateTotalLossTime = () => {
+        const dataRed = [
+            dataWorkSessionSetup,
+            dataWorkSessionMoldChange,
+            dataWorkSesionQuanlityCheck, dataWorkSessionSorting, dataWorkSession4S, dataWorkSesionOrtherStop,
+            dataWorkSessionMaterialChange, dataWorkSessionAdjustmentBegin, dataWorkSesionEquipmentRepair,
+            dataReasonAbnormalHandling, dataWorkSessionProductionPrepCheck, dataWorkSesionOrtherMachinesSupport
+        ];
+
+        const sum = dataRed.reduce(
+            (acc, cur) => acc + calculateTotalDurationMinutes(cur),
+            0
+        );
+        return sum;
+    };
+
+    const calculateActiveTime = () => {
+        {/* Thời gian tải (負荷時間) - Thời gian dừng (停止時間)*/ }
+        return calculateLoadTime() - calculateTotalLossTime()
+    }
+
+    const calculateGoodProductCount = () => {
+        return sumNumberOfGoodProducts(dataWorkSessionProduction);
+    }
+
+    const calculateOperatingRate = () => {
+        const active = calculateActiveTime();
+        const load = calculateLoadTime();
+
+        if (load <= 0) return 0;
+
+        const safeActive = active < 0 ? 0 : active;
+
+        return (safeActive / load) * 100;
+    };
+
+    const calculateGoodProductRate = () => {
+        {/* (Số sản phẩm đạt chuẩn (良品数) ÷ (Số sản phẩm đạt chuẩn + số sản phẩm bất thường)) <=> (良品数＋異常数) × 100 */ }
+        const goodProductCount = calculateGoodProductCount();
+        const abnormalHandling = sumAbnormalProductPieces(dataReasonAbnormalHandling);
+        if (goodProductCount === 0 && abnormalHandling === 0) return 0;
+        return ((goodProductCount / (goodProductCount + abnormalHandling)) * 100).toFixed(2);
+    };
+
     return (
         <div className="flex flex-col h-screen bg-gray-100">
             {/* Header */}
@@ -222,11 +297,11 @@ export default function DailySummaryPage() {
                 <div className="w-full md:w-1/2 overflow-y-auto p-4 bg-white">
                     <div className="grid grid-cols-4 gap-2 text-sm mb-4">
                         <SummaryItem label="標準加工数" value={`${calculateStandardProcessingQuantity(dataWorkSessionProduction)}個`} />
-                        <SummaryItem label="負荷時間" value="X分" />
-                        <SummaryItem label="停止時間" value="X分" />
-                        <SummaryItem label="稼働時間" value="X分" />
-                        <SummaryItem label="操業時間" value="X分" />
-                        <SummaryItem label="良品数" value="X個" />
+                        <SummaryItem label="負荷時間" value={`${calculateLoadTime()}分`} />
+                        <SummaryItem label="停止時間" value={`${calculateTotalLossTime()}分`} />
+                        <SummaryItem label="稼働時間" value={`${calculateActiveTime()}分`} />
+                        <SummaryItem label="操業時間" value={`${calcOperatingTime()}分`} />
+                        <SummaryItem label="良品数" value={`${calculateGoodProductCount()}個`} />
                         <SummaryItem label="異常数" value={`${calculateDefectQuantity(dataWorkSessionSetup)}個`} />
                         <SummaryItem label="段取り回数" value={`${dataWorkSessionSetup.length}回`} />
                     </div>
@@ -265,8 +340,8 @@ export default function DailySummaryPage() {
 
                     {/* KPI */}
                     <div className="grid grid-cols-4 gap-2 text-sm text-center">
-                        <SummaryItem label="時間稼働率" value="X%" />
-                        <SummaryItem label="性能稼働率" value="X%" />
+                        <SummaryItem label="時間稼働率" value={`${calculateOperatingRate()}%`} />
+                        <SummaryItem label="性能稼働率" value={`${calculateGoodProductRate()}%`} />
                         <SummaryItem label="良品率" value="X%" />
                         <SummaryItem label="設備総合効率" value="X%" />
                     </div>

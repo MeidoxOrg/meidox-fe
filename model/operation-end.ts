@@ -54,5 +54,5 @@ export interface OperationEndByWsId {
 }
 
 export interface OperationEndListResponse {
-  OperationEnds: OperationEndByWsId[];
+  operationEnds: OperationEndByWsId[];
 }

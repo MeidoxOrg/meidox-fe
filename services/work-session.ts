@@ -130,6 +130,21 @@ const getWorkSessionSetupByWsId = async (
   return response.data;
 };
 
+const updateWorkSessionSetupLot2 = async (
+  workSessionSetupId: String,
+  lotNumber2: String
+): Promise<WorkSessionSetupByWsIdResponse> => {
+  const response = await httpClient.put<WorkSessionSetupByWsIdResponse>({
+    url: apiLinks.worksession.updateWorkSesisonSetupLot2,
+    data: {
+      id: workSessionSetupId,
+      lotNumber2: lotNumber2,
+    },
+  });
+
+  return response.data;
+};
+
 const workSessionServices = {
   createWorkSession,
   getWorkSessionById,
@@ -141,6 +156,7 @@ const workSessionServices = {
   completeWorkSessionSetup,
   pauseWorkSessionSetup,
   getWorkSessionSetupByWsId,
+  updateWorkSessionSetupLot2,
 };
 
 export default workSessionServices;

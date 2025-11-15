@@ -56,7 +56,7 @@ export default function SetupProgressPage() {
 
   const handleSetValueDefault = (data: WorkSessionSetup) => {
     setFormData((prev) => ({ ...prev, productNumber: data.productNumber }))
-    setFormData((prev) => ({ ...prev, lotNumber: data.lotNumber }))
+    setFormData((prev) => ({ ...prev, lotNumber: `${data.lotNumber}${data.lotNumber2 ? ` / ${data.lotNumber2}` : ''}` }))
     setFormData((prev) => ({ ...prev, materialNumber: data.materialNumber }))
     setFormData((prev) => ({ ...prev, startDate: data.dateStart }))
     setFormData((prev) => ({ ...prev, startHour: data.timeStart.split(":")[0] }))

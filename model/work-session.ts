@@ -44,6 +44,7 @@ export interface WorkSessionSetup {
   id: string;
   productNumber: string;
   lotNumber: string;
+  lotNumber2: string;
   materialNumber: string;
   dateStart: string;
   timeStart: string;
@@ -71,6 +72,7 @@ export interface WorkSessionSetupByWs {
   workSessionId: string;
   productNumber: string;
   lotNumber: string;
+  lotNumber2: string;
   materialNumber: string;
   dateStart: string;
   timeStart: string;

@@ -2,7 +2,7 @@ export interface SetupFormValuesGlobal {
   productNumber: string;
   lotNumber: string;
   materialNumber: string;
-  lotNumberTwo?: string;
+  lotNumber2?: string;
 }
 
 export type WorkInputFormValues = {

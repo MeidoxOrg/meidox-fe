@@ -4,7 +4,7 @@ import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Scanner } from "@yudiel/react-qr-scanner"
-import React from "react"
+import React, { useEffect, useState } from "react"
 
 interface SetupFormLayoutProps {
     form: any
@@ -15,14 +15,18 @@ interface SetupFormLayoutProps {
     materialData: string
     isScanningKanban: boolean
     isScanningMaterialData: boolean
+    slot2Data: string
+    isScanningSlot2: boolean
 
     // --- QR handlers ---
     handleScanKanban: (value: string) => void
     handleScanMaterial: (value: string) => void
     setIsScanningKanban: (val: boolean) => void
     setIsScanningMaterialData: (val: boolean) => void
+    handleScanSlot2: (value: string) => void
+    setIsScanningSlot2: (val: boolean) => void
 
-    // --- Label btn submit ---
+    // --- Label btn submit --- 
     submitLabel: string
     showScanQR: boolean
 }
@@ -39,8 +43,17 @@ export const SetupFormLayout: React.FC<SetupFormLayoutProps> = ({
     setIsScanningKanban,
     setIsScanningMaterialData,
     submitLabel,
-    showScanQR = true
+    showScanQR = true,
+    handleScanSlot2,
+    slot2Data,
+    isScanningSlot2,
+    setIsScanningSlot2
 }) => {
+
+    const [isShowLot2, setIsShowLot2] = useState<boolean>(false)
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => setMounted(true), []);
+
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -81,6 +94,24 @@ export const SetupFormLayout: React.FC<SetupFormLayoutProps> = ({
                             )}
                         />
 
+                        {(isShowLot2 || (mounted && form.watch("lotNumber2")))
+                            &&
+                            <FormField
+                                control={form.control}
+                                name="lotNumber2"
+                                rules={{ required: "ロット№②を入力してください。" }}
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel style={{ color: "black" }}>ロット№②</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} className="w-full border-2 border-amber-800 rounded-sm text-sm px-2 py-0.5 h-[32px]
+                    focus-visible:ring-0 focus-visible:border-amber-800 bg-white leading-tight" />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />}
+
                         {/* 材料№ */}
                         <FormField
                             control={form.control}
@@ -99,16 +130,16 @@ export const SetupFormLayout: React.FC<SetupFormLayoutProps> = ({
                         />
 
                         {/* 2ロット入り */}
-                        <div className="mt-auto">
+                        <div className={`mt-auto ${showScanQR ? 'block' : 'hidden'}`}>
                             <Button
                                 type="button"
                                 className="bg-amber-900 hover:bg-amber-800 text-white py-3 w-full text-lg font-bold rounded-md"
+                                onClick={() => { setIsShowLot2(!isShowLot2) }}
                             >
                                 2ロット入り
                             </Button>
                         </div>
                     </div>
-
                     {/* Middle column - Kanban scanning */}
                     <div className={`flex flex-col justify-between h-full ${showScanQR ? "block" : "hidden"
                         }`}>
@@ -161,6 +192,57 @@ export const SetupFormLayout: React.FC<SetupFormLayoutProps> = ({
                                 />
                             </div>
                         </div>
+
+                        {/* LOt 2 */}
+                        {isShowLot2 && <div className="text-center w-full mt-5">
+                            <p className="text-sm font-medium mb-2">↓2ロット目かんばん読み込む↓</p>
+                            <Button
+                                type="button"
+                                onClick={() => setIsScanningSlot2(true)}
+                                className="w-full bg-amber-900 hover:bg-amber-800 text-white py-3 text-lg font-bold rounded-md mb-3">
+                                かんばん②
+                            </Button>
+
+                            {isScanningSlot2 && (
+                                <div className="fixed inset-0 bg-black bg-opacity-60 flex flex-col items-center justify-center z-50">
+                                    <div className="bg-white p-4 rounded-md w-[90%] max-w-md text-center">
+                                        <h2 className="font-bold text-lg mb-2">QRコードを読み込んでください</h2>
+                                        <div className="w-full h-64 overflow-hidden rounded-md">
+                                            <Scanner
+                                                constraints={{ facingMode: "environment" }}
+                                                onScan={(detectedCodes) => {
+                                                    const rawValue = detectedCodes[0]?.rawValue
+                                                    if (rawValue) {
+                                                        handleScanSlot2(rawValue)
+                                                        setIsScanningSlot2(false)
+                                                    }
+                                                }}
+                                                onError={(error) => {
+                                                    alert("カメラが利用できません。スマートフォンで開いてください。")
+                                                    console.error(error)
+                                                }}
+                                                paused={false}
+                                            />
+                                        </div>
+                                        <Button
+                                            onClick={() => setIsScanningSlot2(false)}
+                                            className="mt-4 bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-md"
+                                        >
+                                            閉じる
+                                        </Button>
+                                    </div>
+                                </div>
+                            )}
+
+                            <div className="border-2 border-amber-800 rounded-md bg-white h-40 flex items-center justify-center p-2">
+                                <textarea
+                                    className="w-full h-full border-none outline-none text-center text-sm resize-none 
+                  whitespace-pre-wrap break-words overflow-y-auto"
+                                    value={slot2Data}
+                                    onChange={(e) => handleScanSlot2(e.target.value)}
+                                />
+                            </div>
+                        </div>}
                     </div>
 
                     {/* Right column - Material scanning */}

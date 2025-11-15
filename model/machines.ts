@@ -1,6 +1,7 @@
 export interface Machine {
   id: string;
   machineNumber: string;
+  standardCapacityQuantity: number;
 }
 
 export interface Machines {

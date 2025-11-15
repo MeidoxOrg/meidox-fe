@@ -63,11 +63,13 @@ import { WorkSessionAbnormalHandlingByWsId } from "@/model/abnormal-handling​"
 import { diffMinutes, getEarliestSetupStart, getLatestComplete, sumAbnormalProductPieces, sumNumberOfGoodProducts } from "@/utils/function"
 import operationEndServies from "@/services/operation-end"
 import { OperationEndByWsId } from "@/model/operation-end"
+import machinesServices from "@/services/machines"
+import { Machine } from "@/model/machines"
 
 export default function DailySummaryPage() {
     const [selectedDate] = useState("2025年8月28日")
     const [shift] = useState("黄")
-    const [machine] = useState("CPH35")
+    const [machine, setMachine] = useState<string>("")
     const { data: session } = useSession()
     const router = useRouter()
     const workSessionId = localStorageService.get<string>(WORKSESSION_ID, "")
@@ -95,6 +97,19 @@ export default function DailySummaryPage() {
     const [dataReasonForStoppingOtherPlannedStopStart, setDataReasonForStoppingOtherPlannedStopStart] = useState<ReasonForStoppingOtherPlannedStopStartByWsId[]>([])
     const [dataReasonAbnormalHandling, setDataReasonAbnormalHandling] = useState<WorkSessionAbnormalHandlingByWsId[]>([])
     const [dataOperationEnd, setDataOperationEnd] = useState<OperationEndByWsId[]>([])
+    const [dataMachine, setDataMachine] = useState<Machine[]>([])
+
+    const getMachine = useCallback(async () => {
+        try {
+            const res = await machinesServices.getMachinesData();
+            if (res.machines.count > 0) {
+                setDataMachine(res.machines.data)
+                setMachine(res.machines.data[0]?.machineNumber ?? "")
+            }
+        } catch (error) {
+
+        }
+    }, [])
 
     /** ─── 🧩 Common fetcher ───────────────────────────────────────────────── */
     const fetchData = useCallback(async () => {
@@ -126,7 +141,7 @@ export default function DailySummaryPage() {
                 reasonForStoppingFourSAfterLunchStartServies.getReasonForStoppingFourSAfterLunchStartByWsId(workSessionId),
                 reasonForStoppingOtherPlannedStopStartServies.getReasonForStoppingOtherPlannedStopStartByWsId(workSessionId),
                 workSessionAbnormalHandlingServies.getWorkSessionAbnormalHandlingByWsId(workSessionId),
-                operationEndServies.getOperationEndByWsId(workSessionId)
+                operationEndServies.getOperationEndByWsId(workSessionId),
             ])
 
             setWorkSessionData(ws.workSession)
@@ -158,11 +173,9 @@ export default function DailySummaryPage() {
     }, [workSessionId])
 
     useEffect(() => {
+        getMachine()
         fetchData()
-    }, [fetchData])
-
-    const calculateStandardProcessingQuantity = (list: WorkSessionProductionByWsId[]) =>
-        list.reduce((sum, x) => sum + (x.numberOfGoodProduct || 0), 0)
+    }, [getMachine, fetchData])
 
     const calculateDefectQuantity = (list: WorkSessionSetupByWs[]) =>
         list.reduce((sum, x) => sum + (x.adjustmentItemUnit || 0), 0)
@@ -235,8 +248,33 @@ export default function DailySummaryPage() {
         const goodProductCount = calculateGoodProductCount();
         const abnormalHandling = sumAbnormalProductPieces(dataReasonAbnormalHandling);
         if (goodProductCount === 0 && abnormalHandling === 0) return 0;
-        return ((goodProductCount / (goodProductCount + abnormalHandling)) * 100).toFixed(2);
+        return Number(((goodProductCount / (goodProductCount + abnormalHandling)) * 100).toFixed(2));
     };
+
+    const calculateStandardProcessingQuantity = () => {
+        return dataMachine[0]?.standardCapacityQuantity ?? 1;
+    }
+
+    const calculatePerformanceOperatingRate = () => {
+        const goodProCount = calculateGoodProductCount() || 0;
+        const sumAbnormal = sumAbnormalProductPieces(dataReasonAbnormalHandling) || 0;
+        const standardQuantity = calculateStandardProcessingQuantity() || 0;
+        const activeTime = calculateActiveTime() || 0;
+
+        if (standardQuantity === 0 || activeTime === 0) {
+            return 0;
+        }
+        debugger
+        return Number((((goodProCount + sumAbnormal) / (standardQuantity * activeTime)) * 100).toFixed(2));
+    };
+
+    const calculateOverallEquipmentEffectiveness = () => {
+        const operating = calculateOperatingRate();
+        const performanceOperating = calculatePerformanceOperatingRate();
+        const goodProduct = calculateGoodProductRate()
+
+        return operating * performanceOperating * goodProduct;
+    }
 
     return (
         <div className="flex flex-col h-screen bg-gray-100">
@@ -296,13 +334,13 @@ export default function DailySummaryPage() {
                 {/* RIGHT */}
                 <div className="w-full md:w-1/2 overflow-y-auto p-4 bg-white">
                     <div className="grid grid-cols-4 gap-2 text-sm mb-4">
-                        <SummaryItem label="標準加工数" value={`${calculateStandardProcessingQuantity(dataWorkSessionProduction)}個`} />
+                        <SummaryItem label="標準加工数" value={`${calculateStandardProcessingQuantity()}個`} />
                         <SummaryItem label="負荷時間" value={`${calculateLoadTime()}分`} />
                         <SummaryItem label="停止時間" value={`${calculateTotalLossTime()}分`} />
                         <SummaryItem label="稼働時間" value={`${calculateActiveTime()}分`} />
                         <SummaryItem label="操業時間" value={`${calcOperatingTime()}分`} />
                         <SummaryItem label="良品数" value={`${calculateGoodProductCount()}個`} />
-                        <SummaryItem label="異常数" value={`${calculateDefectQuantity(dataWorkSessionSetup)}個`} />
+                        <SummaryItem label="異常数" value={`${sumAbnormalProductPieces(dataReasonAbnormalHandling)}個`} />
                         <SummaryItem label="段取り回数" value={`${dataWorkSessionSetup.length}回`} />
                     </div>
 
@@ -341,9 +379,9 @@ export default function DailySummaryPage() {
                     {/* KPI */}
                     <div className="grid grid-cols-4 gap-2 text-sm text-center">
                         <SummaryItem label="時間稼働率" value={`${calculateOperatingRate()}%`} />
-                        <SummaryItem label="性能稼働率" value={`${calculateGoodProductRate()}%`} />
-                        <SummaryItem label="良品率" value="X%" />
-                        <SummaryItem label="設備総合効率" value="X%" />
+                        <SummaryItem label="性能稼働率" value={`${calculatePerformanceOperatingRate()}%`} />
+                        <SummaryItem label="良品率" value={`${calculateGoodProductRate()}%`} />
+                        <SummaryItem label="設備総合効率" value={`${calculateOverallEquipmentEffectiveness()}%`} />
                     </div>
                 </div>
             </div>

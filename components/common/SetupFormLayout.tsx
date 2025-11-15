@@ -17,6 +17,7 @@ interface SetupFormLayoutProps {
     isScanningMaterialData: boolean
     slot2Data: string
     isScanningSlot2: boolean
+    disableBtn: boolean
 
     // --- QR handlers ---
     handleScanKanban: (value: string) => void
@@ -47,7 +48,8 @@ export const SetupFormLayout: React.FC<SetupFormLayoutProps> = ({
     handleScanSlot2,
     slot2Data,
     isScanningSlot2,
-    setIsScanningSlot2
+    setIsScanningSlot2,
+    disableBtn
 }) => {
 
     const [isShowLot2, setIsShowLot2] = useState<boolean>(false)
@@ -134,7 +136,9 @@ export const SetupFormLayout: React.FC<SetupFormLayoutProps> = ({
                             <Button
                                 type="button"
                                 className="bg-amber-900 hover:bg-amber-800 text-white py-3 w-full text-lg font-bold rounded-md"
-                                onClick={() => { setIsShowLot2(!isShowLot2) }}
+                                onClick={
+                                    disableBtn ? undefined : () => { setIsShowLot2(!isShowLot2) }
+                                }
                             >
                                 2ロット入り
                             </Button>

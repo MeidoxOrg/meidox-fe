@@ -135,7 +135,13 @@ export default function SetupStartPage() {
                     setIsScanningKanban={setIsScanningKanban}
                     setIsScanningMaterialData={setIsScanningMaterialData}
                     submitLabel="生産開始"
-                    showScanQR={true} />
+                    showScanQR={true}
+                    handleScanSlot2={() => { }}
+                    slot2Data={""}
+                    setIsScanningSlot2={() => { }}
+                    isScanningSlot2={false}
+                    disableBtn={true}
+                />
             </div>
         </PageLayout>
     )

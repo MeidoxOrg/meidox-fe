@@ -155,6 +155,7 @@ export default function SetupStartPage() {
           slot2Data={slot2Data}
           setIsScanningSlot2={setIsScanningSlot2}
           isScanningSlot2={isScanningSlot2}
+          disableBtn={false}
         />
       </div>
     </PageLayout>

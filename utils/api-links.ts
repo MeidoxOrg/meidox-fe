@@ -6,7 +6,11 @@ const apiLinks = {
     getWorkShift: `${meidoxApiUrl}/WorkShift`,
   },
   machines: {
+    createMachines: `${meidoxApiUrl}/Machine`,
     getMachines: `${meidoxApiUrl}/Machine`,
+    updateMachineNumber: `${meidoxApiUrl}/Machine/MachineNumber`,
+    updateStandardCapacityQuantity: `${meidoxApiUrl}/Machine/StandardCapacityQuantity`,
+    deleteMachine: `${meidoxApiUrl}/Machine`,
   },
   worksession: {
     create: `${meidoxApiUrl}/WorkSession`,

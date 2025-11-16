@@ -67,11 +67,11 @@ export default function Dashboard() {
     const handleOperationEnd = async () => {
         try {
             const res = await operationEndServies.createOperationEnd({
-                dateStart: "2001-12-31",
+                dateStart: workSessionData?.workDate ?? "",
                 lotNumber: "default",
                 materialNumber: "default",
                 productNumber: "default",
-                timeStart: "01:01",
+                timeStart: workSessionData?.workTime ?? "01:01",
                 workSessionId: workSessionId
             })
 

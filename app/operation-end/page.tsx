@@ -110,7 +110,7 @@ export default function OperationEndPage() {
             timeComplete: currentTime
         })
 
-        router.push("/home")
+        router.push("/")
     }
 
     const handleUpdateDisposableItemsPieces = async (value: string) => {

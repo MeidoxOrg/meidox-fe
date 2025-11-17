@@ -32,11 +32,11 @@ export default function UsersPage() {
     const columns: ColumnDef<Machine>[] = [
         {
             accessorKey: "machineNumber",
-            header: "Machine Number",
+            header: "機械番号",
         },
         {
             accessorKey: "standardCapacityQuantity",
-            header: "Standard Capacity",
+            header: "標準処理能力",
         },
     ]
 
@@ -107,7 +107,7 @@ export default function UsersPage() {
 
 
     return (
-        <PageLayout title="Machines">
+        <PageLayout title="設備一覧">
             <div className="p-6 bg-white">
                 <div className="flex justify-end mb-4">
                     <button
@@ -117,7 +117,7 @@ export default function UsersPage() {
                         }}
                         className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
                     >
-                        Create Machine
+                        新規設備を登録
                     </button>
                 </div>
 
@@ -167,13 +167,13 @@ export default function UsersPage() {
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>
-                            {selectedMachine ? "Edit Machine" : "Create Machine"}
+                            {selectedMachine ? "設備情報を編集" : "新規設備を登録"}
                         </DialogTitle>
                     </DialogHeader>
 
                     <div className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium">Machine Number</label>
+                            <label className="block text-sm font-medium">機械番号</label>
                             <Input
                                 value={form.machineNumber}
                                 onChange={e => setForm({ ...form, machineNumber: e.target.value })}
@@ -181,7 +181,7 @@ export default function UsersPage() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium">Standard Capacity</label>
+                            <label className="block text-sm font-medium">標準処理能力</label>
                             <Input
                                 type="number"
                                 value={form.standardCapacityQuantity}
@@ -201,7 +201,7 @@ export default function UsersPage() {
                             onClick={handleSave}
                             disabled={isSaving}
                         >
-                            {isSaving ? "Saving..." : selectedMachine ? "Update" : "Create"}
+                            {isSaving ? "保存中..." : selectedMachine ? "更新" : "作成"}
                         </Button>
                     </DialogFooter>
                 </DialogContent>

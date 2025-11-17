@@ -36,13 +36,19 @@ export default function ProductionReportPage() {
                             一覧へ
                         </button>
                     </div>
+                    <div className="flex space-x-8">
+                        <button
+                            onClick={() => router.push("/data-correction")}
+                            className="bg-[#4b3b2b] hover:bg-[#3b2e20] text-white text-xl px-12 py-6 rounded-md shadow-lg transition-all">
+                            良品数・J缶No・異常品個数<br />編集
+                        </button>
 
-                    {/* Row 2 */}
-                    <button
-                        onClick={() => router.push("/data-correction")}
-                        className="bg-[#4b3b2b] hover:bg-[#3b2e20] text-white text-xl px-12 py-6 rounded-md shadow-lg transition-all">
-                        良品数・J缶No・異常品個数<br />編集
-                    </button>
+                        <button
+                            onClick={() => router.push("/master-data")}
+                            className="bg-[#4b3b2b] hover:bg-[#3b2e20] text-white text-xl px-12 py-6 rounded-md shadow-lg transition-all">
+                            マスタ管理
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

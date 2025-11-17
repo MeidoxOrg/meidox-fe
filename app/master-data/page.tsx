@@ -1,0 +1,212 @@
+"use client"
+import { PageLayout } from "@/components/layout/page-layout"
+import { Button } from "@/components/ui/button"
+import { DataTable } from "@/components/ui/data-table"
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination"
+import { Machine } from "@/model/machines"
+import machinesServices from "@/services/machines"
+import { ColumnDef } from "@tanstack/react-table"
+import { useCallback, useEffect, useState } from "react"
+
+export default function UsersPage() {
+    const [data, setData] = useState<Machine[]>([])
+    const [pageIndex, setPageIndex] = useState<number>(1)
+    const [pageSize, setPageSize] = useState<number>(10)
+    const [totalCount, setTotalCount] = useState<number>(0)
+    const [isLoading, setIsLoading] = useState(false)
+
+
+    const [openModal, setOpenModal] = useState(false)
+    const [selectedMachine, setSelectedMachine] = useState<Machine | null>(null)
+    const [isSaving, setIsSaving] = useState(false)
+
+    const [form, setForm] = useState({
+        machineNumber: "",
+        standardCapacityQuantity: "1",
+    })
+
+    const totalPages = Math.ceil(totalCount / pageSize)
+
+    const columns: ColumnDef<Machine>[] = [
+        {
+            accessorKey: "machineNumber",
+            header: "Machine Number",
+        },
+        {
+            accessorKey: "standardCapacityQuantity",
+            header: "Standard Capacity",
+        },
+    ]
+
+    const getData = useCallback(async () => {
+        try {
+            setIsLoading(true)
+            const res = await machinesServices.getMachinesPaginationData({ PageIndex: pageIndex, PageSize: pageSize })
+            setTotalCount(res.machines.count)
+            setData(res.machines.data)
+        } catch (error) {
+        } finally {
+            setIsLoading(false)
+        }
+    }, [pageIndex, pageSize])
+
+    const handleSave = async () => {
+        try {
+            setIsSaving(true)
+
+            if (selectedMachine) {
+                await machinesServices.updateMachineNumber({
+                    id: selectedMachine.id,
+                    machineNumber: form.machineNumber
+                })
+                await machinesServices.updateStandardCapacityQuantity({
+                    id: selectedMachine.id,
+                    standardCapacityQuantity: Number(form.standardCapacityQuantity)
+                })
+            } else {
+                const response = await machinesServices.createMachine({
+                    machineNumber: form.machineNumber
+                })
+                if (response.id) {
+                    await machinesServices.updateStandardCapacityQuantity({
+                        id: response.id,
+                        standardCapacityQuantity: Number(form.standardCapacityQuantity)
+                    })
+                }
+            }
+
+            setOpenModal(false)
+            getData()
+        } catch (error) {
+            console.error(error)
+        } finally {
+            setIsSaving(false)
+        }
+    }
+
+
+    useEffect(() => {
+        getData()
+    }, [getData])
+
+    useEffect(() => {
+        if (selectedMachine) {
+            setForm({
+                machineNumber: selectedMachine.machineNumber,
+                standardCapacityQuantity: selectedMachine.standardCapacityQuantity.toString(),
+            })
+        } else {
+            setForm({
+                machineNumber: "",
+                standardCapacityQuantity: "1",
+            })
+        }
+    }, [selectedMachine])
+
+
+    return (
+        <PageLayout title="Machines">
+            <div className="p-6 bg-white">
+                <div className="flex justify-end mb-4">
+                    <button
+                        onClick={() => {
+                            setSelectedMachine(null)
+                            setOpenModal(true)
+                        }}
+                        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                    >
+                        Create Machine
+                    </button>
+                </div>
+
+                <DataTable
+                    isLoading={isLoading}
+                    columns={columns} data={data} onRowClick={(item) => {
+                        setSelectedMachine(item)   // lưu item để edit
+                        setOpenModal(true)
+                    }} />
+
+                <Pagination className="mt-6">
+                    <PaginationContent>
+
+                        <PaginationItem>
+                            <PaginationPrevious
+                                onClick={() => pageIndex > 1 && setPageIndex(pageIndex - 1)}
+                                className={pageIndex <= 1 ? "pointer-events-none opacity-40" : ""}
+                            />
+                        </PaginationItem>
+
+                        {Array.from({ length: totalPages }).map((_, i) => {
+                            const page = i + 1
+                            return (
+                                <PaginationItem key={page}>
+                                    <PaginationLink
+                                        isActive={pageIndex === page}
+                                        onClick={() => setPageIndex(page)}
+                                    >
+                                        {page}
+                                    </PaginationLink>
+                                </PaginationItem>
+                            )
+                        })}
+
+                        <PaginationItem>
+                            <PaginationNext
+                                onClick={() => pageIndex < totalPages && setPageIndex(pageIndex + 1)}
+                                className={pageIndex >= totalPages ? "pointer-events-none opacity-40" : ""}
+                            />
+                        </PaginationItem>
+
+                    </PaginationContent>
+                </Pagination>
+            </div>
+
+            <Dialog open={openModal} onOpenChange={setOpenModal}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>
+                            {selectedMachine ? "Edit Machine" : "Create Machine"}
+                        </DialogTitle>
+                    </DialogHeader>
+
+                    <div className="space-y-4">
+                        <div>
+                            <label className="block text-sm font-medium">Machine Number</label>
+                            <Input
+                                value={form.machineNumber}
+                                onChange={e => setForm({ ...form, machineNumber: e.target.value })}
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium">Standard Capacity</label>
+                            <Input
+                                type="number"
+                                value={form.standardCapacityQuantity}
+                                onChange={e =>
+                                    setForm({
+                                        ...form,
+                                        standardCapacityQuantity: e.target.value,
+                                    })
+                                }
+                            />
+                        </div>
+                    </div>
+
+                    <DialogFooter>
+                        <Button
+                            className="bg-blue-600 text-white"
+                            onClick={handleSave}
+                            disabled={isSaving}
+                        >
+                            {isSaving ? "Saving..." : selectedMachine ? "Update" : "Create"}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+        </PageLayout>
+    )
+}

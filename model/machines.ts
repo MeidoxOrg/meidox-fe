@@ -26,7 +26,7 @@ export interface UpdateMachineNumber {
 
 export interface UpdateStandardCapacityQuantity {
   id: string;
-  machineNstandardCapacityQuantityumber: number;
+  standardCapacityQuantity: number;
 }
 
 export interface MachinePagination {

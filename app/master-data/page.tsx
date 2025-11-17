@@ -16,7 +16,8 @@ export default function UsersPage() {
     const [pageSize, setPageSize] = useState<number>(10)
     const [totalCount, setTotalCount] = useState<number>(0)
     const [isLoading, setIsLoading] = useState(false)
-
+    const [openDelete, setOpenDelete] = useState(false)
+    const [deleteTarget, setDeleteTarget] = useState<Machine | null>(null)
 
     const [openModal, setOpenModal] = useState(false)
     const [selectedMachine, setSelectedMachine] = useState<Machine | null>(null)
@@ -38,7 +39,27 @@ export default function UsersPage() {
             accessorKey: "standardCapacityQuantity",
             header: "標準処理能力",
         },
+        {
+            id: "actions",
+            header: "操作",
+            cell: ({ row }) => {
+                const item = row.original
+                return (
+                    <button
+                        className="text-red-600 hover:text-red-800"
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            setDeleteTarget(item)
+                            setOpenDelete(true)
+                        }}
+                    >
+                        🗑️
+                    </button>
+                )
+            }
+        }
     ]
+
 
     const getData = useCallback(async () => {
         try {
@@ -86,6 +107,18 @@ export default function UsersPage() {
         }
     }
 
+    const handleDelete = async () => {
+        if (!deleteTarget) return
+        try {
+            await machinesServices.deleteMachine(deleteTarget.id)
+            setOpenDelete(false)
+            setDeleteTarget(null)
+            getData()
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
 
     useEffect(() => {
         getData()
@@ -110,15 +143,15 @@ export default function UsersPage() {
         <PageLayout title="設備一覧">
             <div className="p-6 bg-white">
                 <div className="flex justify-end mb-4">
-                    <button
+                    <Button
                         onClick={() => {
                             setSelectedMachine(null)
                             setOpenModal(true)
                         }}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                        className="bg-[#299fde] text-white px-12 py-4 rounded-lg text-xl font-bold"
                     >
                         新規設備を登録
-                    </button>
+                    </Button>
                 </div>
 
                 <DataTable
@@ -163,6 +196,7 @@ export default function UsersPage() {
                 </Pagination>
             </div>
 
+            {/* MODAL EDIT/CRETATE */}
             <Dialog open={openModal} onOpenChange={setOpenModal}>
                 <DialogContent>
                     <DialogHeader>
@@ -206,6 +240,37 @@ export default function UsersPage() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
+
+            {/* MODAL COFIRM DELETE */}
+            <Dialog open={openDelete} onOpenChange={setOpenDelete}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>削除確認</DialogTitle>
+                    </DialogHeader>
+
+                    <p>
+                        設備「{deleteTarget?.machineNumber}」を削除しますか？
+                    </p>
+
+                    <DialogFooter>
+                        <Button
+                            variant="outline"
+                            onClick={() => setOpenDelete(false)}
+                            disabled={isSaving}
+                        >
+                            キャンセル
+                        </Button>
+
+                        <Button
+                            className="bg-red-600 text-white"
+                            onClick={handleDelete}
+                        >
+                            削除
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
 
         </PageLayout>
     )

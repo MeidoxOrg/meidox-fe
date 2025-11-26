@@ -3,8 +3,8 @@
 import { useRouter } from "next/navigation"
 import { PageLayout } from "@/components/layout/page-layout"
 import { WorkInputForm } from "@/components/common/WorkInputForm"
-import { WorkInputFormValues } from "@/model/custom"
-import { WORKSESSION_ID, WORKSESSION_UNMANNED_OPERATION_OVER_TIME_ID } from "@/utils/constants"
+import { PreviousSessionContext, WorkInputFormValues } from "@/model/custom"
+import { PREVIOS_SESSION_CONTEXT, WORKSESSION_ID, WORKSESSION_UNMANNED_OPERATION_OVER_TIME_ID } from "@/utils/constants"
 import { localStorageService } from "@/helper/localstorage"
 import unmannedOperationOvertimesServies from "@/services/unmanned-operation-overtime​"
 
@@ -18,9 +18,15 @@ export default function UnmannedOperationOvertime() {
             const currentTime = now.toTimeString().slice(0, 5)
             const workSessionId = localStorageService.get<string>(WORKSESSION_ID, "")
 
+            const previousSessionContext = localStorageService.get<PreviousSessionContext>(PREVIOS_SESSION_CONTEXT, {
+                previousActionName: "",
+                previousEndDate: "",
+                previousEndTime: ""
+            });
+
             const response = await unmannedOperationOvertimesServies.createUnmannedOperationOvertimes({
-                unattendedDateStart: currentDate,
-                unattendedTimeStart: currentTime,
+                unattendedDateStart: previousSessionContext.previousEndDate ?? currentDate,
+                unattendedTimeStart: previousSessionContext.previousEndTime ?? currentTime,
                 lotNumber: data.lotNumber,
                 materialNumber: data.materialNumber,
                 productNumber: data.productCode,

@@ -16,6 +16,7 @@ import { WORKSESSION_UNMANNED_LUNCH_ID } from "@/utils/constants"
 import { localStorageService } from "@/helper/localstorage"
 import { WorkSessionUnmannedLunch } from "@/model/work-session-unmanned-lunch​"
 import { getEndTimeFromStart } from "@/utils/time-utils"
+import { handleUpdatePreviousSessionContextGlobal } from "@/utils/function"
 
 export default function UnmannedLunchProgress() {
     const router = useRouter()
@@ -74,7 +75,6 @@ export default function UnmannedLunchProgress() {
     }
 
     const handleEndUnmanned = async () => {
-        console.log(formData.lotEnd);
         let newErrors = { numberOfGoodProducts: "", canNo: "", unmannedTime: "" }
         let hasError = false
 
@@ -108,6 +108,9 @@ export default function UnmannedLunchProgress() {
             dateBreakEnd: currentDate,
             timeBreakEnd: currentTime
         })
+
+        // SAVE TIME COMPLETED TO GLOBAL
+        handleUpdatePreviousSessionContextGlobal({ previousActionName: window.location.pathname, previousEndDate: currentDate, previousEndTime: currentTime })
 
         router.push("/home")
     }

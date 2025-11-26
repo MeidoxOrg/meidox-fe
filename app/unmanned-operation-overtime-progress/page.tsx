@@ -14,6 +14,7 @@ import { localStorageService } from "@/helper/localstorage"
 import { getEndTimeFromStart } from "@/utils/time-utils"
 import unmannedOperationOvertimesServies from "@/services/unmanned-operation-overtime​"
 import { UnmannedOperationOvertime } from "@/model/unmanned-operation-overtime​"
+import { handleUpdatePreviousSessionContextGlobal } from "@/utils/function"
 
 export default function UnmannedOperationOvertimeProgress() {
     const router = useRouter()
@@ -72,7 +73,6 @@ export default function UnmannedOperationOvertimeProgress() {
     }
 
     const handleEndUnmanned = async () => {
-        console.log(formData.lotEnd);
         let newErrors = { numberOfGoodProducts: "", canNo: "", unmannedTime: "" }
         let hasError = false
 
@@ -104,6 +104,9 @@ export default function UnmannedOperationOvertimeProgress() {
             dateBreakEnd: currentDate,
             timeBreakEnd: currentTime
         })
+
+        // SAVE TIME COMPLETED TO GLOBAL
+        handleUpdatePreviousSessionContextGlobal({ previousActionName: window.location.pathname, previousEndDate: currentDate, previousEndTime: currentTime })
 
         router.push("/home")
     }

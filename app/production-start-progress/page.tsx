@@ -11,9 +11,10 @@ import { Textarea } from "@/components/ui/textarea"
 import { NumpadModal } from "@/components/ui/numpad-modal"
 import workSessionProduction from "@/services/work-session-production"
 import { localStorageService } from "@/helper/localstorage"
-import { PRODUCT_INFO, WORKSESSION_PRODUCTION_ID } from "@/utils/constants"
+import { PREVIOS_SESSION_CONTEXT, PRODUCT_INFO, WORKSESSION_PRODUCTION_ID } from "@/utils/constants"
 import { WorkSessionProduction } from "@/model/work-session-production"
 import { getEndTimeFromStart } from "@/utils/time-utils"
+import { PreviousSessionContext } from "@/model/custom"
 
 
 export default function ProductionStartProgress() {
@@ -96,6 +97,8 @@ export default function ProductionStartProgress() {
         })
 
         localStorageService.remove(PRODUCT_INFO);
+        // SAVE TIME COMPLETED TO GLOBAL
+        handleUpdatePreviousSessionContextGlobal({ previousActionName: window.location.pathname, previousEndDate: currentDate, previousEndTime: currentTime })
 
         router.push("/home")
     }
@@ -146,6 +149,10 @@ export default function ProductionStartProgress() {
         } catch (error) {
             console.log(error);
         }
+    }
+
+    const handleUpdatePreviousSessionContextGlobal = async (value: PreviousSessionContext) => {
+        await localStorageService.set<PreviousSessionContext>(PREVIOS_SESSION_CONTEXT, value)
     }
 
     useEffect(() => {

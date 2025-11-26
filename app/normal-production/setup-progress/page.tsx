@@ -12,8 +12,9 @@ import { NumpadModal } from "@/components/ui/numpad-modal"
 import workSessionServices from "@/services/work-session"
 import { WorkSessionSetup } from "@/model/work-session"
 import { localStorageService } from "@/helper/localstorage"
-import { WORKSESSION_SETUP_ID } from "@/utils/constants"
+import { PREVIOS_SESSION_CONTEXT, WORKSESSION_SETUP_ID } from "@/utils/constants"
 import { getEndTimeFromStart } from "@/utils/time-utils"
+import { PreviousSessionContext } from "@/model/custom"
 
 export default function SetupProgressPage() {
   const router = useRouter()
@@ -104,6 +105,9 @@ export default function SetupProgressPage() {
       timeComplete: currentTime
     })
 
+    // SAVE TIME COMPLETED TO GLOBAL
+    handleUpdatePreviousSessionContextGlobal({ previousActionName: window.location.pathname, previousEndDate: currentDate, previousEndTime: currentTime })
+
     router.push("/home")
   }
 
@@ -148,6 +152,10 @@ export default function SetupProgressPage() {
       }
     })
   }, [])
+
+  const handleUpdatePreviousSessionContextGlobal = async (value: PreviousSessionContext) => {
+    await localStorageService.set<PreviousSessionContext>(PREVIOS_SESSION_CONTEXT, value)
+  }
 
   useEffect(() => {
     getWorkSessionSetupById()

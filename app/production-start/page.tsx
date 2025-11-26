@@ -6,9 +6,9 @@ import { PageLayout } from "@/components/layout/page-layout"
 import SetupFormLayout from "@/components/common/SetupFormLayout"
 import { useForm } from "react-hook-form"
 import { localStorageService } from "@/helper/localstorage"
-import { PRODUCT_INFO, WORKSESSION_ID, WORKSESSION_PRODUCTION_ID } from "@/utils/constants"
+import { PREVIOS_SESSION_CONTEXT, PRODUCT_INFO, WORKSESSION_ID, WORKSESSION_PRODUCTION_ID } from "@/utils/constants"
 import workSessionProduction from "@/services/work-session-production"
-import { SetupFormValuesGlobal } from "@/model/custom"
+import { PreviousSessionContext, SetupFormValuesGlobal } from "@/model/custom"
 
 type SetupFormValues = {
     productNumber: string
@@ -71,9 +71,15 @@ export default function SetupStartPage() {
             const currentTime = now.toTimeString().slice(0, 5)
             const workSessionId = localStorageService.get<string>(WORKSESSION_ID, "")
 
+            const previousSessionContext = localStorageService.get<PreviousSessionContext>(PREVIOS_SESSION_CONTEXT, {
+                previousActionName: "",
+                previousEndDate: "",
+                previousEndTime: ""
+            });
+
             const response = await workSessionProduction.createWorkSessionProduction({
-                dateStart: currentDate,
-                timeStart: currentTime,
+                dateStart: previousSessionContext.previousEndDate ?? currentDate,
+                timeStart: previousSessionContext.previousEndTime ?? currentTime,
                 lotNumber: data.lotNumber,
                 materialNumber: data.materialNumber,
                 productNumber: data.productNumber,

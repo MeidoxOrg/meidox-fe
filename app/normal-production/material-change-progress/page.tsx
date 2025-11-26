@@ -13,6 +13,7 @@ import { WORKSESSION_MATERIAL_CHANGE_ID } from "@/utils/constants"
 import workSessionMaterialChangeServies from "@/services/work-session-material-change"
 import { WorkSessionMaterialChange } from "@/model/work-session-material-change"
 import { getEndTimeFromStart } from "@/utils/time-utils"
+import { handleUpdatePreviousSessionContextGlobal } from "@/utils/function"
 
 
 
@@ -72,6 +73,9 @@ export default function MaterialChangeProgress() {
                 timeComplete: currentTime,
                 id: workSessionMaterialChangeId
             });
+
+            // SAVE TIME COMPLETED TO GLOBAL
+            handleUpdatePreviousSessionContextGlobal({ previousActionName: window.location.pathname, previousEndDate: currentDate, previousEndTime: currentTime })
 
             router.push("/home")
 

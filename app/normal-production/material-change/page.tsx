@@ -9,9 +9,9 @@ import { useForm } from "react-hook-form"
 import { useState } from "react"
 import { Scanner } from "@yudiel/react-qr-scanner"
 import { localStorageService } from "@/helper/localstorage"
-import { PRODUCT_INFO, WORKSESSION_ID, WORKSESSION_MATERIAL_CHANGE_ID } from "@/utils/constants"
+import { PREVIOS_SESSION_CONTEXT, PRODUCT_INFO, WORKSESSION_ID, WORKSESSION_MATERIAL_CHANGE_ID } from "@/utils/constants"
 import workSessionMaterialChangeServies from "@/services/work-session-material-change"
-import { SetupFormValuesGlobal } from "@/model/custom"
+import { PreviousSessionContext, SetupFormValuesGlobal } from "@/model/custom"
 
 type MaterialChangeForm = {
     productCode: string
@@ -51,9 +51,15 @@ export default function MaterialChange() {
             const currentTime = now.toTimeString().slice(0, 5)
             const workSessionId = localStorageService.get<string>(WORKSESSION_ID, "")
 
+            const previousSessionContext = localStorageService.get<PreviousSessionContext>(PREVIOS_SESSION_CONTEXT, {
+                previousActionName: "",
+                previousEndDate: "",
+                previousEndTime: ""
+            });
+
             const response = await workSessionMaterialChangeServies.createWorkSessionMaterialChange({
-                dateStart: currentDate,
-                timeStart: currentTime,
+                dateStart: previousSessionContext.previousEndDate ?? currentDate,
+                timeStart: previousSessionContext.previousEndTime ?? currentTime,
                 lotNumber: data.lotNumber,
                 materialNumber: data.materialNumber,
                 productNumber: data.productCode,

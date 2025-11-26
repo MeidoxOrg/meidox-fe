@@ -9,6 +9,7 @@ import { WORKSESSION_EQUIPMENT_REPAIR_ID } from "@/utils/constants"
 import workSessionEquipmentRepairServies from "@/services/work-session-equipment-repair​"
 import { WorkSessionEquipmentRepair } from "@/model/work-session-equipment-repair​"
 import { getEndTimeFromStart } from "@/utils/time-utils"
+import { handleUpdatePreviousSessionContextGlobal } from "@/utils/function"
 
 export default function EquipmentRepairProgress() {
     const router = useRouter()
@@ -62,6 +63,9 @@ export default function EquipmentRepairProgress() {
                 timeComplete: currentTime,
                 id: workSessionEquipmentRepairId
             });
+
+            // SAVE TIME COMPLETED TO GLOBAL
+            handleUpdatePreviousSessionContextGlobal({ previousActionName: window.location.pathname, previousEndDate: currentDate, previousEndTime: currentTime })
 
             router.push("/home")
 

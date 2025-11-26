@@ -9,6 +9,7 @@ import { REASON_FOR_STOPPING_NO_KANBAN_START } from "@/utils/constants"
 import reasonForStoppingNoKanbanStartServies from "@/services/reason-for-stopping-no-kanban"
 import { ReasonForStoppingNoKanbanStart } from "@/model/reason-for-stopping-no-kanban"
 import { getEndTimeFromStart } from "@/utils/time-utils"
+import { handleUpdatePreviousSessionContextGlobal } from "@/utils/function"
 
 export default function NoKanbanProgress() {
     const router = useRouter()
@@ -62,6 +63,9 @@ export default function NoKanbanProgress() {
                 timeComplete: currentTime,
                 id: reasonForStoppingNoKanbanStartId
             });
+
+            // SAVE TIME COMPLETED TO GLOBAL
+            handleUpdatePreviousSessionContextGlobal({ previousActionName: window.location.pathname, previousEndDate: currentDate, previousEndTime: currentTime })
 
             router.push("/home")
 

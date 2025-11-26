@@ -9,6 +9,7 @@ import { REASON_FOR_STOPPING_BREAK_START } from "@/utils/constants"
 import reasonForStoppingBreakStartServies from "@/services/reason-for-stopping-break-start"
 import { ReasonForStoppingBreakStart } from "@/model/reason-for-stopping-break-start"
 import { getEndTimeFromStart } from "@/utils/time-utils"
+import { handleUpdatePreviousSessionContextGlobal } from "@/utils/function"
 
 export default function BreakProgress() {
     const router = useRouter()
@@ -61,6 +62,9 @@ export default function BreakProgress() {
                 timeComplete: currentTime,
                 id: reasonForStoppingBreakStartId
             });
+
+            // SAVE TIME COMPLETED TO GLOBAL
+            handleUpdatePreviousSessionContextGlobal({ previousActionName: window.location.pathname, previousEndDate: currentDate, previousEndTime: currentTime })
 
             router.push("/home")
 

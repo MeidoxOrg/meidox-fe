@@ -24,6 +24,7 @@ import workSessionServices from "@/services/work-session"
 import { localStorageService } from "@/helper/localstorage"
 import { WORKSESSION_ID } from "@/utils/constants"
 import { TimeOnlyPicker } from "@/components/ui/time-only-picker"
+import { toast } from "sonner"
 
 function WorkStartHeader() {
     const router = useRouter()
@@ -97,7 +98,11 @@ export default function WorkStartPage() {
                 router.push("/home")
             }
         } catch (error) {
-
+            const selectedMachine = machineData.find(m => m.id === values.machineNumber);
+            const selectedShift = workShiftData.find(m => m.id === values.shift);
+            toast.error(
+                `${selectedMachine?.machineNumber}・${selectedShift?.name} はすでにチェックインされています。`
+            );
         }
     }
 

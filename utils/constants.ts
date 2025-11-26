@@ -37,3 +37,4 @@ export const WORKSESSION_UNMANNED_LUNCH_ID = "workSessionUnmannedLunchId";
 export const WORKSESSION_UNMANNED_OPERATION_OVER_TIME_ID =
   "workSessionUnmannedOperationOvertimeId";
 export const OPERATION_END_ID = "operationEndId";
+export const PREVIOS_SESSION_CONTEXT = "previousSessionContext";

@@ -10,3 +10,9 @@ export type WorkInputFormValues = {
   lotNumber: string;
   materialNumber: string;
 };
+
+export interface PreviousSessionContext {
+  previousActionName: string;
+  previousEndDate: string;
+  previousEndTime: string;
+}

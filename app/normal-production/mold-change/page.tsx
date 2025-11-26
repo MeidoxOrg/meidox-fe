@@ -3,10 +3,10 @@
 import { useRouter } from "next/navigation"
 import { PageLayout } from "@/components/layout/page-layout"
 import { WorkInputForm } from "@/components/common/WorkInputForm"
-import { WorkInputFormValues } from "@/model/custom"
+import { PreviousSessionContext, WorkInputFormValues } from "@/model/custom"
 import workSessionMoldChangeServies from "@/services/work-session-mold-change"
 import { localStorageService } from "@/helper/localstorage"
-import { WORKSESSION_ID, WORKSESSION_MOLD_CHANGE_ID } from "@/utils/constants"
+import { PREVIOS_SESSION_CONTEXT, WORKSESSION_ID, WORKSESSION_MOLD_CHANGE_ID } from "@/utils/constants"
 
 
 export default function MoldChange() {
@@ -19,9 +19,15 @@ export default function MoldChange() {
             const currentTime = now.toTimeString().slice(0, 5)
             const workSessionId = localStorageService.get<string>(WORKSESSION_ID, "")
 
+            const previousSessionContext = localStorageService.get<PreviousSessionContext>(PREVIOS_SESSION_CONTEXT, {
+                previousActionName: "",
+                previousEndDate: "",
+                previousEndTime: ""
+            });
+
             const response = await workSessionMoldChangeServies.createWorkSessionMoldChange({
-                dateStart: currentDate,
-                timeStart: currentTime,
+                dateStart: previousSessionContext.previousEndDate ?? currentDate,
+                timeStart: previousSessionContext.previousEndTime ?? currentTime,
                 lotNumber: data.lotNumber,
                 materialNumber: data.materialNumber,
                 productNumber: data.productCode,

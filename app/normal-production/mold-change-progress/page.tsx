@@ -13,6 +13,7 @@ import { localStorageService } from "@/helper/localstorage"
 import { WORKSESSION_MOLD_CHANGE_ID } from "@/utils/constants"
 import { WorkSessionMoldChange } from "@/model/work-session-mold-change"
 import { getEndTimeFromStart } from "@/utils/time-utils"
+import { handleUpdatePreviousSessionContextGlobal } from "@/utils/function"
 
 
 export default function MoldChangeProgress() {
@@ -72,6 +73,9 @@ export default function MoldChangeProgress() {
                 timeComplete: currentTime,
                 id: workSessionMoldChangeId
             });
+
+            // SAVE TIME COMPLETED TO GLOBAL
+            handleUpdatePreviousSessionContextGlobal({ previousActionName: window.location.pathname, previousEndDate: currentDate, previousEndTime: currentTime })
 
             router.push("/home")
 

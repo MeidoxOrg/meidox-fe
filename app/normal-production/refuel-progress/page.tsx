@@ -15,6 +15,7 @@ import { localStorageService } from "@/helper/localstorage"
 import { WORKSESSION_REFUELING_ID } from "@/utils/constants"
 import { WorkSessionRefueling } from "@/model/work-session-refueling"
 import { getEndTimeFromStart } from "@/utils/time-utils"
+import { handleUpdatePreviousSessionContextGlobal } from "@/utils/function"
 
 export default function RefuelProgress() {
     const router = useRouter()
@@ -93,6 +94,9 @@ export default function RefuelProgress() {
             dateComplete: currentDate,
             timeComplete: currentTime
         })
+
+        // SAVE TIME COMPLETED TO GLOBAL
+        handleUpdatePreviousSessionContextGlobal({ previousActionName: window.location.pathname, previousEndDate: currentDate, previousEndTime: currentTime })
 
         router.push("/home")
     }

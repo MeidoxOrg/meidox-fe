@@ -1,6 +1,9 @@
+import { localStorageService } from "@/helper/localstorage";
 import { WorkSessionAbnormalHandlingByWsId } from "@/model/abnormal-handling​";
+import { PreviousSessionContext } from "@/model/custom";
 import { WorkSessionSetupByWs } from "@/model/work-session";
 import { WorkSessionProductionByWsId } from "@/model/work-session-production";
+import { PREVIOS_SESSION_CONTEXT } from "./constants";
 
 export function getLatestCompletedSession(
   productions: WorkSessionProductionByWsId[]
@@ -109,3 +112,12 @@ export function sumAbnormalProductPieces(
     return sum + value;
   }, 0);
 }
+
+export const handleUpdatePreviousSessionContextGlobal = async (
+  value: PreviousSessionContext
+) => {
+  await localStorageService.set<PreviousSessionContext>(
+    PREVIOS_SESSION_CONTEXT,
+    value
+  );
+};

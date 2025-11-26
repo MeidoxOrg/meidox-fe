@@ -9,10 +9,12 @@ import { TimerDisplay } from "@/components/ui/timer-display"
 import { PageLayout } from "@/components/layout/page-layout"
 import { Textarea } from "@/components/ui/textarea"
 import { localStorageService } from "@/helper/localstorage"
-import { WORKSESSION_ADJUSTMENT_BEGIN_CHANGE_ID } from "@/utils/constants"
+import { PREVIOS_SESSION_CONTEXT, WORKSESSION_ADJUSTMENT_BEGIN_CHANGE_ID } from "@/utils/constants"
 import workSessionAdjustmentBeginServies from "@/services/work-session-adjustment-begin"
 import { WorkSessionAdjustmentBegin } from "@/model/work-session-adjustment-begin"
 import { getEndTimeFromStart } from "@/utils/time-utils"
+import { PreviousSessionContext } from "@/model/custom"
+import { handleUpdatePreviousSessionContextGlobal } from "@/utils/function"
 
 export default function AdjustmentInProgress() {
     const router = useRouter()
@@ -67,6 +69,9 @@ export default function AdjustmentInProgress() {
                 timeComplete: currentTime,
                 id: workSessionAdjustmentBeginId
             });
+
+            // SAVE TIME COMPLETED TO GLOBAL
+            handleUpdatePreviousSessionContextGlobal({ previousActionName: window.location.pathname, previousEndDate: currentDate, previousEndTime: currentTime })
 
             router.push("/home")
 

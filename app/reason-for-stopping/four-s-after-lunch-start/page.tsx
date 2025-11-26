@@ -2,9 +2,9 @@
 import { useRouter } from "next/navigation"
 import { PageLayout } from "@/components/layout/page-layout"
 import { WorkInputForm } from "@/components/common/WorkInputForm"
-import { WorkInputFormValues } from "@/model/custom"
+import { PreviousSessionContext, WorkInputFormValues } from "@/model/custom"
 import { localStorageService } from "@/helper/localstorage"
-import { REASON_FOR_STOPPING_FOUR_S_AFTER_LUNCH_START_ID, WORKSESSION_ID } from "@/utils/constants"
+import { PREVIOS_SESSION_CONTEXT, REASON_FOR_STOPPING_FOUR_S_AFTER_LUNCH_START_ID, WORKSESSION_ID } from "@/utils/constants"
 import reasonForStoppingFourSAfterLunchStartServies from "@/services/reason-for-stopping-four-s-after-lunchStart​"
 
 export default function FourSAfterLunchStart() {
@@ -17,9 +17,15 @@ export default function FourSAfterLunchStart() {
             const currentTime = now.toTimeString().slice(0, 5)
             const workSessionId = localStorageService.get<string>(WORKSESSION_ID, "")
 
+            const previousSessionContext = localStorageService.get<PreviousSessionContext>(PREVIOS_SESSION_CONTEXT, {
+                previousActionName: "",
+                previousEndDate: "",
+                previousEndTime: ""
+            });
+
             const response = await reasonForStoppingFourSAfterLunchStartServies.createReasonForStoppingFourSAfterLunchStart({
-                dateStart: currentDate,
-                timeStart: currentTime,
+                dateStart: previousSessionContext.previousEndDate ?? currentDate,
+                timeStart: previousSessionContext.previousEndTime ?? currentTime,
                 lotNumber: data.lotNumber,
                 materialNumber: data.materialNumber,
                 productNumber: data.productCode,

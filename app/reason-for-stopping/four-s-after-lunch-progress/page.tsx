@@ -9,6 +9,7 @@ import { REASON_FOR_STOPPING_FOUR_S_AFTER_LUNCH_START_ID } from "@/utils/constan
 import reasonForStoppingFourSAfterLunchStartServies from "@/services/reason-for-stopping-four-s-after-lunchStart​"
 import { ReasonForStoppingFourSAfterLunchStart } from "@/model/reason-for-stopping-four-s-after-lunchStart​"
 import { getEndTimeFromStart } from "@/utils/time-utils"
+import { handleUpdatePreviousSessionContextGlobal } from "@/utils/function"
 
 export default function FourSAfterLunchProgress() {
     const router = useRouter()
@@ -62,6 +63,9 @@ export default function FourSAfterLunchProgress() {
                 timeComplete: currentTime,
                 id: reasonForStoppingFourSAfterLunchStartId
             });
+
+            // SAVE TIME COMPLETED TO GLOBAL
+            handleUpdatePreviousSessionContextGlobal({ previousActionName: window.location.pathname, previousEndDate: currentDate, previousEndTime: currentTime })
 
             router.push("/home")
 

@@ -9,6 +9,7 @@ import { REASON_FOR_STOPPING_OTHER_PLANNED_STOP_START_ID } from "@/utils/constan
 import reasonForStoppingOtherPlannedStopStartServies from "@/services/reason-for-stopping-other-planned-stop-start"
 import { ReasonForStoppingOtherPlannedStopStart } from "@/model/reason-for-stopping-other-planned-stop-start"
 import { getEndTimeFromStart } from "@/utils/time-utils"
+import { handleUpdatePreviousSessionContextGlobal } from "@/utils/function"
 
 export default function OtherPlannedStopProgress() {
     const router = useRouter()
@@ -62,6 +63,9 @@ export default function OtherPlannedStopProgress() {
                 timeComplete: currentTime,
                 id: reasonForStoppingOtherPlannedStopStartId
             });
+
+            // SAVE TIME COMPLETED TO GLOBAL
+            handleUpdatePreviousSessionContextGlobal({ previousActionName: window.location.pathname, previousEndDate: currentDate, previousEndTime: currentTime })
 
             router.push("/home")
 

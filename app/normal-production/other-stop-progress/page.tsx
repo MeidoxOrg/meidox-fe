@@ -9,6 +9,7 @@ import { WORKSESSION_ORTHER_STOP_ID } from "@/utils/constants"
 import workSessionOtherStopServies from "@/services/work-session-other-stop"
 import { WorkSessionOtherStop } from "@/model/work-session-other-stop"
 import { getEndTimeFromStart } from "@/utils/time-utils"
+import { handleUpdatePreviousSessionContextGlobal } from "@/utils/function"
 
 export default function OtherStopProgress() {
     const router = useRouter()
@@ -62,6 +63,9 @@ export default function OtherStopProgress() {
                 timeComplete: currentTime,
                 id: workSessionOrtherStopId
             });
+
+            // SAVE TIME COMPLETED TO GLOBAL
+            handleUpdatePreviousSessionContextGlobal({ previousActionName: window.location.pathname, previousEndDate: currentDate, previousEndTime: currentTime })
 
             router.push("/home")
 

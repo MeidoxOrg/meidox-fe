@@ -14,6 +14,7 @@ import { REASON_FOR_STOPPING_NO_OPERATER_ID } from "@/utils/constants"
 import reasonForStoppingNoOperatorServies from "@/services/reason-for-stopping-no-operator​"
 import { getEndTimeFromStart } from "@/utils/time-utils"
 import { ReasonForStoppingNoOperator } from "@/model/reason-for-stopping-no-operator​"
+import { handleUpdatePreviousSessionContextGlobal } from "@/utils/function"
 
 
 
@@ -69,6 +70,9 @@ export default function NoOperator() {
                 timeComplete: currentTime,
                 id: reasonForStoppingNoOperatorId
             });
+
+            // SAVE TIME COMPLETED TO GLOBAL
+            handleUpdatePreviousSessionContextGlobal({ previousActionName: window.location.pathname, previousEndDate: currentDate, previousEndTime: currentTime })
 
             router.push("/home")
 

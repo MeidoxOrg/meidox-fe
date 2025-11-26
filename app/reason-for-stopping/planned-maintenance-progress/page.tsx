@@ -9,6 +9,7 @@ import { REASON_FOR_STOPPING_PLANNED_MAINTENANCE_ID } from "@/utils/constants"
 import reasonForStoppingPlannedMaintenanceServies from "@/services/reason-for-stopping-planned-maintenance"
 import { ReasonForStoppingPlannedMaintenance } from "@/model/reason-for-stopping-planned-maintenance"
 import { getEndTimeFromStart } from "@/utils/time-utils"
+import { handleUpdatePreviousSessionContextGlobal } from "@/utils/function"
 
 
 
@@ -64,6 +65,9 @@ export default function PlannedMaintenanceProgress() {
                 timeComplete: currentTime,
                 id: reasonForStoppingPlannedMaintenanceId
             });
+
+            // SAVE TIME COMPLETED TO GLOBAL
+            handleUpdatePreviousSessionContextGlobal({ previousActionName: window.location.pathname, previousEndDate: currentDate, previousEndTime: currentTime })
 
             router.push("/home")
 

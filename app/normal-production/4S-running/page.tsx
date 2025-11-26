@@ -9,6 +9,7 @@ import { WORKSESSION_4S_ID } from "@/utils/constants"
 import workSession4SServies from "@/services/work-session-4s"
 import { WorkSession4S } from "@/model/work-session-4s"
 import { getEndTimeFromStart } from "@/utils/time-utils"
+import { handleUpdatePreviousSessionContextGlobal } from "@/utils/function"
 
 export default function AdjustmentInProgress() {
     const router = useRouter()
@@ -62,6 +63,9 @@ export default function AdjustmentInProgress() {
                 timeComplete: currentTime,
                 id: workSession4SId
             });
+
+            // SAVE TIME COMPLETED TO GLOBAL
+            handleUpdatePreviousSessionContextGlobal({ previousActionName: window.location.pathname, previousEndDate: currentDate, previousEndTime: currentTime })
 
             router.push("/home")
 

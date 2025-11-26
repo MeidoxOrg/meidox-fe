@@ -9,6 +9,7 @@ import { WORKSESSION_PRODUCTION_PREP_CHECK_ID } from "@/utils/constants"
 import workSessionProductionPrepCheckServies from "@/services/work-session-production-prep-check"
 import { WorkSessionProductionPrepCheck } from "@/model/work-session-production-prep-check"
 import { getEndTimeFromStart } from "@/utils/time-utils"
+import { handleUpdatePreviousSessionContextGlobal } from "@/utils/function"
 
 export default function ProductionPrepProgress() {
     const router = useRouter()
@@ -63,6 +64,9 @@ export default function ProductionPrepProgress() {
                 timeComplete: currentTime,
                 id: workSessionProductionPrepCheckId
             });
+
+            // SAVE TIME COMPLETED TO GLOBAL
+            handleUpdatePreviousSessionContextGlobal({ previousActionName: window.location.pathname, previousEndDate: currentDate, previousEndTime: currentTime })
 
             router.push("/home")
 

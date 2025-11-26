@@ -9,6 +9,7 @@ import { WORKSESSION_SORTING_ID } from "@/utils/constants"
 import workSessionSortingServies from "@/services/work-session-sorting"
 import { WorkSessionSorting } from "@/model/work-session-sorting"
 import { getEndTimeFromStart } from "@/utils/time-utils"
+import { handleUpdatePreviousSessionContextGlobal } from "@/utils/function"
 
 
 
@@ -64,6 +65,9 @@ export default function SortingProgress() {
                 timeComplete: currentTime,
                 id: workSessionSortingId
             });
+
+            // SAVE TIME COMPLETED TO GLOBAL
+            handleUpdatePreviousSessionContextGlobal({ previousActionName: window.location.pathname, previousEndDate: currentDate, previousEndTime: currentTime })
 
             router.push("/home")
 

@@ -3,9 +3,9 @@
 import { useRouter } from "next/navigation"
 import { PageLayout } from "@/components/layout/page-layout"
 import { WorkInputForm } from "@/components/common/WorkInputForm"
-import { WorkInputFormValues } from "@/model/custom"
+import { PreviousSessionContext, WorkInputFormValues } from "@/model/custom"
 import { localStorageService } from "@/helper/localstorage"
-import { WORKSESSION_ID, WORKSESSION_ORTHER_MACHINES_SUPPORT_ID } from "@/utils/constants"
+import { PREVIOS_SESSION_CONTEXT, WORKSESSION_ID, WORKSESSION_ORTHER_MACHINES_SUPPORT_ID } from "@/utils/constants"
 import workSessionOtherMachineSupportServies from "@/services/work-session-other-machine-support"
 
 export default function OtherMachineSupport() {
@@ -18,9 +18,15 @@ export default function OtherMachineSupport() {
             const currentTime = now.toTimeString().slice(0, 5)
             const workSessionId = localStorageService.get<string>(WORKSESSION_ID, "")
 
+            const previousSessionContext = localStorageService.get<PreviousSessionContext>(PREVIOS_SESSION_CONTEXT, {
+                previousActionName: "",
+                previousEndDate: "",
+                previousEndTime: ""
+            });
+
             const response = await workSessionOtherMachineSupportServies.createWorkSessionOtherMachineSupport({
-                dateStart: currentDate,
-                timeStart: currentTime,
+                dateStart: previousSessionContext.previousEndDate ?? currentDate,
+                timeStart: previousSessionContext.previousEndTime ?? currentTime,
                 lotNumber: data.lotNumber,
                 materialNumber: data.materialNumber,
                 productNumber: data.productCode,

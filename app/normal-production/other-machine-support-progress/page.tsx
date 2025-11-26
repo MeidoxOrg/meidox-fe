@@ -9,6 +9,7 @@ import { WORKSESSION_ORTHER_MACHINES_SUPPORT_ID } from "@/utils/constants"
 import workSessionOtherMachineSupportServies from "@/services/work-session-other-machine-support"
 import { WorkSessionOtherMachineSupport } from "@/model/work-session-other-machine-support"
 import { getEndTimeFromStart } from "@/utils/time-utils"
+import { handleUpdatePreviousSessionContextGlobal } from "@/utils/function"
 
 
 
@@ -63,6 +64,9 @@ export default function OtherMachineSupportProgress() {
                 timeComplete: currentTime,
                 id: workSessionOrtherMachinesSupportId
             });
+
+            // SAVE TIME COMPLETED TO GLOBAL
+            handleUpdatePreviousSessionContextGlobal({ previousActionName: window.location.pathname, previousEndDate: currentDate, previousEndTime: currentTime })
 
             router.push("/home")
 

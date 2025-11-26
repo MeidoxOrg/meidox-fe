@@ -9,6 +9,7 @@ import { WORKSESSION_QUANLITY_CHECK_ID } from "@/utils/constants"
 import workSessionQualityCheckServies from "@/services/work-session-quality-check"
 import { WorkSessionQualityCheck } from "@/model/work-session-quality-check"
 import { getEndTimeFromStart } from "@/utils/time-utils"
+import { handleUpdatePreviousSessionContextGlobal } from "@/utils/function"
 
 
 
@@ -64,6 +65,9 @@ export default function QualityCheckProgress() {
                 timeComplete: currentTime,
                 id: workSessionQuanlityCheckId
             });
+
+            // SAVE TIME COMPLETED TO GLOBAL
+            handleUpdatePreviousSessionContextGlobal({ previousActionName: window.location.pathname, previousEndDate: currentDate, previousEndTime: currentTime })
 
             router.push("/home")
 

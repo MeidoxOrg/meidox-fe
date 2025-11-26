@@ -2,8 +2,8 @@
 import { useRouter } from "next/navigation"
 import { PageLayout } from "@/components/layout/page-layout"
 import { WorkInputForm } from "@/components/common/WorkInputForm"
-import { WorkInputFormValues } from "@/model/custom"
-import { WORKSESSION_ID, WORKSESSION_MATERIAL_MOLDSHORTAGE_ID } from "@/utils/constants"
+import { PreviousSessionContext, WorkInputFormValues } from "@/model/custom"
+import { PREVIOS_SESSION_CONTEXT, WORKSESSION_ID, WORKSESSION_MATERIAL_MOLDSHORTAGE_ID } from "@/utils/constants"
 import { localStorageService } from "@/helper/localstorage"
 import reasonForStoppingMaterialMoldShortageServies from "@/services/reason-for-stopping-material-mold-shortage"
 
@@ -17,9 +17,15 @@ export default function MaterialMoldShortageStart() {
             const currentTime = now.toTimeString().slice(0, 5)
             const workSessionId = localStorageService.get<string>(WORKSESSION_ID, "")
 
+            const previousSessionContext = localStorageService.get<PreviousSessionContext>(PREVIOS_SESSION_CONTEXT, {
+                previousActionName: "",
+                previousEndDate: "",
+                previousEndTime: ""
+            });
+
             const response = await reasonForStoppingMaterialMoldShortageServies.createReasonForStoppingMaterialMoldShortage({
-                dateStart: currentDate,
-                timeStart: currentTime,
+                dateStart: previousSessionContext.previousEndDate ?? currentDate,
+                timeStart: previousSessionContext.previousEndTime ?? currentTime,
                 lotNumber: data.lotNumber,
                 materialNumber: data.materialNumber,
                 productNumber: data.productCode,

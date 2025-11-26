@@ -9,6 +9,7 @@ import { WORKSESSION_MATERIAL_MOLDSHORTAGE_ID } from "@/utils/constants"
 import reasonForStoppingMaterialMoldShortageServies from "@/services/reason-for-stopping-material-mold-shortage"
 import { ReasonForStoppingMaterialMoldShortage } from "@/model/reason-for-stopping-material-mold-shortage"
 import { getEndTimeFromStart } from "@/utils/time-utils"
+import { handleUpdatePreviousSessionContextGlobal } from "@/utils/function"
 
 
 
@@ -64,6 +65,9 @@ export default function MaterialMoldShortageProgress() {
                 timeComplete: currentTime,
                 id: reasonForStoppingMaterialMoldShortageId
             });
+
+            // SAVE TIME COMPLETED TO GLOBAL
+            handleUpdatePreviousSessionContextGlobal({ previousActionName: window.location.pathname, previousEndDate: currentDate, previousEndTime: currentTime })
 
             router.push("/home")
 

@@ -9,6 +9,7 @@ import { REASON_FOR_STOPPING_MEETING_START } from "@/utils/constants"
 import reasonForStoppingMeetingStartServies from "@/services/reason-for-stopping-meeting-start"
 import { ReasonForStoppingMeetingStart } from "@/model/reason-for-stopping-meeting-start"
 import { getEndTimeFromStart } from "@/utils/time-utils"
+import { handleUpdatePreviousSessionContextGlobal } from "@/utils/function"
 
 export default function MeetingProgress() {
     const router = useRouter()
@@ -62,6 +63,9 @@ export default function MeetingProgress() {
                 timeComplete: currentTime,
                 id: reasonForStoppingMeetingStartId
             });
+
+            // SAVE TIME COMPLETED TO GLOBAL
+            handleUpdatePreviousSessionContextGlobal({ previousActionName: window.location.pathname, previousEndDate: currentDate, previousEndTime: currentTime })
 
             router.push("/home")
 

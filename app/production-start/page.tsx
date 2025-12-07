@@ -3,12 +3,12 @@
 import { useCallback, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { PageLayout } from "@/components/layout/page-layout"
-import SetupFormLayout from "@/components/common/SetupFormLayout"
 import { useForm } from "react-hook-form"
 import { localStorageService } from "@/helper/localstorage"
 import { PREVIOS_SESSION_CONTEXT, PRODUCT_INFO, WORKSESSION_ID, WORKSESSION_PRODUCTION_ID } from "@/utils/constants"
 import workSessionProduction from "@/services/work-session-production"
 import { PreviousSessionContext, SetupFormValuesGlobal } from "@/model/custom"
+import { SetupFormLayout } from "@/components/common/SetupFormLayout"
 
 type SetupFormValues = {
     productNumber: string

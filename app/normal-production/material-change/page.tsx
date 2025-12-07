@@ -7,11 +7,11 @@ import { Input } from "@/components/ui/input"
 import { PageLayout } from "@/components/layout/page-layout"
 import { useForm } from "react-hook-form"
 import { useState } from "react"
-import { Scanner } from "@yudiel/react-qr-scanner"
 import { localStorageService } from "@/helper/localstorage"
 import { PREVIOS_SESSION_CONTEXT, PRODUCT_INFO, WORKSESSION_ID, WORKSESSION_MATERIAL_CHANGE_ID } from "@/utils/constants"
 import workSessionMaterialChangeServies from "@/services/work-session-material-change"
 import { PreviousSessionContext, SetupFormValuesGlobal } from "@/model/custom"
+import QRScanModal from "@/components/common/QRScanModal"
 
 type MaterialChangeForm = {
     productCode: string
@@ -146,37 +146,6 @@ export default function MaterialChange() {
                                         材料
                                     </Button>
 
-                                    {isScanningMaterialData && (
-                                        <div className="fixed inset-0 bg-black bg-opacity-60 flex flex-col items-center justify-center z-50">
-                                            <div className="bg-white p-4 rounded-md w-[90%] max-w-md text-center">
-                                                <h2 className="font-bold text-lg mb-2">QRコードを読み込んでください</h2>
-                                                <div className="w-full h-64 overflow-hidden rounded-md">
-                                                    <Scanner
-                                                        constraints={{ facingMode: "environment" }}
-                                                        onScan={(detectedCodes) => {
-                                                            const rawValue = detectedCodes[0]?.rawValue
-                                                            if (rawValue) {
-                                                                handleScanMaterial(rawValue)
-                                                                setIsScanningMaterialData(false)
-                                                            }
-                                                        }}
-                                                        onError={(error) => {
-                                                            alert("カメラが利用できません。スマートフォンで開いてください。")
-                                                            console.error(error)
-                                                        }}
-                                                        paused={false}
-                                                    />
-                                                </div>
-                                                <Button
-                                                    onClick={() => setIsScanningMaterialData(false)}
-                                                    className="mt-4 bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-md"
-                                                >
-                                                    閉じる
-                                                </Button>
-                                            </div>
-                                        </div>
-                                    )}
-
                                     <div className="border-2 border-amber-800 rounded-md bg-white h-40 flex items-center justify-center p-2">
                                         <textarea
                                             className="w-full h-full border-none outline-none text-center text-sm resize-none 
@@ -199,6 +168,17 @@ export default function MaterialChange() {
                     </form>
                 </Form>
             </div>
+
+            {/* --- Material modal --- */}
+            <QRScanModal
+                isOpen={isScanningMaterialData}
+                title="材料QRコードを読み込んでください"
+                onClose={() => setIsScanningMaterialData(false)}
+                onConfirm={(value) => {
+                    handleScanMaterial(value)
+                    setIsScanningMaterialData(false)
+                }}
+            />
         </PageLayout>
     )
 }

@@ -7,8 +7,8 @@ import { useCallback, useEffect, useState } from "react"
 import workSessionServices from "@/services/work-session"
 import { localStorageService } from "@/helper/localstorage"
 import { PRODUCT_INFO, WORKSESSION_ID, WORKSESSION_SETUP_ID } from "@/utils/constants"
-import SetupFormLayout from "@/components/common/SetupFormLayout"
 import { SetupFormValuesGlobal } from "@/model/custom"
+import { SetupFormLayout } from "@/components/common/SetupFormLayout"
 
 type SetupFormValues = {
   productNumber: string

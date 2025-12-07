@@ -7,6 +7,7 @@ import { Suspense } from "react";
 import Providers from "./providers";
 import "./globals.css";
 import { Toaster } from "sonner";
+import { AntdRegistry } from '@ant-design/nextjs-registry';
 
 export const metadata: Metadata = {
   title: "Manufacturing Management System",
@@ -22,9 +23,11 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable}`}>
-        <Providers>
-          <Suspense fallback={null}>{children}</Suspense>
-        </Providers>
+        <AntdRegistry>
+          <Providers>
+            <Suspense fallback={null}>{children}</Suspense>
+          </Providers>
+        </AntdRegistry>
         <Toaster position="top-center" richColors />
         <Analytics />
       </body>

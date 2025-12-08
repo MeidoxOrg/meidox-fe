@@ -8,12 +8,10 @@ import { localStorageService } from "@/helper/localstorage"
 import { OPERATION_END_ID, WORKSESSION_ID } from "@/utils/constants"
 import { WorkSessionModel } from "@/model/work-session"
 import operationEndServies from "@/services/operation-end"
-import { FloatButton } from 'antd';
 
 export default function Dashboard() {
     const router = useRouter()
     const [workSessionData, setWorkSessionData] = useState<WorkSessionModel>();
-    const [showMessage, setShowMessage] = useState(true)
     const workSessionId = localStorageService.get<string>(WORKSESSION_ID, "")
 
 
@@ -164,7 +162,6 @@ export default function Dashboard() {
                     </div>
                 </div>
             </div>
-            <FloatButton onClick={() => console.log('hêhheh')} />
         </div>
     )
 }

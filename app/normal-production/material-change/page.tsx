@@ -12,6 +12,8 @@ import { PREVIOS_SESSION_CONTEXT, PRODUCT_INFO, WORKSESSION_ID, WORKSESSION_MATE
 import workSessionMaterialChangeServies from "@/services/work-session-material-change"
 import { PreviousSessionContext, SetupFormValuesGlobal } from "@/model/custom"
 import QRScanModal from "@/components/common/QRScanModal"
+import logServices from "@/services/log-server"
+import { useSession } from "next-auth/react"
 
 type MaterialChangeForm = {
     productCode: string
@@ -23,6 +25,8 @@ export default function MaterialChange() {
     const router = useRouter()
     const [isScanningMaterialData, setIsScanningMaterialData] = useState(false)
     const [materialData, setMaterialData] = useState("")
+    const { data: session } = useSession();
+
 
     const productManufactured = localStorageService.get<SetupFormValuesGlobal>(PRODUCT_INFO, {
         productNumber: "",
@@ -70,6 +74,25 @@ export default function MaterialChange() {
                 localStorageService.set<String>(WORKSESSION_MATERIAL_CHANGE_ID, response.id)
                 router.push("/normal-production/material-change-progress")
             }
+        } catch (error) {
+
+        }
+    }
+
+    const handleLogQR = async (dataQR: string, titleQR: string) => {
+        const now = new Date()
+        const currentDate = now.toISOString().split("T")[0]
+        const currentTime = now.toTimeString().slice(0, 5)
+
+        try {
+            await logServices.createLog({
+                data: `${titleQR}: ${dataQR}`,
+                dateComplete: currentDate,
+                employeeId: (session as any)?.user?.id || "",
+                screen: window.location.pathname,
+                timeComplete: currentTime
+            })
+
         } catch (error) {
 
         }
@@ -177,6 +200,7 @@ export default function MaterialChange() {
                 onConfirm={(value) => {
                     handleScanMaterial(value)
                     setIsScanningMaterialData(false)
+                    handleLogQR(value, "↓材料エフ読み込む↓")
                 }}
             />
         </PageLayout>

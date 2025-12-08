@@ -211,6 +211,9 @@ const apiLinks = {
     setFallenItemsKg: `${meidoxApiUrl}/OperationEnd/FallenItemsKg`,
     getOperationEndsByWsId: `${meidoxApiUrl}/OperationEnd/WorkSession`,
   },
+  logServer: {
+    createLog: `${meidoxApiUrl}/QrLog`,
+  },
 };
 
 export default apiLinks;

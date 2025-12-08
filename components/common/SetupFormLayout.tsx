@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import React, { useEffect, useState } from "react"
 import QRScanModal from "./QRScanModal"
+import logServices from "@/services/log-server"
+import { useSession } from "next-auth/react"
 
 interface SetupFormLayoutProps {
     form: any
@@ -62,6 +64,26 @@ export const SetupFormLayout: React.FC<SetupFormLayoutProps> = ({
     const [isShowLot2, setIsShowLot2] = useState<boolean>(false)
     const [mounted, setMounted] = useState(false)
     useEffect(() => setMounted(true), [])
+    const { data: session } = useSession();
+
+    const handleLogQR = async (dataQR: string, titleQR: string) => {
+        const now = new Date()
+        const currentDate = now.toISOString().split("T")[0]
+        const currentTime = now.toTimeString().slice(0, 5)
+
+        try {
+            await logServices.createLog({
+                data: `${titleQR}: ${dataQR}`,
+                dateComplete: currentDate,
+                employeeId: (session as any)?.user?.id || "",
+                screen: window.location.pathname,
+                timeComplete: currentTime
+            })
+
+        } catch (error) {
+
+        }
+    }
 
     return (
         <>
@@ -73,6 +95,7 @@ export const SetupFormLayout: React.FC<SetupFormLayoutProps> = ({
                 onConfirm={(value) => {
                     handleScanKanban(value)
                     setIsScanningKanban(false)
+                    handleLogQR(value, "↓かんばん読み込む↓")
                 }}
             />
 
@@ -84,6 +107,7 @@ export const SetupFormLayout: React.FC<SetupFormLayoutProps> = ({
                 onConfirm={(value) => {
                     handleScanMaterial(value)
                     setIsScanningMaterialData(false)
+                    handleLogQR(value, "↓材料エフ読み込む↓")
                 }}
             />
 
@@ -95,6 +119,7 @@ export const SetupFormLayout: React.FC<SetupFormLayoutProps> = ({
                 onConfirm={(value) => {
                     handleScanSlot2(value)
                     setIsScanningSlot2(false)
+                    handleLogQR(value, "↓2ロット目かんばん読み込む↓")
                 }}
             />
 

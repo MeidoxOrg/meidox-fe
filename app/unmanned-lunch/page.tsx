@@ -65,7 +65,6 @@ export default function UnmannedLunch() {
 
 
   const onSubmit = async (data: SetupFormValues) => {
-    console.log(data);
     try {
       const now = new Date()
       const currentDate = now.toISOString().split("T")[0]
@@ -93,6 +92,7 @@ export default function UnmannedLunch() {
           materialNumber: data.materialNumber,
           productNumber: data.productNumber
         })
+
         localStorageService.set<String>(WORKSESSION_UNMANNED_LUNCH_ID, response.id)
         router.push("/unmanned-lunch-progress")
       }

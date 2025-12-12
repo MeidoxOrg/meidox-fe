@@ -292,6 +292,17 @@ export default function OperationEndPage() {
                         handleUpdateFallenItemsKg(val)
                     }
                 }}
+
+                keys={
+                    numpadTarget === "disposableItemsPieces"
+                        ? undefined
+                        : numpadTarget === "disposableItemsKg"
+                            ? ["7", "8", "9", "4", "5", "6", "1", "2", "3", "0", "."]
+                            : numpadTarget === "fallenItemsPieces"
+                                ? undefined
+                                : ["7", "8", "9", "4", "5", "6", "1", "2", "3", "0", "."]
+                }
+
             />
 
         </PageLayout>

@@ -12,6 +12,7 @@ export default function Page4S() {
     const router = useRouter()
 
     const onSubmit = async (data: WorkInputFormValues) => {
+        console.log(data);
         try {
             const now = new Date()
             const currentDate = now.toISOString().split("T")[0]
@@ -27,9 +28,9 @@ export default function Page4S() {
             const response = await workSession4SServies.createWorkSession4S({
                 dateStart: previousSessionContext.previousEndDate ?? currentDate,
                 timeStart: previousSessionContext.previousEndTime ?? currentTime,
-                lotNumber: data.lotNumber,
-                materialNumber: data.materialNumber,
-                productNumber: data.productCode,
+                lotNumber: data.lotNumber || "",
+                materialNumber: data.materialNumber || "",
+                productNumber: data.productCode || "",
                 workSessionId: workSessionId
             })
 

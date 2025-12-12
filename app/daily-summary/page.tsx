@@ -264,7 +264,6 @@ export default function DailySummaryPage() {
         if (standardQuantity === 0 || activeTime === 0) {
             return 0;
         }
-        debugger
         return Number((((goodProCount + sumAbnormal) / (standardQuantity * activeTime)) * 100).toFixed(2));
     };
 

@@ -102,7 +102,6 @@ export default function OperationEnd() {
         try {
             const response = await workSessionAbnormalHandlingServies.getWorkSessionAbnormalHandlingByWsId(workSessionId);
             const latestCompleted = getLatestCompletedAbnormalHandling(response.abnormalHandlings)
-            debugger;
             if (latestCompleted) {
                 const resPieces = workSessionAbnormalHandlingServies.updateAbnormalProductPiecesHandling(latestCompleted.id, parseInt(formData.abnormalProductPieces))
                 const resKg = workSessionAbnormalHandlingServies.updateAbnormalProductKgHandling(latestCompleted.id, parseFloat(formData.abnormalProductKg))

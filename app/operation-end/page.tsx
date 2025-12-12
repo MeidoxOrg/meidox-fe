@@ -174,8 +174,6 @@ export default function OperationEndPage() {
                                 hour={formData.startHour}
                                 minute={formData.startMinute}
                                 onDateChange={(date) => {
-                                    console.log(date);
-                                    debugger
                                     setFormData((p) => ({ ...p, startDate: date }))
                                 }}
                                 onHourChange={(hour) => setFormData((p) => ({ ...p, startHour: hour }))}

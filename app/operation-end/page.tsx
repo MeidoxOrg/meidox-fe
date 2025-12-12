@@ -126,7 +126,7 @@ export default function OperationEndPage() {
 
     const handleUpdateDisposableItemsKg = async (value: string) => {
         try {
-            const response = await operationEndServies.updateDisposableItemsKg(operationEndId, parseInt(value));
+            const response = await operationEndServies.updateDisposableItemsKg(operationEndId, parseFloat(value));
             if (response.id) {
                 setErrors((prev) => ({ ...prev, disposableItemsKg: "" }))
             }
@@ -148,7 +148,7 @@ export default function OperationEndPage() {
 
     const handleUpdateFallenItemsKg = async (value: string) => {
         try {
-            const response = await operationEndServies.updateFallenItemsKg(operationEndId, parseInt(value));
+            const response = await operationEndServies.updateFallenItemsKg(operationEndId, parseFloat(value));
             if (response.id) {
                 setErrors((prev) => ({ ...prev, fallenItemsKg: "" }))
             }

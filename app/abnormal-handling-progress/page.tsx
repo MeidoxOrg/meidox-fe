@@ -80,7 +80,7 @@ export default function AbnormalHandlingProgress() {
 
     const handleUpdateAbnormalProductKg = async (kgValue: string) => {
         try {
-            const response = await workSessionAbnormalHandlingServies.updateAbnormalProductKgHandling(workSessionAbnormalHandlingId, parseInt(kgValue));
+            const response = await workSessionAbnormalHandlingServies.updateAbnormalProductKgHandling(workSessionAbnormalHandlingId, parseFloat(kgValue));
             if (response.id) {
                 setErrors((prev) => ({ ...prev, abnormalProductKg: "" }))
             }

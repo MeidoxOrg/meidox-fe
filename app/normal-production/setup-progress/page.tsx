@@ -124,7 +124,7 @@ export default function SetupProgressPage() {
 
   const handleUpdateAdjustmentItemKg = async (kgValue: string) => {
     try {
-      const response = await workSessionServices.updateAdjustmentItemKg(workSessionSetupId, parseInt(kgValue));
+      const response = await workSessionServices.updateAdjustmentItemKg(workSessionSetupId, parseFloat(kgValue));
       if (response.id) {
         setErrors((prev) => ({ ...prev, adjustmentWeight: "" }))
       }

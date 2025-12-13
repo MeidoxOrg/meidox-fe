@@ -34,3 +34,27 @@ jobs:
           push: true
           tags: |
             ${{ secrets.SOLOCODE_USERNAME }}/meidox-fe:${{ env.IMAGE_TAG }}
+
+      - name: Checkout Helm chart repo
+        uses: actions/checkout@v3
+        with:
+          repository: lieudvq0302/argocd-apps
+          token: ${{ secrets.GH_TOKEN }}
+          ref: main
+          path: argocd-apps
+
+      - name: Install yq
+        run: |
+          sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
+          sudo chmod +x /usr/bin/yq
+
+      - name: Update values.yaml with new image tag
+        run: |
+          cd argocd-apps/orgs/meidox/meidox-fe
+          yq eval '.image.tag = strenv(IMAGE_TAG)' -i values.yaml
+
+          git config user.email "ci-bot@github.com"
+          git config user.name "CI Bot"
+
+          git commit -am "chore: update image tag to ${{ env.IMAGE_TAG }}"
+          git push origin main

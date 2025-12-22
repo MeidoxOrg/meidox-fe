@@ -141,7 +141,7 @@ export default function SetupStartPage() {
                     setIsScanningKanban={setIsScanningKanban}
                     setIsScanningMaterialData={setIsScanningMaterialData}
                     submitLabel="生産開始"
-                    showScanQR={true}
+                    showScanQR={showScanQR}
                     handleScanSlot2={() => { }}
                     slot2Data={""}
                     setIsScanningSlot2={() => { }}

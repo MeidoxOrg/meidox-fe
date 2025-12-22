@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import workSessionServices from "@/services/work-session"
 import { localStorageService } from "@/helper/localstorage"
-import { OPERATION_END_ID, WORKSESSION_ID } from "@/utils/constants"
+import { OPERATION_END_ID, PAUSED_ALERT, WORKSESSION_ID } from "@/utils/constants"
 import { WorkSessionModel } from "@/model/work-session"
 import operationEndServies from "@/services/operation-end"
 
@@ -13,7 +13,6 @@ export default function Dashboard() {
     const router = useRouter()
     const [workSessionData, setWorkSessionData] = useState<WorkSessionModel>();
     const workSessionId = localStorageService.get<string>(WORKSESSION_ID, "")
-
 
     const mainGridButtons = [
         { label: "段取り", color: "bg-blue-500 hover:bg-blue-600", disable: false, route: "/normal-production/setup-start" },
@@ -110,6 +109,7 @@ export default function Dashboard() {
                         <div className="bg-pink-200 p-4 rounded-lg border-2 border-gray-400 flex-1">
                             <p className="font-bold text-sm">{workSessionData?.machine.machineNumber} 作業中です。</p>
                             <p className="text-sm">機械番号が間違っていた場合は作業終了してください。</p>
+                            <p className="text-sm text-red-500">{localStorageService.get<String>(PAUSED_ALERT, "")}</p>
                         </div>
 
                         <Button className="h-20 w-28 text-sm font-bold rounded-lg bg-yellow-300 text-black" onClick={() => router.push("/production-start")}>

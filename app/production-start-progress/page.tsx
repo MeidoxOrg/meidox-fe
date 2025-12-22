@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { NumpadModal } from "@/components/ui/numpad-modal"
 import workSessionProduction from "@/services/work-session-production"
 import { localStorageService } from "@/helper/localstorage"
-import { PREVIOS_SESSION_CONTEXT, PRODUCT_INFO, WORKSESSION_PRODUCTION_ID } from "@/utils/constants"
+import { PAUSED_ALERT, PREVIOS_SESSION_CONTEXT, PRODUCT_INFO, WORKSESSION_PRODUCTION_ID } from "@/utils/constants"
 import { WorkSessionProduction } from "@/model/work-session-production"
 import { getEndTimeFromStart } from "@/utils/time-utils"
 import { PreviousSessionContext } from "@/model/custom"
@@ -71,6 +71,7 @@ export default function ProductionStartProgress() {
 
         let newErrors = { numberOfGoodProduct: "", canNumber: "" }
         let hasError = false
+        localStorageService.set<String>(PAUSED_ALERT, "")
 
         if (!formData.numberOfGoodProduct) {
             newErrors.numberOfGoodProduct = "良品数を入力してください。"
@@ -127,6 +128,8 @@ export default function ProductionStartProgress() {
 
     const handlePauseWorkSessionProduction = async () => {
         try {
+            localStorageService.set<String>(PAUSED_ALERT, "生産開始一時停止中")
+
             let newErrors = { numberOfGoodProduct: "", canNumber: "" }
             let hasError = false
 

@@ -12,7 +12,7 @@ import { NumpadModal } from "@/components/ui/numpad-modal"
 import workSessionServices from "@/services/work-session"
 import { WorkSessionSetup } from "@/model/work-session"
 import { localStorageService } from "@/helper/localstorage"
-import { PREVIOS_SESSION_CONTEXT, WORKSESSION_SETUP_ID } from "@/utils/constants"
+import { PAUSED_ALERT, PREVIOS_SESSION_CONTEXT, WORKSESSION_SETUP_ID } from "@/utils/constants"
 import { getEndTimeFromStart } from "@/utils/time-utils"
 import { PreviousSessionContext } from "@/model/custom"
 
@@ -69,6 +69,7 @@ export default function SetupProgressPage() {
 
   const handlePauseSetup = async () => {
     try {
+      localStorageService.set<String>(PAUSED_ALERT, "段取り一時停止中")
       await workSessionServices.pauseWorkSessionSetup(workSessionSetupId)
       router.push("/home")
     } catch (error) {
@@ -77,6 +78,7 @@ export default function SetupProgressPage() {
   }
 
   const handleCompleteSetup = async () => {
+    localStorageService.set<String>(PAUSED_ALERT, "")
 
     let newErrors = { adjustmentItems: "", adjustmentWeight: "" }
     let hasError = false

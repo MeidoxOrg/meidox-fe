@@ -141,7 +141,7 @@ export function WorkInputForm({
                         data-[state=checked]:border-yellow-400
                     "
                     />
-                    <span>情報の入力を必須にしない
+                    <span>品番無し
                     </span>
                 </div> : <></>}
 

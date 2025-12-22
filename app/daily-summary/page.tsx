@@ -67,7 +67,16 @@ import machinesServices from "@/services/machines"
 import { Machine } from "@/model/machines"
 
 export default function DailySummaryPage() {
-    const [selectedDate] = useState("2025年8月28日")
+
+    const formatDateJP = (date = new Date()) => {
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1; // 0-based
+        const day = date.getDate();
+
+        return `${year}年${month}月${day}日`;
+    }
+
+    const [selectedDate] = useState(formatDateJP())
     const [shift] = useState("黄")
     const [machine, setMachine] = useState<string>("")
     const { data: session } = useSession()

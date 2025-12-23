@@ -38,6 +38,7 @@ export default function UnmannedOperationOvertime() {
             productNumber: productManufactured.productNumber,
             lotNumber: productManufactured.lotNumber,
             materialNumber: productManufactured.materialNumber,
+            lotNumber2: productManufactured.lotNumber2
         },
     })
 

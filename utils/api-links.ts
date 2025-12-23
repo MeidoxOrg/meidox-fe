@@ -34,6 +34,7 @@ const apiLinks = {
     completeWorkSessionProduction: `${meidoxApiUrl}/WorkSessionProduction/Complete`,
     pauseWorkSessionProduction: `${meidoxApiUrl}/WorkSessionProduction/Pause`,
     getWorkSessionProductionByWsId: `${meidoxApiUrl}/WorkSessionProduction/WorkSession`,
+    updateProductionSlot2: `${meidoxApiUrl}/WorkSessionProduction/LotNumber2`,
   },
   workSessionMoldChange: {
     create: `${meidoxApiUrl}/WorkSessionMoldChange`,

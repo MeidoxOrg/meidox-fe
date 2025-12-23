@@ -14,6 +14,7 @@ type SetupFormValues = {
     productNumber: string
     lotNumber: string
     materialNumber: string
+    lotNumber2?: string
 }
 
 export default function SetupStartPage() {
@@ -24,11 +25,14 @@ export default function SetupStartPage() {
     const [isScanningMaterialData, setIsScanningMaterialData] = useState(false)
     const [showScanQR, setShowScanQR] = useState<boolean>(true)
     const workSessionId = localStorageService.get<string>(WORKSESSION_ID, "")
+    const [isScanningSlot2, setIsScanningSlot2] = useState(false)
+    const [slot2Data, setslot2Data] = useState("")
 
     const productManufactured = localStorageService.get<SetupFormValuesGlobal>(PRODUCT_INFO, {
         productNumber: "",
         lotNumber: "",
-        materialNumber: ""
+        materialNumber: "",
+        lotNumber2: ""
     });
 
     const form = useForm<SetupFormValues>({
@@ -36,6 +40,7 @@ export default function SetupStartPage() {
             productNumber: productManufactured.productNumber,
             lotNumber: productManufactured.lotNumber,
             materialNumber: productManufactured.materialNumber,
+            lotNumber2: productManufactured.lotNumber2
         },
     })
 
@@ -64,6 +69,12 @@ export default function SetupStartPage() {
         setValue("materialNumber", value)
     }
 
+    const handleScanLot2 = (value: string) => {
+        setslot2Data(value)
+        const lot2Value = value.substring(5, 10).trim()
+        setValue("lotNumber2", lot2Value)
+    }
+
     const onSubmit = async (data: SetupFormValues) => {
         try {
             const now = new Date()
@@ -87,10 +98,14 @@ export default function SetupStartPage() {
             });
 
             if (response.id != null) {
+                if (data.lotNumber2) {
+                    await workSessionProduction.updateProductionSetupLot2(response.id, data.lotNumber2)
+                }
                 handleUpdateProductInfoGlobal({
                     lotNumber: data.lotNumber,
                     materialNumber: data.materialNumber,
-                    productNumber: data.productNumber
+                    productNumber: data.productNumber,
+                    lotNumber2: data.lotNumber2
                 })
 
                 localStorageService.set<string>(WORKSESSION_PRODUCTION_ID, response.id)
@@ -142,11 +157,11 @@ export default function SetupStartPage() {
                     setIsScanningMaterialData={setIsScanningMaterialData}
                     submitLabel="生産開始"
                     showScanQR={showScanQR}
-                    handleScanSlot2={() => { }}
-                    slot2Data={""}
-                    setIsScanningSlot2={() => { }}
-                    isScanningSlot2={false}
-                    disableBtn={true}
+                    handleScanSlot2={handleScanLot2}
+                    slot2Data={slot2Data}
+                    setIsScanningSlot2={setIsScanningSlot2}
+                    isScanningSlot2={isScanningSlot2}
+                    disableBtn={false}
                 />
             </div>
         </PageLayout>

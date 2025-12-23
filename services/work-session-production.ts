@@ -119,6 +119,21 @@ const getWorkSessionMoldChangeByWsId = async (
   return response.data;
 };
 
+const updateProductionSetupLot2 = async (
+  id: String,
+  lotNumber2: String
+): Promise<PostAPIResponse> => {
+  const response = await httpClient.put<PostAPIResponse>({
+    url: apiLinks.workSessionProduction.updateProductionSlot2,
+    data: {
+      id: id,
+      lotNumber2: lotNumber2,
+    },
+  });
+
+  return response.data;
+};
+
 const workSessionProduction = {
   createWorkSessionProduction,
   getWorkSessionProductionId,
@@ -129,6 +144,7 @@ const workSessionProduction = {
   pauseWorkSessionProduction,
   getWorkSessionProductionByWsId,
   getWorkSessionMoldChangeByWsId,
+  updateProductionSetupLot2,
 };
 
 export default workSessionProduction;

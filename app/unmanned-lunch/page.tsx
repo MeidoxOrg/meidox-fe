@@ -14,7 +14,9 @@ import { useState } from "react"
 type SetupFormValues = {
   productNumber: string
   lotNumber: string
-  materialNumber: string
+  materialNumber: string;
+  lotNumber2?: string
+
 }
 
 export default function UnmannedLunch() {
@@ -23,11 +25,15 @@ export default function UnmannedLunch() {
   const [materialData, setMaterialData] = useState("")
   const [isScanningKanban, setIsScanningKanban] = useState(false)
   const [isScanningMaterialData, setIsScanningMaterialData] = useState(false)
+  const [isScanningSlot2, setIsScanningSlot2] = useState(false)
+  const [slot2Data, setslot2Data] = useState("")
 
   const productManufactured = localStorageService.get<SetupFormValuesGlobal>(PRODUCT_INFO, {
     productNumber: "",
     lotNumber: "",
-    materialNumber: ""
+    materialNumber: "",
+    lotNumber2: ""
+
   });
 
   const form = useForm<SetupFormValues>({
@@ -35,6 +41,7 @@ export default function UnmannedLunch() {
       productNumber: productManufactured.productNumber,
       lotNumber: productManufactured.lotNumber,
       materialNumber: productManufactured.materialNumber,
+      lotNumber2: productManufactured.lotNumber2
     },
   })
 
@@ -63,6 +70,11 @@ export default function UnmannedLunch() {
     setValue("materialNumber", value)
   }
 
+  const handleScanLot2 = (value: string) => {
+    setslot2Data(value)
+    const lot2Value = value.substring(5, 10).trim()
+    setValue("lotNumber2", lot2Value)
+  }
 
   const onSubmit = async (data: SetupFormValues) => {
     try {
@@ -87,10 +99,14 @@ export default function UnmannedLunch() {
       })
 
       if (response.id) {
+        if (data.lotNumber2) {
+          await workSessionUnmannedLunchServies.updateUnmannedLunchSetupLot2(response.id, data.lotNumber2)
+        }
         handleUpdateProductInfoGlobal({
           lotNumber: data.lotNumber,
           materialNumber: data.materialNumber,
-          productNumber: data.productNumber
+          productNumber: data.productNumber,
+          lotNumber2: data.lotNumber2
         })
 
         localStorageService.set<String>(WORKSESSION_UNMANNED_LUNCH_ID, response.id)
@@ -121,11 +137,11 @@ export default function UnmannedLunch() {
           setIsScanningMaterialData={setIsScanningMaterialData}
           submitLabel="無人運転（昼休憩）開始"
           showScanQR={true}
-          handleScanSlot2={() => { }}
-          slot2Data={""}
-          setIsScanningSlot2={() => { }}
-          isScanningSlot2={false}
-          disableBtn={true}
+          handleScanSlot2={handleScanLot2}
+          slot2Data={slot2Data}
+          setIsScanningSlot2={setIsScanningSlot2}
+          isScanningSlot2={isScanningSlot2}
+          disableBtn={false}
         />
       </div>
     </PageLayout>

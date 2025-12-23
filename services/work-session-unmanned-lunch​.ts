@@ -126,6 +126,21 @@ const updateUnmannedTime = async (
   return response.data;
 };
 
+const updateUnmannedLunchSetupLot2 = async (
+  id: String,
+  lotNumber2: String
+): Promise<PostAPIResponse> => {
+  const response = await httpClient.put<PostAPIResponse>({
+    url: apiLinks.workSessionUnmannedLunch.udpateLotNumber2,
+    data: {
+      id: id,
+      lotNumber2: lotNumber2,
+    },
+  });
+
+  return response.data;
+};
+
 const workSessionUnmannedLunchServies = {
   createWorkSessionUnmannedLunch,
   getWorkSessionUnmannedLunchId,
@@ -136,6 +151,7 @@ const workSessionUnmannedLunchServies = {
   updateCanNo,
   updateNumberOfGoodProducts,
   updateUnmannedTime,
+  updateUnmannedLunchSetupLot2,
 };
 
 export default workSessionUnmannedLunchServies;

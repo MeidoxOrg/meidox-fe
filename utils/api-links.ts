@@ -189,6 +189,7 @@ const apiLinks = {
     updateLotEndUnmannedLunch: `${meidoxApiUrl}/UnmannedLunch/LotEnd`,
     udpateNumberOfGoodProducts: `${meidoxApiUrl}/UnmannedLunch/NumberOfGoodProducts`,
     udpateUnmannedTime: `${meidoxApiUrl}/UnmannedLunch/UnmannedTime`,
+    udpateLotNumber2: `${meidoxApiUrl}/UnmannedLunch/LotNumber2`,
   },
   workSessionUnmannedOperationOvertime: {
     create: `${meidoxApiUrl}/UnmannedOperationOvertime`,

@@ -131,6 +131,21 @@ const updateUnmannedTime = async (
   return response.data;
 };
 
+const updateUnmannedOvertimeSetupLot2 = async (
+  id: String,
+  lotNumber2: String
+): Promise<PostAPIResponse> => {
+  const response = await httpClient.put<PostAPIResponse>({
+    url: apiLinks.workSessionUnmannedOperationOvertime.updateSlot2,
+    data: {
+      id: id,
+      lotNumber2: lotNumber2,
+    },
+  });
+
+  return response.data;
+};
+
 const unmannedOperationOvertimesServies = {
   createUnmannedOperationOvertimes,
   getUnmannedOperationOvertimesId,
@@ -141,6 +156,7 @@ const unmannedOperationOvertimesServies = {
   updateCanNo,
   updateNumberOfGoodProducts,
   updateUnmannedTime,
+  updateUnmannedOvertimeSetupLot2,
 };
 
 export default unmannedOperationOvertimesServies;

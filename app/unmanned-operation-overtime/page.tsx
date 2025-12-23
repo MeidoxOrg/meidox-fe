@@ -2,8 +2,7 @@
 
 import { useRouter } from "next/navigation"
 import { PageLayout } from "@/components/layout/page-layout"
-import { WorkInputForm } from "@/components/common/WorkInputForm"
-import { PreviousSessionContext, SetupFormValuesGlobal, WorkInputFormValues } from "@/model/custom"
+import { PreviousSessionContext, SetupFormValuesGlobal } from "@/model/custom"
 import { PREVIOS_SESSION_CONTEXT, PRODUCT_INFO, WORKSESSION_ID, WORKSESSION_UNMANNED_OPERATION_OVER_TIME_ID } from "@/utils/constants"
 import { localStorageService } from "@/helper/localstorage"
 import unmannedOperationOvertimesServies from "@/services/unmanned-operation-overtime​"
@@ -15,6 +14,7 @@ type SetupFormValues = {
     productNumber: string
     lotNumber: string
     materialNumber: string
+    lotNumber2?: string
 }
 
 export default function UnmannedOperationOvertime() {
@@ -23,11 +23,14 @@ export default function UnmannedOperationOvertime() {
     const [materialData, setMaterialData] = useState("")
     const [isScanningKanban, setIsScanningKanban] = useState(false)
     const [isScanningMaterialData, setIsScanningMaterialData] = useState(false)
+    const [isScanningSlot2, setIsScanningSlot2] = useState(false)
+    const [slot2Data, setslot2Data] = useState("")
 
     const productManufactured = localStorageService.get<SetupFormValuesGlobal>(PRODUCT_INFO, {
         productNumber: "",
         lotNumber: "",
-        materialNumber: ""
+        materialNumber: "",
+        lotNumber2: ""
     });
 
     const form = useForm<SetupFormValues>({
@@ -86,10 +89,14 @@ export default function UnmannedOperationOvertime() {
             })
 
             if (response.id) {
+                if (data.lotNumber2) {
+                    await unmannedOperationOvertimesServies.updateUnmannedOvertimeSetupLot2(response.id, data.lotNumber2)
+                }
                 handleUpdateProductInfoGlobal({
                     lotNumber: data.lotNumber,
                     materialNumber: data.materialNumber,
-                    productNumber: data.productNumber
+                    productNumber: data.productNumber,
+                    lotNumber2: data.lotNumber2
                 })
 
                 localStorageService.set<String>(WORKSESSION_UNMANNED_OPERATION_OVER_TIME_ID, response.id)
@@ -102,6 +109,12 @@ export default function UnmannedOperationOvertime() {
 
     const handleUpdateProductInfoGlobal = async (value: SetupFormValuesGlobal) => {
         await localStorageService.set<SetupFormValuesGlobal>(PRODUCT_INFO, value)
+    }
+
+    const handleScanLot2 = (value: string) => {
+        setslot2Data(value)
+        const lot2Value = value.substring(5, 10).trim()
+        setValue("lotNumber2", lot2Value)
     }
 
     return (
@@ -120,11 +133,11 @@ export default function UnmannedOperationOvertime() {
                     setIsScanningMaterialData={setIsScanningMaterialData}
                     submitLabel="無人運転（残業）開始"
                     showScanQR={true}
-                    handleScanSlot2={() => { }}
-                    slot2Data={""}
-                    setIsScanningSlot2={() => { }}
-                    isScanningSlot2={false}
-                    disableBtn={true}
+                    handleScanSlot2={handleScanLot2}
+                    slot2Data={slot2Data}
+                    setIsScanningSlot2={setIsScanningSlot2}
+                    isScanningSlot2={isScanningSlot2}
+                    disableBtn={false}
                 />
             </div>
         </PageLayout>

@@ -201,6 +201,7 @@ const apiLinks = {
     udpateUnmannedTime: `${meidoxApiUrl}/UnmannedOperationOvertime/UnmannedTime`,
     getUnmannedOperationOvertimeById: `${meidoxApiUrl}/UnmannedOperationOvertime`,
     getUnmannedOperationOvertimeByWsId: `${meidoxApiUrl}/UnmannedOperationOvertime/WorkSession`,
+    updateSlot2: `${meidoxApiUrl}/UnmannedOperationOvertime/LotNumber2`,
   },
   OperationEnd: {
     operationEnd: `${meidoxApiUrl}/OperationEnd`,
